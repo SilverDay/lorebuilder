@@ -40,62 +40,59 @@ Completion gate: `curl` can register, log in, create a world, add an entity, and
 
 ### 1B · Authentication API (`api/AuthController.php`)
 
-- [ ] `POST /api/v1/auth/register` — create user (REGISTRATION_OPEN gate, email uniqueness, bcrypt, send verify email)
-- [ ] `POST /api/v1/auth/login` — RateLimit::checkLogin, verify password, Auth::login, TOTP step if enabled
-- [ ] `POST /api/v1/auth/totp/verify` — verify code, Auth::markTotpVerified
-- [ ] `POST /api/v1/auth/logout` — Auth::logout
-- [ ] `GET  /api/v1/auth/me` — return session user (id, username, display_name, totp_enabled)
-- [ ] `POST /api/v1/auth/password/reset-request` — generate token, store hash, send email
-- [ ] `POST /api/v1/auth/password/reset` — consume token, hash new password
-- [ ] `POST /api/v1/auth/totp/setup` — generate secret, return URI for QR; not active until confirmed
-- [ ] `POST /api/v1/auth/totp/confirm` — verify first code, write encrypted secret to DB, enable TOTP
-- [ ] `DELETE /api/v1/auth/totp` — disable TOTP (requires current password + valid TOTP code)
-
-Security checklist per endpoint: Auth ✓ · CSRF ✓ · Validation ✓ · Rate limit ✓ · No stack trace ✓
+- [x] `POST /api/v1/auth/register` — create user (REGISTRATION_OPEN gate, email uniqueness, bcrypt, send verify email)
+- [x] `POST /api/v1/auth/login` — RateLimit::checkLogin, verify password, Auth::login, TOTP step if enabled
+- [x] `POST /api/v1/auth/totp/verify` — verify code, Auth::markTotpVerified
+- [x] `POST /api/v1/auth/logout` — Auth::logout
+- [x] `GET  /api/v1/auth/me` — return session user (id, username, display_name, totp_enabled)
+- [x] `POST /api/v1/auth/password/reset-request` — generate token, store hash, send email
+- [x] `POST /api/v1/auth/password/reset` — consume token, hash new password
+- [x] `POST /api/v1/auth/totp/setup` — generate secret, return URI for QR; not active until confirmed
+- [x] `POST /api/v1/auth/totp/confirm` — verify first code, write encrypted secret to DB, enable TOTP
+- [x] `DELETE /api/v1/auth/totp` — disable TOTP (requires current password + valid TOTP code)
 
 ### 1C · World & Membership API (`api/WorldController.php`)
 
-- [ ] `GET  /api/v1/worlds` — list worlds the user is a member of
-- [ ] `POST /api/v1/worlds` — create world (user becomes owner, auto-joined as owner in world_members)
-- [ ] `GET  /api/v1/worlds/:wid` — world detail (Guard: viewer)
-- [ ] `PATCH /api/v1/worlds/:wid` — update world metadata (Guard: admin)
-- [ ] `DELETE /api/v1/worlds/:wid` — soft delete (Guard: owner only)
-- [ ] `GET  /api/v1/worlds/:wid/members` — list members (Guard: viewer)
-- [ ] `PATCH /api/v1/worlds/:wid/members/:uid` — change role (Guard: owner for admin promotions; admin for others)
-- [ ] `DELETE /api/v1/worlds/:wid/members/:uid` — remove member (Guard: admin; owner cannot be removed)
+- [x] `GET  /api/v1/worlds` — list worlds the user is a member of
+- [x] `POST /api/v1/worlds` — create world (user becomes owner, auto-joined as owner in world_members)
+- [x] `GET  /api/v1/worlds/:wid` — world detail (Guard: viewer)
+- [x] `PATCH /api/v1/worlds/:wid` — update world metadata (Guard: admin)
+- [x] `DELETE /api/v1/worlds/:wid` — soft delete (Guard: owner only)
+- [x] `GET  /api/v1/worlds/:wid/members` — list members (Guard: viewer)
+- [x] `PATCH /api/v1/worlds/:wid/members/:uid` — change role (Guard: owner for admin promotions; admin for others)
+- [x] `DELETE /api/v1/worlds/:wid/members/:uid` — remove member (Guard: admin; owner cannot be removed)
 
 ### 1D · Entity CRUD API (`api/EntityController.php`)
 
-- [ ] `GET    /api/v1/worlds/:wid/entities` — paginated list; filter by type, status, tag
-- [ ] `POST   /api/v1/worlds/:wid/entities` — create entity (Guard: author); write audit_log
-- [ ] `GET    /api/v1/worlds/:wid/entities/:id` — entity detail with attributes + relationships + notes
-- [ ] `PATCH  /api/v1/worlds/:wid/entities/:id` — update (Guard: author + requireOwnerOrRole); write audit_log diff
-- [ ] `DELETE /api/v1/worlds/:wid/entities/:id` — soft delete (Guard: author + requireOwnerOrRole)
-- [ ] `GET    /api/v1/worlds/:wid/entities/:id/attributes` — list typed attributes
-- [ ] `PUT    /api/v1/worlds/:wid/entities/:id/attributes` — replace full attribute set (Guard: author)
-- [ ] `GET    /api/v1/worlds/:wid/entities/:id/tags` — list tags on entity
-- [ ] `PUT    /api/v1/worlds/:wid/entities/:id/tags` — replace tag set (Guard: author)
+- [x] `GET    /api/v1/worlds/:wid/entities` — paginated list; filter by type, status, tag
+- [x] `POST   /api/v1/worlds/:wid/entities` — create entity (Guard: author); write audit_log
+- [x] `GET    /api/v1/worlds/:wid/entities/:id` — entity detail with attributes + relationships + notes
+- [x] `PATCH  /api/v1/worlds/:wid/entities/:id` — update (Guard: author + requireOwnerOrRole); write audit_log diff
+- [x] `DELETE /api/v1/worlds/:wid/entities/:id` — soft delete (Guard: author + requireOwnerOrRole)
+- [x] `GET    /api/v1/worlds/:wid/entities/:id/attributes` — list typed attributes
+- [x] `PUT    /api/v1/worlds/:wid/entities/:id/attributes` — replace full attribute set (Guard: author)
+- [x] `GET    /api/v1/worlds/:wid/entities/:id/tags` — list tags on entity
+- [x] `PUT    /api/v1/worlds/:wid/entities/:id/tags` — replace tag set (Guard: author)
 
 ### 1E · Tag API (`api/EntityController.php`, tag sub-resource)
 
-- [ ] `GET    /api/v1/worlds/:wid/tags` — list all tags in world
-- [ ] `POST   /api/v1/worlds/:wid/tags` — create tag (Guard: author)
-- [ ] `PATCH  /api/v1/worlds/:wid/tags/:tid` — rename / recolour (Guard: admin)
-- [ ] `DELETE /api/v1/worlds/:wid/tags/:tid` — delete tag (Guard: admin; cascades via FK)
+- [x] `GET    /api/v1/worlds/:wid/tags` — list all tags in world
+- [x] `POST   /api/v1/worlds/:wid/tags` — create tag (Guard: author)
+- [x] `PATCH  /api/v1/worlds/:wid/tags/:tid` — rename / recolour (Guard: admin)
+- [x] `DELETE /api/v1/worlds/:wid/tags/:tid` — delete tag (Guard: admin; cascades via FK)
 
 ### 1F · Relationship API (`api/RelationshipController.php`)
 
-- [ ] `GET    /api/v1/worlds/:wid/relationships` — all relationships; filter by from_entity, to_entity, rel_type
-- [ ] `POST   /api/v1/worlds/:wid/relationships` — create relationship (Guard: author; both entities must belong to world)
-- [ ] `PATCH  /api/v1/worlds/:wid/relationships/:id` — update rel_type, strength, notes, bidirectional
-- [ ] `DELETE /api/v1/worlds/:wid/relationships/:id` — soft delete
+- [x] `GET    /api/v1/worlds/:wid/relationships` — all relationships; filter by from_entity, to_entity, rel_type
+- [x] `POST   /api/v1/worlds/:wid/relationships` — create relationship (Guard: author; both entities must belong to world)
+- [x] `PATCH  /api/v1/worlds/:wid/relationships/:id` — update rel_type, strength, notes, bidirectional
+- [x] `DELETE /api/v1/worlds/:wid/relationships/:id` — soft delete
 
-### 1G · World AI Key Settings (`api/WorldController.php` or `api/AiController.php`)
+### 1G · World AI Key Settings (`api/WorldController.php`)
 
-- [ ] `GET  /api/v1/worlds/:wid/settings/ai` — return ai_key_mode, fingerprint, budget stats (Guard: owner)
-- [ ] `PUT  /api/v1/worlds/:wid/settings/ai/key` — accept plaintext key, encrypt, store fingerprint (Guard: owner)
-  - Key NEVER returned to client. Response: `{"saved": true, "fingerprint": "sk-ant-…4xKm"}`
-- [ ] `DELETE /api/v1/worlds/:wid/settings/ai/key` — remove key (Guard: owner)
+- [x] `GET  /api/v1/worlds/:wid/settings/ai` — return ai_key_mode, fingerprint, budget stats (Guard: owner)
+- [x] `PUT  /api/v1/worlds/:wid/settings/ai/key` — accept plaintext key, encrypt, store fingerprint (Guard: owner)
+- [x] `DELETE /api/v1/worlds/:wid/settings/ai/key` — remove key (Guard: owner)
 
 ---
 
