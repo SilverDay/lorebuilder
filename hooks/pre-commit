@@ -1,0 +1,69 @@
+#!/bin/bash
+# LoreBuilder pre-commit hook
+# Install: cp hooks/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+set -e
+
+ERRORS=0
+
+# ─── 1. Block config.php from being committed ──────────────────────────────────
+if git diff --cached --name-only | grep -q "^config/config\.php$"; then
+    echo "❌ BLOCKED: config/config.php is staged for commit."
+    echo "   This file contains secrets and must never be committed."
+    echo "   Run: git reset HEAD config/config.php"
+    ERRORS=$((ERRORS + 1))
+fi
+
+# ─── 2. Block .env files ────────────────────────────────────────────────────────
+if git diff --cached --name-only | grep -qE "^\.env"; then
+    echo "❌ BLOCKED: .env file staged for commit."
+    ERRORS=$((ERRORS + 1))
+fi
+
+# ─── 3. Scan for potential API key patterns in staged PHP/JS files ──────────────
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\.(php|js|vue|json)$" || true)
+
+if [ -n "$STAGED_FILES" ]; then
+    # Pattern: Anthropic API key format
+    if echo "$STAGED_FILES" | xargs grep -l "sk-ant-api" 2>/dev/null | grep -v ".example"; then
+        echo "❌ BLOCKED: Potential Anthropic API key found in staged files."
+        echo "   Review the files above and remove any hardcoded keys."
+        ERRORS=$((ERRORS + 1))
+    fi
+
+    # Pattern: generic high-entropy strings in assignment context (heuristic)
+    if echo "$STAGED_FILES" | xargs grep -lE "(api_key|apikey|secret|password)\s*=\s*['\"][A-Za-z0-9+/]{32,}" 2>/dev/null | grep -v ".example" | grep -v "test" | grep -v "spec"; then
+        echo "⚠️  WARNING: Possible hardcoded secret detected. Review before committing."
+        # Warning only, not a hard block
+    fi
+fi
+
+# ─── 4. Ensure CLAUDE.md and SECURITY.md are present ──────────────────────────
+if [ ! -f "CLAUDE.md" ]; then
+    echo "⚠️  WARNING: CLAUDE.md is missing from the repository root."
+fi
+
+if [ ! -f "SECURITY.md" ]; then
+    echo "⚠️  WARNING: SECURITY.md is missing from the repository root."
+fi
+
+# ─── 5. Block PHP files with display_errors = On ──────────────────────────────
+if [ -n "$STAGED_FILES" ]; then
+    PHP_FILES=$(echo "$STAGED_FILES" | grep "\.php$" || true)
+    if [ -n "$PHP_FILES" ]; then
+        if echo "$PHP_FILES" | xargs grep -l "display_errors.*=.*On\|display_errors.*=.*true\|display_errors.*=.*1" 2>/dev/null; then
+            echo "❌ BLOCKED: display_errors enabled in PHP file. Never commit with errors displayed."
+            ERRORS=$((ERRORS + 1))
+        fi
+    fi
+fi
+
+# ─── Result ────────────────────────────────────────────────────────────────────
+if [ $ERRORS -gt 0 ]; then
+    echo ""
+    echo "Commit blocked. Fix the issues above and try again."
+    exit 1
+fi
+
+echo "✅ Pre-commit checks passed."
+exit 0

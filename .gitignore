@@ -1,0 +1,25 @@
+# Secrets — NEVER commit these
+config/config.php
+.env
+.env.*
+
+# Storage — runtime data, not source
+storage/uploads/
+storage/logs/
+storage/backups/
+
+# Frontend build output
+frontend/node_modules/
+frontend/dist/
+public/assets/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# PHP
+*.log

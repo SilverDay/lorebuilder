@@ -1,0 +1,97 @@
+# LoreBuilder — Apache Routing Rules
+# Requires: mod_rewrite, mod_headers
+
+Options -Indexes -MultiViews
+
+# ─── Rewrite Engine ───────────────────────────────────────────────────────────
+
+RewriteEngine On
+
+# Never rewrite requests for real files or directories (compiled assets, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# All other requests → index.php (handles both /api/* and SPA fallback)
+RewriteRule ^ index.php [L]
+
+# ─── Security: Block access to sensitive files ────────────────────────────────
+
+# These directories must never be web-accessible — they live outside
+# public/ in a correct deployment, but this guard catches misconfiguration.
+<IfModule mod_rewrite.c>
+    RewriteRule ^(core|config|migrations|scripts|storage|tasks|docs|api)(/|$) - [F,L]
+</IfModule>
+
+# Block dotfiles (.env, .git, .htpasswd, etc.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Block PHP files other than index.php (no direct controller access)
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+<Files "index.php">
+    Require all granted
+</Files>
+
+# ─── Compression ─────────────────────────────────────────────────────────────
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+</IfModule>
+
+# ─── Static Asset Caching ─────────────────────────────────────────────────────
+
+# Vite emits content-hashed filenames — cache aggressively
+<IfModule mod_expires.c>
+    ExpiresActive On
+    <FilesMatch "\.(js|css|woff2?|ttf|eot|svg|png|jpg|jpeg|gif|ico|webp)$">
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
+    # HTML (index.html / SPA shell) must not be cached — new deploy would be missed
+    <FilesMatch "\.html$">
+        ExpiresDefault "access plus 0 seconds"
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# ─── Security Headers (fallback — also set in PHP for API responses) ──────────
+
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Permitted-Cross-Domain-Policies "none"
+
+    # Remove server identification
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# ─── PHP Settings (override php.ini for this vhost) ──────────────────────────
+
+<IfModule mod_php.c>
+    # Never expose errors to the browser — logged internally only
+    php_flag  display_errors        Off
+    php_flag  display_startup_errors Off
+    php_value error_reporting       E_ALL
+    php_flag  log_errors            On
+
+    # Session hardening
+    php_flag  session.cookie_httponly    On
+    php_flag  session.cookie_secure      On
+    php_value session.cookie_samesite   Strict
+    php_flag  session.use_strict_mode    On
+    php_flag  session.use_only_cookies   On
+
+    # Upload limits
+    php_value upload_max_filesize   20M
+    php_value post_max_size         22M
+    php_value max_execution_time    60
+    php_value memory_limit          128M
+</IfModule>
