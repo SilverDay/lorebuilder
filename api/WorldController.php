@@ -482,7 +482,7 @@ class WorldController
     private static function sendInvitationEmail(int $worldId, string $email, string $role, string $token): void
     {
         $world = DB::queryOne('SELECT name FROM worlds WHERE id = :id', ['id' => $worldId]);
-        $name  = $world['name'] ?? 'a LoreBuilder world';
+        $name  = str_replace(["\r", "\n"], ' ', $world['name'] ?? 'a LoreBuilder world');
         $url   = rtrim(APP_URL, '/') . '/invitations/' . urlencode($token);
 
         $from     = defined('MAIL_FROM')      ? MAIL_FROM      : 'noreply@localhost';

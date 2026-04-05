@@ -1,5 +1,5 @@
 # LoreBuilder — Implementation Plan
-**Last updated:** 2026-04-05 (session 2)  
+**Last updated:** 2026-04-05 (session 3)  
 **Derived from:** docs/design-document.md §10 (Phased Roadmap)  
 **Status markers:** `[x]` done · `[ ]` open · `[!]` blocked · `[-]` deferred
 
@@ -111,47 +111,47 @@ Goal: timelines, story arcs, lore notes, full-text search, tags filterable in UI
 
 ### 2B · Timeline API (`api/TimelineController.php`)
 
-- [ ] `GET    /api/v1/worlds/:wid/timelines` — list timelines
-- [ ] `POST   /api/v1/worlds/:wid/timelines` — create timeline (Guard: author)
-- [ ] `GET    /api/v1/worlds/:wid/timelines/:tid` — timeline + events
-- [ ] `PATCH  /api/v1/worlds/:wid/timelines/:tid` — update metadata
-- [ ] `DELETE /api/v1/worlds/:wid/timelines/:tid` — soft delete
-- [ ] `GET    /api/v1/worlds/:wid/timelines/:tid/events` — list events (ordered by position_order)
-- [ ] `POST   /api/v1/worlds/:wid/timelines/:tid/events` — create event
-- [ ] `PATCH  /api/v1/worlds/:wid/timelines/:tid/events/:eid` — update event
-- [ ] `DELETE /api/v1/worlds/:wid/timelines/:tid/events/:eid` — soft delete
-- [ ] `PUT    /api/v1/worlds/:wid/timelines/:tid/events/reorder` — bulk position_order update
+- [x] `GET    /api/v1/worlds/:wid/timelines` — list timelines
+- [x] `POST   /api/v1/worlds/:wid/timelines` — create timeline (Guard: author)
+- [x] `GET    /api/v1/worlds/:wid/timelines/:tid` — timeline + events
+- [x] `PATCH  /api/v1/worlds/:wid/timelines/:tid` — update metadata
+- [x] `DELETE /api/v1/worlds/:wid/timelines/:tid` — soft delete
+- [x] `GET    /api/v1/worlds/:wid/timelines/:tid/events` — list events (ordered by position_order)
+- [x] `POST   /api/v1/worlds/:wid/timelines/:tid/events` — create event
+- [x] `PATCH  /api/v1/worlds/:wid/timelines/:tid/events/:eid` — update event
+- [x] `DELETE /api/v1/worlds/:wid/timelines/:tid/events/:eid` — soft delete
+- [x] `PUT    /api/v1/worlds/:wid/timelines/:tid/events/reorder` — bulk position_order update
 
 ### 2C · Story Arc API (`api/StoryArcController.php`)
 
-- [ ] `GET    /api/v1/worlds/:wid/story-arcs` — list arcs; filter by status
-- [ ] `POST   /api/v1/worlds/:wid/story-arcs` — create arc
-- [ ] `GET    /api/v1/worlds/:wid/story-arcs/:aid` — arc detail + entities
-- [ ] `PATCH  /api/v1/worlds/:wid/story-arcs/:aid` — update (status, logline, theme, sort_order)
-- [ ] `DELETE /api/v1/worlds/:wid/story-arcs/:aid` — soft delete
-- [ ] `PUT    /api/v1/worlds/:wid/story-arcs/:aid/entities` — replace entity list in arc (Guard: author)
+- [x] `GET    /api/v1/worlds/:wid/story-arcs` — list arcs; filter by status
+- [x] `POST   /api/v1/worlds/:wid/story-arcs` — create arc
+- [x] `GET    /api/v1/worlds/:wid/story-arcs/:aid` — arc detail + entities
+- [x] `PATCH  /api/v1/worlds/:wid/story-arcs/:aid` — update (status, logline, theme, sort_order)
+- [x] `DELETE /api/v1/worlds/:wid/story-arcs/:aid` — soft delete
+- [x] `PUT    /api/v1/worlds/:wid/story-arcs/:aid/entities` — replace entity list in arc (Guard: author)
 
 ### 2D · Lore Notes API (`api/NoteController.php`)
 
-- [ ] `GET    /api/v1/worlds/:wid/notes` — world-level notes
-- [ ] `GET    /api/v1/worlds/:wid/entities/:id/notes` — entity notes (canonical + general)
-- [ ] `POST   /api/v1/worlds/:wid/entities/:id/notes` — create note (Guard: author)
-- [ ] `PATCH  /api/v1/worlds/:wid/notes/:nid` — edit note content
-- [ ] `DELETE /api/v1/worlds/:wid/notes/:nid` — soft delete
-- [ ] `POST   /api/v1/worlds/:wid/notes/:nid/promote` — mark is_canonical=1 (Guard: admin)
+- [x] `GET    /api/v1/worlds/:wid/notes` — world-level notes
+- [x] `GET    /api/v1/worlds/:wid/entities/:id/notes` — entity notes (canonical + general)
+- [x] `POST   /api/v1/worlds/:wid/entities/:id/notes` — create note (Guard: author)
+- [x] `PATCH  /api/v1/worlds/:wid/notes/:nid` — edit note content
+- [x] `DELETE /api/v1/worlds/:wid/notes/:nid` — soft delete
+- [x] `POST   /api/v1/worlds/:wid/notes/:nid/promote` — mark is_canonical=1 (Guard: admin)
 
 ### 2E · Search API (`api/EntityController.php`)
 
-- [ ] `GET /api/v1/worlds/:wid/search?q=&type=&tag=` — MariaDB FULLTEXT search on entities + lore_notes
+- [x] `GET /api/v1/worlds/:wid/search?q=&type=&tag=` — MariaDB FULLTEXT search on entities
   - MATCH AGAINST with boolean mode
   - Filter by entity type and/or tag (joined)
-  - Returns entity rows with relevance score, paginated
+  - Returns entity rows with relevance score
 
 ### 2F · Invitation API (`api/WorldController.php`)
 
-- [ ] `POST   /api/v1/worlds/:wid/invitations` — send email invite with token (Guard: admin)
-- [ ] `GET    /api/v1/invitations/:token` — validate invite (public; checks expiry)
-- [ ] `POST   /api/v1/invitations/:token/accept` — consume invite, create membership (authed user)
+- [x] `POST   /api/v1/worlds/:wid/invitations` — send email invite with token (Guard: admin)
+- [x] `GET    /api/v1/invitations/:token` — validate invite (public; checks expiry)
+- [x] `POST   /api/v1/invitations/:token/accept` — consume invite, create membership (authed user)
 
 ### 2G · Vue 3 SPA — Phase 2 scope
 

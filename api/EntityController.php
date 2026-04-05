@@ -372,12 +372,18 @@ class EntityController
         $body   = Validator::parseJson(['tag_ids' => 'required|array']);
         $tagIds = array_map('intval', $body['tag_ids']);
 
-        // Verify all tags belong to this world
+        // Verify all tags belong to this world (named placeholders only — no mixing with positional ?)
         if (!empty($tagIds)) {
-            $placeholders = implode(',', array_fill(0, count($tagIds), '?'));
+            $tagParams = ['wid' => $wid];
+            $tagKeys   = [];
+            foreach ($tagIds as $i => $tid) {
+                $key            = 'tag' . $i;
+                $tagKeys[]      = ':' . $key;
+                $tagParams[$key] = $tid;
+            }
             $valid = DB::query(
-                "SELECT id FROM tags WHERE world_id = :wid AND id IN ({$placeholders})",
-                array_merge(['wid' => $wid], $tagIds)
+                'SELECT id FROM tags WHERE world_id = :wid AND id IN (' . implode(',', $tagKeys) . ')',
+                $tagParams
             );
             if (count($valid) !== count($tagIds)) {
                 Router::jsonError(400, 'VALIDATION_ERROR', 'One or more tag IDs do not belong to this world.');
@@ -395,6 +401,7 @@ class EntityController
             }
         });
 
+        self::audit($wid, $userId, 'entity.tags.replace', 'entity', $id);
         Router::json(['updated' => true]);
     }
 

@@ -45,6 +45,8 @@ require __DIR__ . '/../api/WorldController.php';
 require __DIR__ . '/../api/EntityController.php';
 require __DIR__ . '/../api/RelationshipController.php';
 require __DIR__ . '/../api/NoteController.php';
+require __DIR__ . '/../api/TimelineController.php';
+require __DIR__ . '/../api/StoryArcController.php';
 require __DIR__ . '/../api/AiController.php';
 require __DIR__ . '/../api/ExportController.php';
 
@@ -158,6 +160,30 @@ Router::post(  '/api/v1/worlds/:wid/entities/:id/notes',         [NoteController
 Router::patch( '/api/v1/worlds/:wid/notes/:nid',                 [NoteController::class, 'update']);
 Router::delete('/api/v1/worlds/:wid/notes/:nid',                 [NoteController::class, 'destroy']);
 Router::post(  '/api/v1/worlds/:wid/notes/:nid/promote',         [NoteController::class, 'promote']);
+
+// ── Timelines ─────────────────────────────────────────────────────────────────
+
+// Note: reorder route must be registered before :eid to avoid the literal "reorder" matching :eid
+Router::put(   '/api/v1/worlds/:wid/timelines/:tid/events/reorder', [TimelineController::class, 'reorderEvents']);
+
+Router::get(   '/api/v1/worlds/:wid/timelines',                     [TimelineController::class, 'index']);
+Router::post(  '/api/v1/worlds/:wid/timelines',                     [TimelineController::class, 'create']);
+Router::get(   '/api/v1/worlds/:wid/timelines/:tid',                [TimelineController::class, 'show']);
+Router::patch( '/api/v1/worlds/:wid/timelines/:tid',                [TimelineController::class, 'update']);
+Router::delete('/api/v1/worlds/:wid/timelines/:tid',                [TimelineController::class, 'destroy']);
+Router::get(   '/api/v1/worlds/:wid/timelines/:tid/events',         [TimelineController::class, 'events']);
+Router::post(  '/api/v1/worlds/:wid/timelines/:tid/events',         [TimelineController::class, 'createEvent']);
+Router::patch( '/api/v1/worlds/:wid/timelines/:tid/events/:eid',    [TimelineController::class, 'updateEvent']);
+Router::delete('/api/v1/worlds/:wid/timelines/:tid/events/:eid',    [TimelineController::class, 'destroyEvent']);
+
+// ── Story Arcs ────────────────────────────────────────────────────────────────
+
+Router::get(   '/api/v1/worlds/:wid/story-arcs',                    [StoryArcController::class, 'index']);
+Router::post(  '/api/v1/worlds/:wid/story-arcs',                    [StoryArcController::class, 'create']);
+Router::get(   '/api/v1/worlds/:wid/story-arcs/:aid',               [StoryArcController::class, 'show']);
+Router::patch( '/api/v1/worlds/:wid/story-arcs/:aid',               [StoryArcController::class, 'update']);
+Router::delete('/api/v1/worlds/:wid/story-arcs/:aid',               [StoryArcController::class, 'destroy']);
+Router::put(   '/api/v1/worlds/:wid/story-arcs/:aid/entities',      [StoryArcController::class, 'replaceEntities']);
 
 // ── AI ────────────────────────────────────────────────────────────────────────
 

@@ -196,6 +196,8 @@ class AuthController
         $data = Validator::parseJson(['code' => 'required|string|max:8']);
         $user = $p['user'];
 
+        RateLimit::check('totp:' . $user['id'], 5, 300);
+
         if (!$user['totp_enabled']) {
             Router::jsonError(400, 'VALIDATION_ERROR', 'TOTP is not enabled for this account.');
             return;
@@ -263,6 +265,8 @@ class AuthController
     {
         $data = Validator::parseJson(['code' => 'required|string|max:8']);
         $user = $p['user'];
+
+        RateLimit::check('totp:' . $user['id'], 5, 300);
 
         if ($user['totp_enabled']) {
             Router::jsonError(409, 'CONFLICT', 'TOTP is already enabled.');

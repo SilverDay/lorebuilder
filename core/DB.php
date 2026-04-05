@@ -178,9 +178,18 @@ class DB
             return;
         }
 
-        $ms      = number_format($duration * 1000, 2);
-        $stamp   = date('Y-m-d H:i:s');
-        $paramJs = empty($params) ? '' : ' | ' . json_encode($params, JSON_UNESCAPED_UNICODE);
+        $ms     = number_format($duration * 1000, 2);
+        $stamp  = date('Y-m-d H:i:s');
+
+        // Redact sensitive parameter values before logging — never write tokens or secrets to disk.
+        $sensitive = ['password', 'password_hash', 'token', 'code', 'totp_secret_enc',
+                      'password_reset_token', 'email_verify_token', 'enc', 'h'];
+        $safe = [];
+        foreach ($params as $k => $v) {
+            $safe[$k] = in_array($k, $sensitive, true) ? '[REDACTED]' : $v;
+        }
+
+        $paramJs = empty($safe) ? '' : ' | ' . json_encode($safe, JSON_UNESCAPED_UNICODE);
         $line    = "[{$stamp}] DB [{$ms}ms] {$sql}{$paramJs}" . PHP_EOL;
 
         // Suppress write errors — a logging failure must never break the request.
