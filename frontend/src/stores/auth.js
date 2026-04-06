@@ -7,7 +7,7 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { api } from '@/api/client.js'
+import { api, request } from '@/api/client.js'
 
 export const useAuthStore = defineStore('auth', () => {
   const user    = ref(null)   // { id, username, display_name, totp_enabled }
@@ -18,7 +18,10 @@ export const useAuthStore = defineStore('auth', () => {
   async function fetchMe() {
     loading.value = true
     try {
-      const { data } = await api.get('/api/v1/auth/me')
+      // silent: true — a 401 here means "not logged in", not "session expired".
+      // Without silent, the client would do window.location.href = '/login?expired=1'
+      // inside the router guard, causing an infinite reload loop.
+      const { data } = await request('/api/v1/auth/me', { silent: true })
       user.value = data
     } catch {
       user.value = null

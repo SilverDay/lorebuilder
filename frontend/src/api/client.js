@@ -141,9 +141,13 @@ export async function request(path, options = {}) {
   }
 
   // ── 401 — session expired → redirect to login ─────────────────────────────
+  // options.silent = true suppresses the redirect (used by fetchMe in the router
+  // guard, where a 401 just means "not logged in", not "session expired").
   if (res.status === 401) {
-    invalidateCsrfToken()
-    window.location.href = '/login?expired=1'
+    if (!options.silent) {
+      invalidateCsrfToken()
+      window.location.href = '/login?expired=1'
+    }
     throw new ApiError('Session expired. Please log in again.', ErrorCode.AUTH_REQUIRED, 401)
   }
 
