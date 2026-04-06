@@ -145,6 +145,7 @@ class WorldController
             'content_warnings' => 'nullable|string|max:1000',
             'status'           => 'nullable|in:active,archived',
             'ai_model'         => 'nullable|string|max:64',
+            'ai_provider'      => 'nullable|string|max:32',
         ]);
 
         if (empty($data)) {
@@ -155,7 +156,7 @@ class WorldController
         $sets   = [];
         $params = ['id' => $wid];
 
-        $allowed = ['name','description','genre','tone','era_system','content_warnings','status','ai_model'];
+        $allowed = ['name','description','genre','tone','era_system','content_warnings','status','ai_model','ai_provider'];
         foreach ($allowed as $col) {
             if (array_key_exists($col, $data)) {
                 $sets[]       = "{$col} = :{$col}";

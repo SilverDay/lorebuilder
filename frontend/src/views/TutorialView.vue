@@ -294,7 +294,7 @@ const NAV = [
       <section id="ai-assistant" class="tut-section">
         <h2>AI Assistant</h2>
         <p>
-          The AI assistant uses Claude to answer questions about your world, generate
+          The AI assistant uses your configured provider (Claude, ChatGPT, or Gemini) to answer questions about your world, generate
           backstory, synthesise arc summaries, and spot inconsistencies — with full
           context of your entities, relationships, and notes.
         </p>
@@ -302,7 +302,8 @@ const NAV = [
         <h3>Setting up your API key</h3>
         <ol class="tut-steps">
           <li>Go to <em>AI Settings</em> from your world dashboard.</li>
-          <li>Enter your Anthropic API key. The key is encrypted before storage and
+          <li>Choose your AI provider (Anthropic, OpenAI, or Google) and model.</li>
+          <li>Enter your API key. The key is encrypted before storage and
           is never returned to the browser.</li>
           <li>Optionally set a token budget to avoid unexpected usage.</li>
         </ol>

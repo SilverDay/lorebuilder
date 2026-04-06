@@ -17,7 +17,11 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../core/DB.php';
 require_once __DIR__ . '/../core/Crypto.php';
-require_once __DIR__ . '/../core/Claude.php';
+require_once __DIR__ . '/../core/AiProvider.php';
+require_once __DIR__ . '/../core/providers/AnthropicProvider.php';
+require_once __DIR__ . '/../core/providers/OpenAiProvider.php';
+require_once __DIR__ . '/../core/providers/GeminiProvider.php';
+require_once __DIR__ . '/../core/AiEngine.php';
 
 $opts = getopt('', ['world:', 'output::']);
 
@@ -38,17 +42,18 @@ if (!$world) {
 }
 
 $wid = (int) $world['id'];
+$providerId = $world['ai_provider'] ?? 'anthropic';
 
-echo "Running consistency check for world '{$world['name']}'…\n";
+echo "Running consistency check for world '{$world['name']}' (provider: {$providerId})…\n";
 
 try {
-    $apiKey  = Claude::resolveApiKey($wid);
-    $context = Claude::buildContext(0, $wid, 'consistency_check');
+    $apiKey  = AiEngine::resolveApiKey($wid, $providerId);
+    $context = AiEngine::buildContext(0, $wid, 'consistency_check');
     $prompt  = 'Analyse this world for narrative inconsistencies, contradictions, '
              . 'unresolved plot threads, and logical gaps. Provide a structured report '
              . 'with severity ratings (Critical / High / Medium / Low) for each issue.';
-    $result  = Claude::callApi($context, $prompt, $apiKey, $world['ai_model']);
-} catch (ClaudeException $e) {
+    $result  = AiEngine::callApi($context, $prompt, $apiKey, $world['ai_model'], 4096, $providerId);
+} catch (AiEngineException $e) {
     fwrite(STDERR, "AI error: {$e->getMessage()}\n");
     exit(1);
 }

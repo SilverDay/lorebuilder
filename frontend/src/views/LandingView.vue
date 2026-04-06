@@ -30,7 +30,7 @@ const FEATURES = [
   {
     icon: '✦',
     title: 'AI Narrative Assistant',
-    desc: 'Ask Claude questions about your world, generate entity backstories, synthesise arc summaries, and spot consistency gaps.',
+    desc: 'Ask AI questions about your world, generate entity backstories, synthesise arc summaries, and spot consistency gaps. Supports Claude, ChatGPT, and Gemini.',
   },
   {
     icon: '◷',

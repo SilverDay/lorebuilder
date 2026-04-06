@@ -36,6 +36,11 @@ require __DIR__ . '/../core/Guard.php';
 require __DIR__ . '/../core/Crypto.php';
 require __DIR__ . '/../core/RateLimit.php';
 require __DIR__ . '/../core/Validator.php';
+require __DIR__ . '/../core/AiProvider.php';
+require __DIR__ . '/../core/providers/AnthropicProvider.php';
+require __DIR__ . '/../core/providers/OpenAiProvider.php';
+require __DIR__ . '/../core/providers/GeminiProvider.php';
+require __DIR__ . '/../core/AiEngine.php';
 require __DIR__ . '/../core/Router.php';
 
 // ─── 3. Controllers ───────────────────────────────────────────────────────────
@@ -191,6 +196,7 @@ Router::put(   '/api/v1/worlds/:wid/story-arcs/:aid/entities',      [StoryArcCon
 
 // ── AI ────────────────────────────────────────────────────────────────────────
 
+Router::get(   '/api/v1/ai/providers',                   [AiController::class, 'providers'],       auth: true, csrf: false);
 Router::post(  '/api/v1/worlds/:wid/ai/assist',          [AiController::class, 'assist']);
 Router::post(  '/api/v1/worlds/:wid/ai/consistency-check',[AiController::class, 'consistencyCheck']);
 Router::get(   '/api/v1/worlds/:wid/ai/sessions',        [AiController::class, 'sessions']);

@@ -17,6 +17,7 @@
  *   - API key is NEVER logged.
  *   - Rate limiting applied per-user AND per-world on AI endpoints.
  *   - All world_id values come from the validated route parameter, not the request body.
+ *   - Provider-agnostic: delegates to AiEngine which routes to the configured provider.
  */
 
 declare(strict_types=1);
@@ -37,6 +38,20 @@ class AiController
 
     /** Per-world AI request limit per hour. */
     private const WORLD_RATE_LIMIT = 100;
+
+    // ─── GET /api/v1/ai/providers ─────────────────────────────────────────────
+
+    /**
+     * List available AI providers and their models.
+     * Requires authentication but no specific world context.
+     */
+    public static function providers(array $params): void
+    {
+        Auth::requireSession();
+
+        http_response_code(200);
+        echo json_encode(['data' => AiEngine::availableProviders()]);
+    }
 
     // ─── POST /api/v1/worlds/:wid/ai/assist ───────────────────────────────────
 
@@ -172,7 +187,7 @@ class AiController
         Guard::requireWorldAccess($wid, $userId, minRole: 'owner');
 
         $world = DB::queryOne(
-            'SELECT ai_key_mode, ai_key_fingerprint, ai_model,
+            'SELECT ai_key_mode, ai_key_fingerprint, ai_model, ai_provider,
                     ai_token_budget, ai_tokens_used, ai_budget_resets_at
                FROM worlds
               WHERE id = :wid AND deleted_at IS NULL',
@@ -201,6 +216,7 @@ class AiController
             'data' => [
                 'ai_key_mode'        => $world['ai_key_mode'],
                 'ai_key_fingerprint' => $world['ai_key_fingerprint'],
+                'ai_provider'        => $world['ai_provider'] ?? 'anthropic',
                 'ai_model'           => $world['ai_model'],
                 'ai_token_budget'    => (int) $world['ai_token_budget'],
                 'ai_tokens_used'     => (int) $world['ai_tokens_used'],
@@ -394,10 +410,17 @@ class AiController
         string $mode,
         string $userPrompt
     ): void {
-        // 1. Resolve API key — throws ClaudeException with user-friendly message if missing
+        // Determine provider from world config
+        $worldRow = DB::queryOne(
+            'SELECT ai_provider FROM worlds WHERE id = :wid AND deleted_at IS NULL',
+            ['wid' => $wid]
+        );
+        $providerId = $worldRow['ai_provider'] ?? 'anthropic';
+
+        // 1. Resolve API key — throws AiEngineException with user-friendly message if missing
         try {
-            $apiKey = Claude::resolveApiKey($wid);
-        } catch (ClaudeException $e) {
+            $apiKey = AiEngine::resolveApiKey($wid, $providerId);
+        } catch (AiEngineException $e) {
             http_response_code(422);
             echo json_encode(['error' => $e->getMessage(), 'code' => 'AI_KEY_MISSING']);
             return;
@@ -405,15 +428,15 @@ class AiController
 
         // 2. Build context — pulls entity/world/relationship data from DB
         try {
-            $context = Claude::buildContext($entityId, $wid, $mode);
-        } catch (ClaudeException $e) {
+            $context = AiEngine::buildContext($entityId, $wid, $mode);
+        } catch (AiEngineException $e) {
             http_response_code(422);
             echo json_encode(['error' => $e->getMessage(), 'code' => 'NOT_FOUND']);
             return;
         }
 
         // 3. Load prompt template and render
-        $tpl = Claude::loadTemplate($mode, $wid);
+        $tpl = AiEngine::loadTemplate($mode, $wid);
         if ($tpl !== null) {
             $vars = [
                 'world'        => $context['world']  ?? [],
@@ -422,26 +445,27 @@ class AiController
             ];
             // Override system prompt if template provides one
             if (!empty($tpl['system_tpl'])) {
-                $context['system'] = Claude::renderTemplate($tpl['system_tpl'], $vars);
+                $context['system'] = AiEngine::renderTemplate($tpl['system_tpl'], $vars);
             }
             // Render user turn through template if provided
             if (!empty($tpl['user_tpl'])) {
-                $userPrompt = Claude::renderTemplate($tpl['user_tpl'], $vars);
+                $userPrompt = AiEngine::renderTemplate($tpl['user_tpl'], $vars);
             }
         }
 
-        // Fetch model from world config
-        $worldModel = $context['world']['ai_model'] ?? 'claude-sonnet-4-20250514';
+        // Fetch model from world config (use provider default if not set)
+        $providerClass = AiEngine::getProvider($providerId);
+        $worldModel = $context['world']['ai_model'] ?? $providerClass::defaultModel();
 
         $sessionId    = null;
         $sessionStatus = 'success';
         $sessionError  = null;
         $result        = null;
 
-        // 4. Call Anthropic API
+        // 4. Call AI provider
         try {
-            $result = Claude::callApi($context, $userPrompt, $apiKey, $worldModel);
-        } catch (ClaudeException $e) {
+            $result = AiEngine::callApi($context, $userPrompt, $apiKey, $worldModel, 4096, $providerId);
+        } catch (AiEngineException $e) {
             $sessionStatus = 'error';
             $sessionError  = mb_substr($e->getMessage(), 0, 512);
 
@@ -495,6 +519,7 @@ class AiController
             'mode'             => $mode,
             'entity_id'        => $entityId > 0 ? $entityId : null,
             'model'            => $result['model'],
+            'provider'         => $result['provider'] ?? $providerId,
             'total_tokens'     => $result['total_tokens'],
         ]);
 
@@ -510,6 +535,7 @@ class AiController
                 'completion_tokens' => $result['completion_tokens'],
                 'total_tokens'      => $result['total_tokens'],
                 'model'             => $result['model'],
+                'provider'          => $result['provider'] ?? $providerId,
             ],
         ]);
     }

@@ -21,11 +21,13 @@ define('DB_USER',    'lorebuilder_user');
 define('DB_PASS',    'REPLACE_WITH_STRONG_PASSWORD');
 define('DB_CHARSET', 'utf8mb4');
 
-// ─── Platform AI Key (Optional) ───────────────────────────────────────────────
+// ─── Platform AI Keys (Optional) ──────────────────────────────────────────────
 // Only needed if you offer a hosted platform-key tier.
-// Users with ai_key_mode='platform' will use this key.
-// Leave empty string to disable platform-key mode.
+// Users with ai_key_mode='platform' will use the relevant provider key.
+// Leave empty string to disable platform-key mode for that provider.
 define('PLATFORM_ANTHROPIC_KEY', '');
+define('PLATFORM_OPENAI_KEY',    '');
+define('PLATFORM_GEMINI_KEY',    '');
 
 // ─── Session ──────────────────────────────────────────────────────────────────
 define('SESSION_LIFETIME',      28800);   // 8 hours idle timeout (seconds)

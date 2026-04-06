@@ -114,7 +114,7 @@ function clear() {
             :disabled="!canSubmit"
             @click="submit"
           >
-            {{ ai.loading ? 'Thinking…' : 'Ask Claude' }}
+            {{ ai.loading ? 'Thinking…' : 'Ask AI' }}
           </button>
           <button
             v-if="prompt || ai.lastResult"

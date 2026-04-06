@@ -1,18 +1,20 @@
 <?php
 /**
- * LoreBuilder — Claude AI Integration
+ * LoreBuilder — AI Engine
+ *
+ * Central AI orchestration layer. Provider-agnostic context assembly, template
+ * rendering, and API call delegation to registered providers.
  *
  * Responsibilities:
  *   1. Context assembly — pulls entity, world, relationship, arc, timeline, and
  *      note data from the DB and builds a token-budget-aware system prompt.
- *   2. API client — sends messages to Anthropic's Messages API using PHP streams
- *      (no cURL dependency). API key is decrypted just-in-time and never logged.
+ *   2. API client — delegates to the registered AiProvider for the world's
+ *      configured provider. API key is decrypted just-in-time and never logged.
  *   3. Template rendering — resolves {{variable}} placeholders (dot notation).
+ *   4. Provider registry — manages available AI providers.
  *
  * Security invariants:
  *   - apiKey is NEVER written to any log, error message, or response field.
- *   - apiKey is sodium_memzero()'d is not feasible in PHP strings, but it is
- *     never persisted beyond the scope of callApi().
  *   - Only session metadata (token counts, model, status) is stored in ai_sessions.
  *   - Responses are stored in lore_notes by the caller — not here.
  *
@@ -26,21 +28,71 @@
  *   @ 92%   — Drop related entity attribute summaries
  *
  * Token estimation: ~4 characters per token (conservative English average).
- * Anthropic's actual tokeniser may differ slightly; this gives ~25% safety margin.
  */
 
 declare(strict_types=1);
 
-class ClaudeException extends \RuntimeException {}
+class AiEngineException extends \RuntimeException {}
 
-class Claude
+class AiEngine
 {
+    // ─── Provider Registry ────────────────────────────────────────────────────
+
+    /** @var array<string, class-string<AiProvider>> */
+    private static array $providers = [
+        'anthropic' => AnthropicProvider::class,
+        'openai'    => OpenAiProvider::class,
+        'google'    => GeminiProvider::class,
+    ];
+
+    /**
+     * Register an additional provider at runtime.
+     *
+     * @param class-string<AiProvider> $className
+     */
+    public static function registerProvider(string $className): void
+    {
+        self::$providers[$className::id()] = $className;
+    }
+
+    /**
+     * Get a provider class by ID.
+     *
+     * @return class-string<AiProvider>
+     * @throws AiEngineException If provid ID is unknown
+     */
+    public static function getProvider(string $providerId): string
+    {
+        if (!isset(self::$providers[$providerId])) {
+            throw new AiEngineException("Unknown AI provider: {$providerId}");
+        }
+        return self::$providers[$providerId];
+    }
+
+    /**
+     * List available providers with their metadata.
+     *
+     * @return array<string, array{id: string, label: string, models: array, default_model: string}>
+     */
+    public static function availableProviders(): array
+    {
+        $result = [];
+        foreach (self::$providers as $id => $class) {
+            $result[$id] = [
+                'id'            => $class::id(),
+                'label'         => $class::label(),
+                'models'        => $class::models(),
+                'default_model' => $class::defaultModel(),
+            ];
+        }
+        return $result;
+    }
+
     // ─── Token Budget ─────────────────────────────────────────────────────────
 
     /**
-     * Maximum tokens to allocate for the assembled context (system prompt).
-     * Claude Sonnet 4 supports 200k context; we reserve headroom for the user
-     * turn and the completion response.
+     * Default context token budget (used when provider-specific budget
+     * cannot be determined).
      */
     private const CONTEXT_TOKEN_BUDGET = 150_000;
 
@@ -50,20 +102,13 @@ class Claude
     /** Rough chars-to-tokens ratio for English text. */
     private const CHARS_PER_TOKEN = 4;
 
-    // ─── Context Drop Thresholds (fraction of CONTEXT_TOKEN_BUDGET) ──────────
+    // ─── Context Drop Thresholds (fraction of budget) ────────────────────────
 
     private const TRIM_NOTES_AT      = 0.60;
     private const DROP_REL_NOTES_AT  = 0.80;
     private const DROP_ARCS_AT       = 0.85;
     private const DROP_TIMELINE_AT   = 0.88;
     private const DROP_REL_ATTRS_AT  = 0.92;
-
-    // ─── Anthropic API ────────────────────────────────────────────────────────
-
-    private const API_ENDPOINT   = 'https://api.anthropic.com/v1/messages';
-    private const API_VERSION    = '2023-06-01';
-    private const CONNECT_TIMEOUT = 10;  // seconds
-    private const READ_TIMEOUT    = 60;  // seconds for full response
 
     // ─── Public Interface ─────────────────────────────────────────────────────
 
@@ -80,7 +125,7 @@ class Claude
      * @param int    $worldId   World context
      * @param string $mode      Invocation mode (entity_assist, arc_synthesiser, …)
      * @return array
-     * @throws ClaudeException  If world or entity not found
+     * @throws AiEngineException  If world or entity not found
      */
     public static function buildContext(int $entityId, int $worldId, string $mode): array
     {
@@ -90,14 +135,25 @@ class Claude
         // ── 1. World config (NEVER DROP) ──────────────────────────────────────
         $world = DB::queryOne(
             'SELECT id, name, genre, tone, era_system, content_warnings,
-                    ai_model, ai_token_budget, ai_tokens_used
+                    ai_model, ai_provider, ai_token_budget, ai_tokens_used
                FROM worlds
               WHERE id = :wid AND deleted_at IS NULL',
             ['wid' => $worldId]
         );
 
         if ($world === null) {
-            throw new ClaudeException('World not found.');
+            throw new AiEngineException('World not found.');
+        }
+
+        // Adjust budget based on provider + model if available
+        $providerId = $world['ai_provider'] ?? 'anthropic';
+        $model      = $world['ai_model'] ?? '';
+        if (isset(self::$providers[$providerId]) && !empty($model)) {
+            $providerClass = self::$providers[$providerId];
+            $providerBudget = $providerClass::contextBudget($model);
+            if ($providerBudget > 0) {
+                $budget = $providerBudget;
+            }
         }
 
         $worldSection  = "WORLD: {$world['name']}\n";
@@ -123,7 +179,7 @@ class Claude
             );
 
             if ($entity === null) {
-                throw new ClaudeException('Entity not found in this world.');
+                throw new AiEngineException('Entity not found in this world.');
             }
 
             $entitySection  = "\nENTITY: {$entity['name']} ({$entity['type']})\n";
@@ -319,8 +375,6 @@ class Claude
             }
 
             if (!empty($counterpartIds)) {
-                // Build named placeholders (:id0, :id1, …) to avoid dynamic SQL literals.
-                // IDs are integers from DB results, but we follow the no-interpolation rule.
                 $idParams = [];
                 $idBinds  = ['wid' => $worldId];
                 foreach (array_keys($counterpartIds) as $i => $cid) {
@@ -365,113 +419,54 @@ class Claude
     }
 
     /**
-     * Call the Anthropic Messages API.
+     * Call the AI API via the appropriate provider.
+     *
+     * Delegates to the provider configured for the world (defaults to Anthropic).
+     * Maintains the same return format as the original Claude::callApi() for
+     * backward compatibility.
      *
      * SECURITY: $apiKey is NEVER logged. It exists in scope only for the
-     * duration of this method call and is not stored anywhere after return.
+     * duration of this method call.
      *
      * @param array  $context     Output of buildContext()
      * @param string $userPrompt  The user's actual request
-     * @param string $apiKey      Plaintext Anthropic API key (decrypted by caller)
+     * @param string $apiKey      Plaintext API key (decrypted by caller)
      * @param string $model       Model ID (from worlds.ai_model)
      * @param int    $maxTokens   Max completion tokens
-     * @return array{text:string, prompt_tokens:int, completion_tokens:int, total_tokens:int, model:string}
-     * @throws ClaudeException  On network error, auth failure, or API error
+     * @param string $providerId  Provider identifier (from worlds.ai_provider)
+     * @return array{text:string, prompt_tokens:int, completion_tokens:int, total_tokens:int, model:string, provider:string}
+     * @throws AiEngineException  On network error, auth failure, or API error
      */
     public static function callApi(
         array  $context,
         string $userPrompt,
         string $apiKey,
-        string $model     = 'claude-sonnet-4-20250514',
-        int    $maxTokens = self::MAX_TOKENS_RESPONSE
+        string $model      = 'claude-sonnet-4-20250514',
+        int    $maxTokens   = self::MAX_TOKENS_RESPONSE,
+        string $providerId  = 'anthropic'
     ): array {
-        if (empty(trim($apiKey))) {
-            throw new ClaudeException('API key is missing.');
+        $providerClass = self::getProvider($providerId);
+
+        try {
+            $response = $providerClass::call(
+                $context['system'] ?? '',
+                $userPrompt,
+                $apiKey,
+                $model,
+                $maxTokens
+            );
+        } catch (AiProviderException $e) {
+            // Wrap provider exception in AiEngineException for consistent handling
+            throw new AiEngineException($e->getMessage(), $e->getCode(), $e);
         }
-        if (empty(trim($userPrompt))) {
-            throw new ClaudeException('User prompt is empty.');
-        }
-
-        $payload = json_encode([
-            'model'      => $model,
-            'max_tokens' => $maxTokens,
-            'system'     => $context['system'] ?? '',
-            'messages'   => [
-                ['role' => 'user', 'content' => $userPrompt],
-            ],
-        ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-
-        // Build stream context — no cURL, native PHP streams only
-        $opts = [
-            'http' => [
-                'method'           => 'POST',
-                'header'           => implode("\r\n", [
-                    'Content-Type: application/json',
-                    'x-api-key: ' . $apiKey,
-                    'anthropic-version: ' . self::API_VERSION,
-                    'Content-Length: ' . strlen($payload),
-                ]),
-                'content'          => $payload,
-                'timeout'          => self::READ_TIMEOUT,
-                'ignore_errors'    => true,  // fetch response body even on 4xx/5xx
-                'follow_location'  => false,
-            ],
-            'ssl'  => [
-                'verify_peer'      => true,
-                'verify_peer_name' => true,
-            ],
-        ];
-
-        $streamCtx = stream_context_create($opts);
-        $response  = @file_get_contents(self::API_ENDPOINT, false, $streamCtx);
-
-        // $http_response_header is populated by file_get_contents with HTTP headers
-        $statusCode = self::extractStatusCode($http_response_header ?? []);
-
-        if ($response === false) {
-            // Network-level failure — log the fact but never log the key
-            error_log('[Claude] Network error calling Anthropic API (no response body)');
-            throw new ClaudeException('Failed to reach Anthropic API. Check network connectivity.');
-        }
-
-        $body = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
-
-        if ($statusCode !== 200) {
-            $errType = $body['error']['type']    ?? 'unknown_error';
-            $errMsg  = $body['error']['message'] ?? 'No error message returned.';
-
-            // Map API error types to ClaudeException messages suitable for the client
-            $mapped = match ($errType) {
-                'authentication_error'   => 'API key is invalid or revoked.',
-                'permission_error'       => 'API key lacks permission for this model.',
-                'rate_limit_error'       => 'Anthropic rate limit reached. Try again later.',
-                'overloaded_error'       => 'Anthropic API is overloaded. Try again later.',
-                'invalid_request_error'  => "Invalid API request: {$errMsg}",
-                default                  => "Anthropic API error ({$errType}).",
-            };
-
-            // Log type but NOT the key
-            error_log("[Claude] API error {$statusCode} — {$errType}: {$errMsg}");
-
-            throw new ClaudeException($mapped);
-        }
-
-        // Extract response text
-        $text = '';
-        foreach ($body['content'] ?? [] as $block) {
-            if (($block['type'] ?? '') === 'text') {
-                $text .= $block['text'];
-            }
-        }
-
-        $usage = $body['usage'] ?? [];
 
         return [
-            'text'              => $text,
-            'prompt_tokens'     => (int) ($usage['input_tokens']  ?? 0),
-            'completion_tokens' => (int) ($usage['output_tokens'] ?? 0),
-            'total_tokens'      => (int) (($usage['input_tokens'] ?? 0) + ($usage['output_tokens'] ?? 0)),
-            'model'             => $body['model'] ?? $model,
+            'text'              => $response->text,
+            'prompt_tokens'     => $response->promptTokens,
+            'completion_tokens' => $response->completionTokens,
+            'total_tokens'      => $response->totalTokens,
+            'model'             => $response->model,
+            'provider'          => $response->provider,
         ];
     }
 
@@ -553,15 +548,17 @@ class Claude
      *
      * Selects the correct key based on ai_key_mode:
      *   'user'     — decrypt world.ai_key_enc with APP_SECRET
-     *   'platform' — use PLATFORM_ANTHROPIC_KEY constant from config.php
-     *   'oauth'    — not implemented in Phase 1 (throws ClaudeException)
+     *   'platform' — use PLATFORM_*_KEY constant from config.php
+     *   'oauth'    — not implemented in Phase 1 (throws AiEngineException)
      *
      * SECURITY: caller must NEVER log or return the returned string.
      *
-     * @return string  Plaintext Anthropic API key
-     * @throws ClaudeException  If key is missing, mode is unsupported, or decryption fails
+     * @param int    $worldId
+     * @param string $providerId  Provider whose platform key to use (for platform mode)
+     * @return string  Plaintext API key
+     * @throws AiEngineException  If key is missing, mode is unsupported, or decryption fails
      */
-    public static function resolveApiKey(int $worldId): string
+    public static function resolveApiKey(int $worldId, string $providerId = 'anthropic'): string
     {
         $world = DB::queryOne(
             'SELECT ai_key_mode, ai_key_enc FROM worlds WHERE id = :wid AND deleted_at IS NULL',
@@ -569,14 +566,14 @@ class Claude
         );
 
         if ($world === null) {
-            throw new ClaudeException('World not found.');
+            throw new AiEngineException('World not found.');
         }
 
         return match ($world['ai_key_mode']) {
-            'user' => self::decryptUserKey((string) ($world['ai_key_enc'] ?? '')),
-            'platform' => self::getPlatformKey(),
-            'oauth' => throw new ClaudeException('OAuth key mode is not implemented in Phase 1.'),
-            default => throw new ClaudeException("Unknown AI key mode: {$world['ai_key_mode']}"),
+            'user'     => self::decryptUserKey((string) ($world['ai_key_enc'] ?? '')),
+            'platform' => self::getPlatformKey($providerId),
+            'oauth'    => throw new AiEngineException('OAuth key mode is not implemented in Phase 1.'),
+            default    => throw new AiEngineException("Unknown AI key mode: {$world['ai_key_mode']}"),
         };
     }
 
@@ -592,51 +589,42 @@ class Claude
     }
 
     /**
-     * Extract HTTP status code from the $http_response_header superglobal array.
-     * Returns 0 if the array is empty or the status line is unparseable.
-     */
-    private static function extractStatusCode(array $headers): int
-    {
-        foreach ($headers as $header) {
-            if (preg_match('/^HTTP\/[\d.]+ (\d{3})/', $header, $m)) {
-                return (int) $m[1];
-            }
-        }
-        return 0;
-    }
-
-    /**
      * Decrypt the user-provided API key stored in worlds.ai_key_enc.
-     * Throws ClaudeException (not CryptoException) so the caller sees a
-     * consistent exception type from this layer.
      */
     private static function decryptUserKey(string $enc): string
     {
         if (empty($enc)) {
-            throw new ClaudeException('No API key configured for this world. Please add one in World Settings.');
+            throw new AiEngineException('No API key configured for this world. Please add one in World Settings.');
         }
 
         try {
             return Crypto::decryptApiKey($enc, APP_SECRET);
         } catch (CryptoException $e) {
-            // Log the fact of failure (not the key)
-            error_log('[Claude] API key decryption failed for a world: ' . $e->getMessage());
-            throw new ClaudeException('Stored API key could not be decrypted. It may need to be re-entered.');
+            error_log('[AiEngine] API key decryption failed for a world: ' . $e->getMessage());
+            throw new AiEngineException('Stored API key could not be decrypted. It may need to be re-entered.');
         }
     }
 
     /**
-     * Return the platform-wide Anthropic API key from config.
-     * Throws if the operator has not configured one.
+     * Return the platform-wide API key for the specified provider.
+     *
+     * @throws AiEngineException If the operator has not configured the key
      */
-    private static function getPlatformKey(): string
+    private static function getPlatformKey(string $providerId = 'anthropic'): string
     {
-        if (!defined('PLATFORM_ANTHROPIC_KEY') || empty(PLATFORM_ANTHROPIC_KEY)) {
-            throw new ClaudeException(
-                'Platform AI key is not configured. Contact the site administrator.'
+        $constName = match ($providerId) {
+            'anthropic' => 'PLATFORM_ANTHROPIC_KEY',
+            'openai'    => 'PLATFORM_OPENAI_KEY',
+            'google'    => 'PLATFORM_GEMINI_KEY',
+            default     => throw new AiEngineException("No platform key constant for provider: {$providerId}"),
+        };
+
+        if (!defined($constName) || empty(constant($constName))) {
+            throw new AiEngineException(
+                'Platform AI key is not configured for this provider. Contact the site administrator.'
             );
         }
 
-        return PLATFORM_ANTHROPIC_KEY;
+        return constant($constName);
     }
 }
