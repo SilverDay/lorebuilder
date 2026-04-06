@@ -245,23 +245,18 @@ Goal: AI assistant callable from any entity; all invocation modes; budget enforc
 
 Goal: export/import, multi-user invitation UI, WCSOZ sync, timeline overlays.
 
-- [ ] `GET  /api/v1/worlds/:wid/export?format=json|markdown` — full world export (Guard: author)
-  - JSON: all entities, relationships, timelines, arcs, notes in LoreBuilder schema
-  - Markdown: one file per entity, front-matter metadata, linked relationships
-- [ ] `POST /api/v1/worlds/:wid/import` — import JSON snapshot (Guard: owner; conflict resolution: skip | overwrite)
-- [ ] `src/views/ExportView.vue` — format picker, download button, import dropzone
+- [x] `GET  /api/v1/worlds/:wid/export?format=json|markdown` — JSON + Markdown export (Guard: author)
+- [x] `POST /api/v1/worlds/:wid/import` — JSON import in DB transaction (Guard: owner)
+- [x] `src/views/ExportView.vue` — format picker, blob download, import dropzone + stats
+- [x] `src/views/WorldMembersView.vue` — member table, role dropdowns, remove, invite-by-email
+- [x] `scripts/export.php` — CLI world export (JSON or Markdown) → stdout or file
+- [x] `scripts/consistency-check.php` — CLI AI consistency check → storage/logs/
+- [x] `scripts/rekey.php` — re-encrypt ai_key_enc after APP_SECRET rotation; dry-run support
 
-- [ ] `src/views/WorldMembersView.vue` — member table, role dropdowns, remove button, invite form
-- [ ] `src/views/WorldInvitationsView.vue` — pending invites, resend, revoke
-
-- [ ] Multi-timeline overlay in `TimelineView.vue` — toggle individual timelines, overlay rendering
-
-- [ ] `scripts/wcsoz-sync.php` — CLI: map LoreBuilder entity schema → WCSOZ GDD schema; output JSON
-- [ ] `scripts/export.php` — CLI wrapper around the export logic (same as API endpoint but for cron/backup)
-- [ ] `scripts/consistency-check.php` — CLI: run consistency check and write findings to `storage/logs/`
-- [ ] `scripts/rekey.php` — re-encrypt all ai_key_enc values after APP_SECRET rotation
-
-- [ ] `GET /api/v1/auth/totp/oauth-placeholder` → `501 Not Implemented` (Anthropic OAuth mode C)
+- [-] `src/views/WorldInvitationsView.vue` — pending invites list; backend invite endpoints exist
+- [-] Multi-timeline overlay in `TimelineView.vue` — deferred
+- [-] `scripts/wcsoz-sync.php` — project-specific CLI; deferred to when WCSOZ schema is defined
+- [-] `GET /api/v1/auth/totp/oauth-placeholder` → 501; OAuth mode C deferred to Phase 2
 
 ---
 
