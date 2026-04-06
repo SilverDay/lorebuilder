@@ -255,20 +255,66 @@ class Router
 
     /**
      * Serve the compiled Vue SPA entry point for client-side routing.
+     *
+     * Reads the Vite manifest (public/assets/.vite/manifest.json) to locate
+     * the hashed main bundle filename, then generates a minimal HTML page that
+     * bootstraps the SPA. This avoids storing a static index.html in the web
+     * root (which would need updating after every build) and keeps the CSP
+     * nonce pattern easy to apply in future.
+     *
+     * Falls back to a plain error page if the manifest is missing (frontend
+     * not yet built).
      */
     private static function serveSpa(): void
     {
-        $index = __DIR__ . '/../public/index.html';
+        $manifestPath = __DIR__ . '/../public/assets/.vite/manifest.json';
 
-        if (!file_exists($index)) {
-            // SPA not yet built — helpful message in development
+        if (!file_exists($manifestPath)) {
             http_response_code(503);
             header('Content-Type: text/plain');
             echo "Frontend not built yet. Run: cd frontend && npm run build\n";
             return;
         }
 
+        $manifest = json_decode(file_get_contents($manifestPath), associative: true);
+        $entry    = $manifest['src/main.js'] ?? null;
+
+        if ($entry === null || empty($entry['file'])) {
+            http_response_code(503);
+            header('Content-Type: text/plain');
+            echo "Vite manifest is missing the main entry point.\n";
+            return;
+        }
+
+        $jsFile  = htmlspecialchars('/assets/' . $entry['file'],  ENT_QUOTES, 'UTF-8');
+        $cssFile = isset($entry['css'][0])
+            ? htmlspecialchars('/assets/' . $entry['css'][0], ENT_QUOTES, 'UTF-8')
+            : null;
+
         header('Content-Type: text/html; charset=utf-8');
-        readfile($index);
+        // phpcs:disable
+        echo <<<HTML
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>LoreBuilder</title>
+            <meta name="robots" content="noindex, nofollow" />
+        HTML;
+
+        if ($cssFile) {
+            echo "    <link rel=\"stylesheet\" href=\"{$cssFile}\" />\n";
+        }
+
+        echo <<<HTML
+          </head>
+          <body>
+            <div id="app"></div>
+            <script type="module" src="{$jsFile}"></script>
+          </body>
+        </html>
+        HTML;
+        // phpcs:enable
     }
 }

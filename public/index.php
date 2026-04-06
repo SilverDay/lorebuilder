@@ -86,6 +86,7 @@ Auth::startSession();
 
 // ── Authentication ────────────────────────────────────────────────────────────
 
+Router::get( '/api/v1/auth/csrf',                 [AuthController::class, 'csrf'],            auth: false, csrf: false);
 Router::post('/api/v1/auth/register',             [AuthController::class, 'register'],        auth: false, csrf: false);
 Router::post('/api/v1/auth/login',                [AuthController::class, 'login'],           auth: false, csrf: false);
 Router::post('/api/v1/auth/logout',               [AuthController::class, 'logout'],          auth: true,  csrf: true);

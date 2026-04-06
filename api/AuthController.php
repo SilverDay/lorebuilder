@@ -457,6 +457,19 @@ class AuthController
      * @param  array<string, mixed> $user  users table row
      * @return array<string, mixed>
      */
+    // ─── GET /api/v1/auth/csrf ────────────────────────────────────────────────
+
+    /**
+     * Return a fresh CSRF token for the current session.
+     * Public endpoint (no auth required) — the SPA calls this on first load
+     * to obtain the token before making state-changing requests.
+     */
+    public static function csrf(array $p): void
+    {
+        http_response_code(200);
+        echo json_encode(['data' => ['token' => Auth::csrfToken()]]);
+    }
+
     private static function sessionPayload(array $user): array
     {
         return [

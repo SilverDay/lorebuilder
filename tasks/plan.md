@@ -1,5 +1,5 @@
 # LoreBuilder — Implementation Plan
-**Last updated:** 2026-04-05 (session 3)  
+**Last updated:** 2026-04-06 (session 4)  
 **Derived from:** docs/design-document.md §10 (Phased Roadmap)  
 **Status markers:** `[x]` done · `[ ]` open · `[!]` blocked · `[-]` deferred
 
@@ -102,10 +102,13 @@ Goal: timelines, story arcs, lore notes, full-text search, tags filterable in UI
 
 ### 2A · Core layer additions
 
-- [ ] `core/Claude.php` — context assembler + Anthropic API client  
+- [x] `core/Claude.php` — context assembler + Anthropic API client  
   (Moved here from Phase 4 because context assembly is shared infrastructure)
   - `Claude::buildContext(int $entityId, int $worldId, string $mode): array`
   - `Claude::callApi(array $context, string $userPrompt, string $apiKey): array`
+  - `Claude::renderTemplate(string $tpl, array $vars): string`
+  - `Claude::loadTemplate(string $mode, int $worldId): ?array`
+  - `Claude::resolveApiKey(int $worldId): string`
   - Context budget logic per design-document §7.4
   - Never logs apiKey; logs only session metadata
 
@@ -155,21 +158,27 @@ Goal: timelines, story arcs, lore notes, full-text search, tags filterable in UI
 
 ### 2G · Vue 3 SPA — Phase 2 scope
 
-- [ ] `frontend/` scaffold — Vite config, `src/main.js`, Vue Router, Pinia stores
-- [ ] `src/api/client.js` — fetch wrapper (CSRF header auto-attach, 401 redirect, 429 toast)
-- [ ] `src/router/index.js` — route definitions with auth guard
-- [ ] `src/stores/auth.js` — session user state
-- [ ] `src/stores/world.js` — current world + membership cache
-- [ ] `src/views/LoginView.vue`
-- [ ] `src/views/RegisterView.vue`
-- [ ] `src/views/WorldListView.vue`
-- [ ] `src/views/WorldCreateView.vue`
-- [ ] `src/views/EntityListView.vue` — filterable grid (type, status, tag)
-- [ ] `src/views/EntityDetailView.vue` — three-panel layout (meta | notes | relationships)
-- [ ] `src/views/EntityCreateView.vue` / `EntityEditView.vue`
-- [ ] `src/components/EntityMeta.vue` — type badge, status, attributes table, tags
-- [ ] `src/components/NotesList.vue` — chronological Markdown notes (Marked.js + DOMPurify)
-- [ ] `src/components/RelationshipList.vue` — grouped by type, linked to counterpart entities
+- [x] `frontend/` scaffold — Vite 7 config, `src/main.js`, Vue Router, Pinia stores
+- [x] `src/api/client.js` — fetch wrapper (CSRF header auto-attach, 401 redirect, 429 toast)
+- [x] `src/router/index.js` — route definitions with auth guard
+- [x] `src/stores/auth.js` — session user state
+- [x] `src/stores/world.js` — current world + membership cache
+- [x] `src/stores/toast.js` — rate-limit toast notifications
+- [x] `src/views/LoginView.vue`
+- [x] `src/views/RegisterView.vue`
+- [x] `src/views/WorldListView.vue`
+- [x] `src/views/WorldCreateView.vue`
+- [x] `src/views/EntityListView.vue` — filterable grid (type, status, tag)
+- [x] `src/views/EntityDetailView.vue` — three-panel layout (meta | notes | relationships)
+- [x] `src/views/EntityCreateView.vue` / `EntityEditView.vue`
+- [x] `src/views/AcceptInvitationView.vue`
+- [x] `src/components/EntityMeta.vue` — type badge, status, attributes table, tags
+- [x] `src/components/NotesList.vue` — chronological Markdown notes (Marked.js + DOMPurify)
+- [x] `src/components/RelationshipList.vue` — grouped by type, linked to counterpart entities
+- [x] `src/components/ToastContainer.vue` — rate-limit + notification toasts
+- [x] `GET /api/v1/auth/csrf` endpoint added to AuthController + router
+- [x] `core/Router.php` `serveSpa()` updated to read Vite manifest for cache-busted asset paths
+- [x] `npm audit` clean (upgraded to Vite 7 to resolve esbuild dev-server vuln)
 
 ---
 

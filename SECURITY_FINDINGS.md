@@ -106,3 +106,24 @@ Fix: Added self::audit($wid, $userId, 'entity.tags.replace', 'entity', $id) afte
 Status: RESOLVED
 Resolved-by: Claude Code
 Resolved-date: 2026-04-05
+
+---
+
+[FINDING-006]
+Date: 2026-04-06
+Severity: LOW
+File: core/Claude.php
+Line: 322–329 (original; renumbered after fix)
+Description: Related-entity lookup in buildContext() constructed a dynamic IN clause by
+  interpolating intval-cast IDs directly into the SQL string:
+    $ids = implode(',', array_map('intval', array_keys($counterpartIds)));
+    DB::query("... WHERE e.id IN ({$ids}) ...", ...)
+  While the values are DB-sourced integers and the immediate injection risk is nil,
+  this pattern violates the project rule of no dynamic SQL construction and would be
+  difficult to distinguish from a genuine injection vector during future code review.
+Fix: Replaced with dynamically-generated named placeholders (:id0, :id1, …). Values are
+  still bound via PDO; only placeholder names (not values) appear in the SQL string.
+  This is the standard PHP/PDO pattern for parameterized IN clauses.
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2026-04-06
