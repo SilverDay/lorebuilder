@@ -11,6 +11,12 @@ import { useAuthStore } from '@/stores/auth.js'
 const routes = [
   // ── Public ──────────────────────────────────────────────────────────────────
   {
+    path:      '/',
+    name:      'Landing',
+    component: () => import('@/views/LandingView.vue'),
+    meta:      { requiresGuest: true },
+  },
+  {
     path:      '/login',
     name:      'Login',
     component: () => import('@/views/LoginView.vue'),
@@ -29,10 +35,6 @@ const routes = [
   },
 
   // ── Authenticated ────────────────────────────────────────────────────────────
-  {
-    path:      '/',
-    redirect:  '/worlds',
-  },
   {
     path:      '/worlds',
     name:      'WorldList',
