@@ -70,7 +70,8 @@ watch(() => route.params.eid, load)
 
         <!-- Right panel: relationships -->
         <aside class="panel panel-rels">
-          <RelationshipList :relationships="relationships" :entity-id="Number(eid)" :world-id="wid" />
+          <RelationshipList :relationships="relationships" :entity-id="Number(eid)" :world-id="wid"
+            @refresh="load" />
         </aside>
       </div>
     </template>
