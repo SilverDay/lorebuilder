@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
@@ -11,8 +11,8 @@ import AiPanel from '@/components/ai/AiPanel.vue'
 
 const route  = useRoute()
 const router = useRouter()
-const wid    = route.params.wid
-const eid    = route.params.eid
+const wid    = computed(() => route.params.wid)
+const eid    = computed(() => route.params.eid)
 
 const STATUS_COLOR = {
   draft:     'badge-draft',
@@ -55,7 +55,7 @@ async function saveTags() {
   tagError.value   = ''
   try {
     await api.put(
-      `/api/v1/worlds/${wid}/entities/${eid}/tags`,
+      `/api/v1/worlds/${wid.value}/entities/${eid.value}/tags`,
       { tag_ids: tagDraft.value }
     )
     editingTags.value = false
@@ -89,12 +89,12 @@ async function addOpenPoint() {
   savingPoint.value = true
   pointError.value  = ''
   try {
-    await api.post(`/api/v1/worlds/${wid}/open-points`, {
+    await api.post(`/api/v1/worlds/${wid.value}/open-points`, {
       title:       pointForm.value.title.trim(),
       description: pointForm.value.description.trim() || null,
       priority:    pointForm.value.priority,
       status:      pointForm.value.status,
-      entity_id:   parseInt(eid, 10),
+      entity_id:   parseInt(eid.value, 10),
     })
     pointForm.value = { title: '', description: '', priority: 'medium', status: 'open' }
     showAddPoint.value = false
@@ -126,7 +126,7 @@ async function saveEditPoint() {
   savingPointEdit.value = true
   editPointError.value  = ''
   try {
-    await api.patch(`/api/v1/worlds/${wid}/open-points/${editingPointId.value}`, {
+    await api.patch(`/api/v1/worlds/${wid.value}/open-points/${editingPointId.value}`, {
       title:       editPointForm.value.title.trim(),
       description: editPointForm.value.description.trim() || null,
       status:      editPointForm.value.status,
@@ -145,7 +145,7 @@ async function saveEditPoint() {
 async function deleteOpenPoint(id) {
   if (!confirm('Delete this open point?')) return
   try {
-    await api.delete(`/api/v1/worlds/${wid}/open-points/${id}`)
+    await api.delete(`/api/v1/worlds/${wid.value}/open-points/${id}`)
     await loadOpenPoints()
   } catch (e) {
     pointError.value = e.message || 'Failed to delete.'
@@ -154,7 +154,7 @@ async function deleteOpenPoint(id) {
 
 async function loadOpenPoints() {
   try {
-    const { data } = await api.get(`/api/v1/worlds/${wid}/open-points`, { entity_id: eid, per_page: 100 })
+    const { data } = await api.get(`/api/v1/worlds/${wid.value}/open-points`, { entity_id: eid.value, per_page: 100 })
     openPoints.value = data ?? []
   } catch { /* non-critical */ }
 }
@@ -171,9 +171,9 @@ async function load() {
   error.value   = ''
   try {
     const [entityRes, notesRes, relsRes] = await Promise.all([
-      api.get(`/api/v1/worlds/${wid}/entities/${eid}`),
-      api.get(`/api/v1/worlds/${wid}/entities/${eid}/notes`),
-      api.get(`/api/v1/worlds/${wid}/relationships`, { entity_id: eid }),
+      api.get(`/api/v1/worlds/${wid.value}/entities/${eid.value}`),
+      api.get(`/api/v1/worlds/${wid.value}/entities/${eid.value}/notes`),
+      api.get(`/api/v1/worlds/${wid.value}/relationships`, { entity_id: eid.value }),
     ])
     entity.value        = entityRes.data
     notes.value         = notesRes.data ?? []
@@ -185,11 +185,17 @@ async function load() {
   }
   // Non-blocking secondary loads
   loadOpenPoints()
-  api.get(`/api/v1/worlds/${wid}/tags`).then(r => { worldTags.value = r.data ?? [] }).catch(() => {})
+  api.get(`/api/v1/worlds/${wid.value}/tags`).then(r => { worldTags.value = r.data ?? [] }).catch(() => {})
 }
 
 onMounted(load)
-watch(() => route.params.eid, load)
+watch(() => route.params.eid, () => {
+  // Reset edit states when navigating to a different entity
+  editingTags.value    = false
+  editingPointId.value = null
+  showAddPoint.value   = false
+  load()
+})
 </script>
 
 <template>
