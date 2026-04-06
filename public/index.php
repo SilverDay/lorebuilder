@@ -214,6 +214,11 @@ Router::post('/api/v1/worlds/:wid/import',  [ExportController::class, 'import'])
 
 Router::get('/api/v1/worlds/:wid/graph', [EntityController::class, 'graph']);
 
+// ── Audit Log + Stats ─────────────────────────────────────────────────────────
+
+Router::get('/api/v1/worlds/:wid/audit-log', [WorldController::class, 'auditLog']);
+Router::get('/api/v1/worlds/:wid/stats',     [WorldController::class, 'stats']);
+
 // ─── 7. Dispatch ──────────────────────────────────────────────────────────────
 
 Router::dispatch();

@@ -51,6 +51,11 @@ const routes = [
     children: [
       {
         path:      '',
+        name:      'Dashboard',
+        component: () => import('@/views/DashboardView.vue'),
+      },
+      {
+        path:      'entities',
         name:      'EntityList',
         component: () => import('@/views/EntityListView.vue'),
       },
@@ -68,6 +73,26 @@ const routes = [
         path:      'entities/:eid/edit',
         name:      'EntityEdit',
         component: () => import('@/views/EntityEditView.vue'),
+      },
+      {
+        path:      'graph',
+        name:      'Graph',
+        component: () => import('@/views/GraphView.vue'),
+      },
+      {
+        path:      'timeline',
+        name:      'Timeline',
+        component: () => import('@/views/TimelineView.vue'),
+      },
+      {
+        path:      'arcs',
+        name:      'StoryArcs',
+        component: () => import('@/views/StoryArcKanban.vue'),
+      },
+      {
+        path:      'audit-log',
+        name:      'AuditLog',
+        component: () => import('@/views/AuditLogView.vue'),
       },
     ],
   },

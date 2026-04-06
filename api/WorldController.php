@@ -496,6 +496,116 @@ class WorldController
         mail($email, $subject, $body, $headers);
     }
 
+    // ─── GET /api/v1/worlds/:wid/audit-log ───────────────────────────────────
+
+    public static function auditLog(array $p): void
+    {
+        $wid    = (int) $p['wid'];
+        $userId = $p['user']['id'];
+        $isPlatformAdmin = (bool) $p['user']['is_platform_admin'];
+
+        Guard::requireWorldAccess($wid, $userId, 'admin', $isPlatformAdmin);
+
+        $q = Validator::parseQuery([
+            'limit'  => 'nullable|int|min:1|max:100',
+            'offset' => 'nullable|int|min:0',
+            'action' => 'nullable|string|max:64',
+        ]);
+
+        $where  = ['al.world_id = :wid'];
+        $params = ['wid' => $wid];
+
+        if (!empty($q['action'])) {
+            $where[]          = 'al.action = :action';
+            $params['action'] = $q['action'];
+        }
+
+        $limit  = (int) ($q['limit']  ?? 50);
+        $offset = (int) ($q['offset'] ?? 0);
+
+        $entries = DB::query(
+            'SELECT al.id, al.action, al.target_type, al.target_id,
+                    al.ip_address, al.created_at, al.diff_json,
+                    u.display_name AS actor_name, u.username AS actor_username
+               FROM audit_log al
+               LEFT JOIN users u ON u.id = al.user_id
+              WHERE ' . implode(' AND ', $where) . '
+              ORDER BY al.created_at DESC
+              LIMIT :lim OFFSET :off',
+            array_merge($params, ['lim' => $limit, 'off' => $offset])
+        );
+
+        $total = (int) DB::queryOne(
+            'SELECT COUNT(*) AS c FROM audit_log al WHERE ' . implode(' AND ', $where),
+            $params
+        )['c'];
+
+        // Parse diff_json back to array for the response
+        foreach ($entries as &$entry) {
+            if ($entry['diff_json'] !== null) {
+                $entry['diff'] = json_decode($entry['diff_json'], true);
+            } else {
+                $entry['diff'] = null;
+            }
+            unset($entry['diff_json']);
+        }
+        unset($entry);
+
+        Router::json($entries, meta: ['total' => $total, 'limit' => $limit, 'offset' => $offset]);
+    }
+
+    // ─── GET /api/v1/worlds/:wid/stats ────────────────────────────────────────
+
+    /**
+     * Returns entity counts by type and recent arc status — used by DashboardView.
+     * Guard: viewer (read-only stats).
+     */
+    public static function stats(array $p): void
+    {
+        $wid    = (int) $p['wid'];
+        $userId = $p['user']['id'];
+        $isPlatformAdmin = (bool) $p['user']['is_platform_admin'];
+
+        Guard::requireWorldAccess($wid, $userId, 'viewer', $isPlatformAdmin);
+
+        // Entity counts by type
+        $entityCounts = DB::query(
+            'SELECT type, status, COUNT(*) AS count
+               FROM entities
+              WHERE world_id = :wid AND deleted_at IS NULL
+              GROUP BY type, status
+              ORDER BY type, status',
+            ['wid' => $wid]
+        );
+
+        // Arc summary
+        $arcSummary = DB::query(
+            'SELECT status, COUNT(*) AS count
+               FROM story_arcs
+              WHERE world_id = :wid AND deleted_at IS NULL
+              GROUP BY status',
+            ['wid' => $wid]
+        );
+
+        // Recent activity (last 10 audit entries — viewer-safe fields only)
+        $recent = DB::query(
+            'SELECT al.action, al.target_type, al.target_id, al.created_at,
+                    u.display_name AS actor_name
+               FROM audit_log al
+               LEFT JOIN users u ON u.id = al.user_id
+              WHERE al.world_id = :wid
+              ORDER BY al.created_at DESC
+              LIMIT 10',
+            ['wid' => $wid]
+        );
+
+        Router::json([
+            'entity_counts' => $entityCounts,
+            'arc_summary'   => $arcSummary,
+            'recent_activity' => $recent,
+        ]);
+    }
+
     private static function audit(
         ?int $worldId,
         ?int $userId,

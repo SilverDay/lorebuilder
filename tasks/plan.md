@@ -186,25 +186,30 @@ Goal: timelines, story arcs, lore notes, full-text search, tags filterable in UI
 
 Goal: graph view, dashboard, audit log viewer.
 
-- [ ] `GET /api/v1/worlds/:wid/graph` — nodes + edges JSON optimised for vis-network
+- [x] `GET /api/v1/worlds/:wid/graph` — nodes + edges JSON optimised for vis-network
   - Nodes: `{id, label, type, status}` — all non-deleted entities
   - Edges: `{from, to, label, strength}` — all non-deleted relationships
-- [ ] `src/views/GraphView.vue` — vis-network wrapper
-  - Node colour by entity type
-  - Edge label = rel_type
-  - Physics toggle; click node → navigate to EntityDetailView
-- [ ] `src/views/TimelineView.vue` — vis-timeline wrapper
-  - Loads timeline + events; groups by era if scale_mode = 'era'
+- [x] `GET /api/v1/worlds/:wid/audit-log` — paginated audit_log entries (Guard: admin)
+- [x] `GET /api/v1/worlds/:wid/stats` — entity counts + arc summary + recent activity (Guard: viewer)
+- [x] `src/views/GraphView.vue` — vis-network wrapper
+  - Node colour by entity type; edge width by strength
+  - Physics toggle; click node → EntityDetailView
+  - Bidirectional edges with arrows on both ends
+- [x] `src/views/TimelineView.vue` — vis-timeline wrapper
+  - Timeline selector; loads events ordered by position_order
+  - Groups by era when scale_mode = 'era'
   - Drag to reorder → PUT reorder endpoint
-- [ ] `src/views/StoryArcKanban.vue` — Kanban: Seed → Rising Action → Climax → Resolution
-  - Drag arc cards between columns → PATCH status
-- [ ] `src/views/DashboardView.vue`
-  - Entity counts by type (chart or stat cards)
-  - Recent activity from audit_log
-  - Arc health summary
-  - Quick-access to AI assistant
-- [ ] `GET /api/v1/worlds/:wid/audit-log` — paginated audit_log entries (Guard: admin)
-- [ ] `src/views/AuditLogView.vue` — paginated change history table
+- [x] `src/views/StoryArcKanban.vue` — Kanban: seed → rising_action → climax → resolution → complete → abandoned
+  - Drag arc cards between columns → PATCH status (native HTML5 DnD)
+  - Optimistic update with revert on failure
+- [x] `src/views/DashboardView.vue`
+  - Entity counts by type (stat cards)
+  - Arc status summary
+  - Recent activity from audit_log (10 entries)
+  - Quick-nav to graph, timeline, arcs, entity list
+- [x] `src/views/AuditLogView.vue` — paginated change history table with expandable diff viewer
+- [x] Also fixed: table name bugs in core/Claude.php (entity_relationships, arc_entities, position_label)
+- [x] Security review passed — no issues found
 
 ---
 

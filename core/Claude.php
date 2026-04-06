@@ -200,7 +200,7 @@ class Claude
                         ef.name AS from_name, ef.type AS from_type,
                         et.name AS to_name,   et.type AS to_type,
                         r.from_entity_id, r.to_entity_id
-                   FROM relationships r
+                   FROM entity_relationships r
                    JOIN entities ef ON ef.id = r.from_entity_id
                    JOIN entities et ON et.id = r.to_entity_id
                   WHERE r.world_id = :wid
@@ -241,8 +241,8 @@ class Claude
         if ($entityId > 0 && ($used / $budget) < self::DROP_ARCS_AT) {
             $arcs = DB::query(
                 'SELECT sa.name, sa.logline, sa.status, sa.theme
-                   FROM story_arc_entities sae
-                   JOIN story_arcs sa ON sa.id = sae.story_arc_id
+                   FROM arc_entities sae
+                   JOIN story_arcs sa ON sa.id = sae.arc_id
                   WHERE sae.entity_id = :eid
                     AND sa.world_id   = :wid
                     AND sa.deleted_at IS NULL
@@ -272,7 +272,7 @@ class Claude
         if ($entityId > 0 && ($used / $budget) < self::DROP_TIMELINE_AT) {
             // Events that reference this entity as the subject
             $events = DB::query(
-                'SELECT te.title, te.era_label, te.position_order,
+                'SELECT te.label AS title, te.position_label, te.position_era, te.position_order,
                         tl.name AS timeline_name, tl.scale_mode
                    FROM timeline_events te
                    JOIN timelines tl ON tl.id = te.timeline_id
@@ -288,7 +288,7 @@ class Claude
             if (!empty($events)) {
                 $timelineSection = "\nTIMELINE POSITIONS:\n";
                 foreach ($events as $ev) {
-                    $pos = !empty($ev['era_label']) ? $ev['era_label'] : "position {$ev['position_order']}";
+                    $pos = $ev['position_label'] ?? $ev['position_era'] ?? "position {$ev['position_order']}";
                     $timelineSection .= "- [{$ev['timeline_name']}] {$ev['title']} @ {$pos}\n";
                 }
                 $sections['timeline'] = $timelineSection;
@@ -302,7 +302,7 @@ class Claude
             // Collect unique counterpart IDs from relationship data
             $rels = DB::query(
                 'SELECT from_entity_id, to_entity_id
-                   FROM relationships
+                   FROM entity_relationships
                   WHERE world_id = :wid
                     AND (from_entity_id = :eid OR to_entity_id = :eid)
                     AND deleted_at IS NULL

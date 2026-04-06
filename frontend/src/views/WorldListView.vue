@@ -11,7 +11,7 @@ const auth   = useAuthStore()
 onMounted(() => worlds.fetchWorlds())
 
 function open(world) {
-  router.push(`/worlds/${world.id}`)
+  router.push(`/worlds/${world.id}`)   // → Dashboard
 }
 </script>
 
