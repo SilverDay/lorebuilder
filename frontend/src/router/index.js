@@ -47,6 +47,12 @@ const routes = [
     meta:      { requiresAuth: true },
   },
   {
+    path:      '/account/2fa',
+    name:      'TwoFactor',
+    component: () => import('@/views/TwoFactorView.vue'),
+    meta:      { requiresAuth: true },
+  },
+  {
     path:      '/tutorial',
     name:      'Tutorial',
     component: () => import('@/views/TutorialView.vue'),

@@ -1117,3 +1117,53 @@ kbd {
 .note-feed-card__meta   { font-size: .75rem; color: var(--color-muted); margin-left: auto; }
 .note-feed-card__excerpt { font-size: .875rem; color: var(--color-muted); line-height: 1.6; margin-bottom: .35rem; }
 .note-feed-card__link { font-size: .8rem; color: var(--color-accent); }
+
+/* ── Two-factor authentication ───────────────────────────────────────────── */
+.totp-status {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .9rem;
+  border-radius: var(--radius);
+  font-size: .875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.totp-status--on  { background: rgba(63,185,80,.1);  border: 1px solid rgba(63,185,80,.3);  color: var(--color-success); }
+.totp-status--off { background: rgba(125,133,144,.08); border: 1px solid var(--color-border); color: var(--color-muted); }
+.totp-status__dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: currentColor;
+}
+
+.totp-qr {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #fff;
+  border-radius: var(--radius);
+  width: fit-content;
+}
+.totp-qr img { display: block; }
+
+.totp-manual {
+  font-size: .8rem;
+  color: var(--color-muted);
+  margin-bottom: .5rem;
+}
+.totp-manual summary { cursor: pointer; }
+.totp-secret {
+  display: block;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: .85rem;
+  letter-spacing: .1em;
+  word-break: break-all;
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: .5rem .75rem;
+  margin-top: .4rem;
+  color: var(--color-text);
+  user-select: all;
+}
