@@ -14,12 +14,6 @@ const props = defineProps({
 
 const emit = defineEmits(['refresh'])
 
-const STATUS_COLOR = {
-  draft:     'badge-draft',
-  published: 'badge-published',
-  archived:  'badge-archived',
-}
-
 const ATTR_TYPES = ['string', 'integer', 'boolean', 'date', 'markdown']
 
 // ── Attribute editing ─────────────────────────────────────────────────────────
@@ -95,13 +89,6 @@ async function saveAttrs() {
 
 <template>
   <section>
-    <div class="meta-badges">
-      <span class="badge badge-type">{{ entity.type }}</span>
-      <span class="badge" :class="STATUS_COLOR[entity.status]">{{ entity.status }}</span>
-    </div>
-
-    <p v-if="entity.short_summary" class="entity-summary">{{ entity.short_summary }}</p>
-
     <!-- Attributes -->
     <div class="attr-section-header">
       <h3>Attributes</h3>
@@ -159,19 +146,6 @@ async function saveAttrs() {
         <button type="button" class="btn btn-primary btn-sm" :disabled="saving" @click="saveAttrs">
           {{ saving ? 'Saving…' : 'Save' }}
         </button>
-      </div>
-    </template>
-
-    <!-- Tags -->
-    <template v-if="entity.tags?.length">
-      <h3>Tags</h3>
-      <div class="tag-list">
-        <span
-          v-for="tag in entity.tags"
-          :key="tag.id"
-          class="tag"
-          :style="{ backgroundColor: tag.color }"
-        >{{ tag.name }}</span>
       </div>
     </template>
   </section>
