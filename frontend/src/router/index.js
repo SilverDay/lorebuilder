@@ -29,6 +29,11 @@ const routes = [
     meta:      { requiresGuest: true },
   },
   {
+    path:      '/tutorial',
+    name:      'Tutorial',
+    component: () => import('@/views/TutorialView.vue'),
+  },
+  {
     path:      '/invitations/:token',
     name:      'AcceptInvitation',
     component: () => import('@/views/AcceptInvitationView.vue'),
@@ -125,6 +130,11 @@ const routes = [
         path:      'open-points',
         name:      'OpenPoints',
         component: () => import('@/views/OpenPointsView.vue'),
+      },
+      {
+        path:      'tutorial',
+        name:      'WorldTutorial',
+        component: () => import('@/views/TutorialView.vue'),
       },
     ],
   },

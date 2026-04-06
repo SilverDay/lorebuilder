@@ -67,6 +67,7 @@ const FEATURES = [
     <nav class="landing-nav">
       <span class="landing-nav__brand">LoreBuilder</span>
       <div class="landing-nav__links">
+        <RouterLink to="/tutorial" class="btn btn-ghost btn-sm">User Guide</RouterLink>
         <RouterLink to="/login" class="btn btn-ghost btn-sm">Sign in</RouterLink>
         <RouterLink to="/register" class="btn btn-primary btn-sm">Get started free</RouterLink>
       </div>
@@ -116,6 +117,7 @@ const FEATURES = [
     <footer class="landing-footer">
       <span>LoreBuilder · SilverDay Media</span>
       <div class="landing-footer__links">
+        <RouterLink to="/tutorial">User Guide</RouterLink>
         <RouterLink to="/login">Sign in</RouterLink>
         <RouterLink to="/register">Register</RouterLink>
       </div>
