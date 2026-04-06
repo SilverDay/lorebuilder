@@ -281,6 +281,15 @@ input[type="search"] { max-width: 280px; }
 .attr-table th { text-align: left; color: var(--color-muted); font-weight: 500; padding: .3rem .5rem .3rem 0; width: 40%; }
 .attr-table td { padding: .3rem 0; }
 
+.attr-section-header { display: flex; align-items: center; justify-content: space-between; margin: .75rem 0 .35rem; }
+.attr-section-header h3 { margin: 0; }
+.attr-edit-list { display: flex; flex-direction: column; gap: .4rem; margin-bottom: .5rem; }
+.attr-edit-row { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: .3rem; align-items: center; }
+.attr-edit-key, .attr-edit-value, .attr-edit-type { font: inherit; font-size: .8rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: .3rem; padding: .25rem .4rem; color: var(--color-text); min-width: 0; }
+.attr-edit-type { font-size: .75rem; }
+.attr-edit-actions { display: flex; gap: .15rem; }
+.attr-add-btn { margin-top: .1rem; font-size: .8rem; }
+
 /* ── Tags ────────────────────────────────────────────────────────────────── */
 
 .tag-list { display: flex; gap: .4rem; flex-wrap: wrap; }

@@ -60,7 +60,7 @@ watch(() => route.params.eid, load)
       <div class="entity-detail-grid">
         <!-- Left panel: metadata -->
         <aside class="panel panel-meta">
-          <EntityMeta :entity="entity" />
+          <EntityMeta :entity="entity" :world-id="wid" :entity-id="eid" @refresh="load" />
         </aside>
 
         <!-- Centre panel: lore notes -->
