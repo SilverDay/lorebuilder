@@ -5,6 +5,7 @@ import { api } from '@/api/client.js'
 import EntityMeta from '@/components/EntityMeta.vue'
 import NotesList from '@/components/NotesList.vue'
 import RelationshipList from '@/components/RelationshipList.vue'
+import AiPanel from '@/components/ai/AiPanel.vue'
 
 const route  = useRoute()
 const router = useRouter()
@@ -72,5 +73,12 @@ onMounted(load)
         </aside>
       </div>
     </template>
+
+    <!-- AI Assistant floating panel -->
+    <AiPanel
+      :world-id="wid"
+      :entity-id="eid"
+      @response="load"
+    />
   </div>
 </template>

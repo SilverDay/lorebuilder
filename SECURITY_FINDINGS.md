@@ -127,3 +127,22 @@ Fix: Replaced with dynamically-generated named placeholders (:id0, :id1, …). V
 Status: RESOLVED
 Resolved-by: Claude Code
 Resolved-date: 2026-04-06
+
+---
+
+[FINDING-007]
+Date: 2026-04-06
+Severity: LOW
+File: api/AiController.php
+Line: 125, 136 (before fix)
+Description: sessions() built a conditional SQL fragment ($entityFilter = ' AND s.entity_id = :eid')
+  and interpolated it into two query strings via double-quoted PHP strings:
+    WHERE s.world_id = :wid{$entityFilter}
+  While $entityFilter was a fixed PHP constant (not user-controlled), the pattern violates
+  the project rule of no dynamic SQL construction and is indistinguishable from an injection
+  vector during future code review.
+Fix: Replaced with two explicit query branches — one with the entity filter, one without.
+  No SQL string construction occurs in either branch; all values are bound via PDO.
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2026-04-06

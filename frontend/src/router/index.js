@@ -94,6 +94,16 @@ const routes = [
         name:      'AuditLog',
         component: () => import('@/views/AuditLogView.vue'),
       },
+      {
+        path:      'settings/ai',
+        name:      'WorldAiSettings',
+        component: () => import('@/views/WorldAiSettingsView.vue'),
+      },
+      {
+        path:      'ai/history',
+        name:      'AiHistory',
+        component: () => import('@/views/AiHistoryView.vue'),
+      },
     ],
   },
 
