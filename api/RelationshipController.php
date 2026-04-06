@@ -24,24 +24,38 @@ class RelationshipController
         Guard::requireWorldAccess($wid, $userId, 'viewer', $isPlatformAdmin);
 
         $q = Validator::parseQuery([
+            'entity_id'      => 'nullable|int',   // either side
             'from_entity_id' => 'nullable|int',
             'to_entity_id'   => 'nullable|int',
             'rel_type'       => 'nullable|string|max:64',
         ]);
 
-        $where  = ['world_id = :wid', 'deleted_at IS NULL'];
+        $where  = ['r.world_id = :wid', 'r.deleted_at IS NULL'];
         $params = ['wid' => $wid];
 
-        if (!empty($q['from_entity_id'])) { $where[] = 'from_entity_id = :from'; $params['from'] = (int) $q['from_entity_id']; }
-        if (!empty($q['to_entity_id']))   { $where[] = 'to_entity_id = :to';     $params['to']   = (int) $q['to_entity_id']; }
-        if (!empty($q['rel_type']))        { $where[] = 'rel_type = :rtype';      $params['rtype'] = $q['rel_type']; }
+        if (!empty($q['entity_id'])) {
+            $where[] = '(r.from_entity_id = :eid_from OR r.to_entity_id = :eid_to)';
+            $params['eid_from'] = (int) $q['entity_id'];
+            $params['eid_to']   = (int) $q['entity_id'];
+        } elseif (!empty($q['from_entity_id'])) {
+            $where[] = 'r.from_entity_id = :from';
+            $params['from'] = (int) $q['from_entity_id'];
+        } elseif (!empty($q['to_entity_id'])) {
+            $where[] = 'r.to_entity_id = :to';
+            $params['to'] = (int) $q['to_entity_id'];
+        }
+        if (!empty($q['rel_type'])) { $where[] = 'r.rel_type = :rtype'; $params['rtype'] = $q['rel_type']; }
 
         $rows = DB::query(
-            'SELECT id, from_entity_id, to_entity_id, rel_type,
-                    is_bidirectional, strength, notes, created_by, created_at
-               FROM entity_relationships
+            'SELECT r.id, r.from_entity_id, r.to_entity_id, r.rel_type,
+                    r.is_bidirectional AS bidirectional, r.strength, r.notes,
+                    ef.name AS from_name, ef.type AS from_type,
+                    et.name AS to_name,   et.type AS to_type
+               FROM entity_relationships r
+               JOIN entities ef ON ef.id = r.from_entity_id AND ef.deleted_at IS NULL
+               JOIN entities et ON et.id = r.to_entity_id   AND et.deleted_at IS NULL
               WHERE ' . implode(' AND ', $where) . '
-              ORDER BY rel_type ASC, id ASC',
+              ORDER BY r.rel_type ASC, r.id ASC',
             $params
         );
 

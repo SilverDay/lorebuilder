@@ -25,7 +25,7 @@ async function load() {
     const [entityRes, notesRes, relsRes] = await Promise.all([
       api.get(`/api/v1/worlds/${wid}/entities/${eid}`),
       api.get(`/api/v1/worlds/${wid}/entities/${eid}/notes`),
-      api.get(`/api/v1/worlds/${wid}/relationships`, { from_entity: eid }),
+      api.get(`/api/v1/worlds/${wid}/relationships`, { entity_id: eid }),
     ])
     entity.value        = entityRes.data
     notes.value         = notesRes.data ?? []
