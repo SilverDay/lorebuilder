@@ -69,10 +69,13 @@ const ARC_STATUS_LABEL = {
     <header class="page-header">
       <h1>{{ worlds.currentWorld?.name ?? 'Dashboard' }}</h1>
       <div class="page-header-actions">
-        <RouterLink :to="`/worlds/${wid}`" class="btn btn-secondary">Entities</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/entities`" class="btn btn-secondary">Entities</RouterLink>
         <RouterLink :to="`/worlds/${wid}/graph`" class="btn btn-secondary">Graph</RouterLink>
         <RouterLink :to="`/worlds/${wid}/timeline`" class="btn btn-secondary">Timeline</RouterLink>
         <RouterLink :to="`/worlds/${wid}/arcs`" class="btn btn-secondary">Story Arcs</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/members`" class="btn btn-ghost">Members</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/export`" class="btn btn-ghost">Export</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/settings/ai`" class="btn btn-ghost">AI Settings</RouterLink>
         <RouterLink to="/worlds" class="btn btn-ghost">All worlds</RouterLink>
       </div>
     </header>

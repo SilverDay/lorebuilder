@@ -146,3 +146,39 @@ Fix: Replaced with two explicit query branches — one with the entity filter, o
 Status: RESOLVED
 Resolved-by: Claude Code
 Resolved-date: 2026-04-06
+
+---
+
+[FINDING-008]
+Date: 2026-04-06
+Severity: LOW
+File: api/ExportController.php
+Line: 317 (before fix)
+Description: Import handler INSERT into entity_tags referenced a non-existent world_id column:
+  INSERT IGNORE INTO entity_tags (entity_id, tag_id, world_id) VALUES (...)
+  The entity_tags schema only defines entity_id and tag_id (world isolation is through the
+  tags.world_id FK). This would throw a PDO SQL error at runtime, aborting the import
+  transaction for any file that includes tags.
+Fix: Removed world_id from the INSERT: INSERT IGNORE INTO entity_tags (entity_id, tag_id)
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2026-04-06
+
+---
+
+[FINDING-009]
+Date: 2026-04-06
+Severity: LOW
+File: frontend/src/views/ExportView.vue
+Line: 26-27 (before fix)
+Description: doExport() attempted to read the CSRF token from document.cookie:
+  document.cookie.split('; ').find(c => c.startsWith('csrf_token='))
+  The LoreBuilder CSRF token is stored in JavaScript module scope (_csrfToken in client.js),
+  not in a browser cookie. The cookie read silently returns undefined, so the
+  X-CSRF-Token header would be sent empty. The export endpoint is a GET request so
+  CSRF is not enforced server-side (no vulnerability today), but the approach was
+  architecturally incorrect and fragile.
+Fix: Replaced with plain credentials: 'same-origin' fetch (no CSRF header needed for GET).
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2026-04-06

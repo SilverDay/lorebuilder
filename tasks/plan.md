@@ -1,5 +1,5 @@
 # LoreBuilder — Implementation Plan
-**Last updated:** 2026-04-06 (session 4)  
+**Last updated:** 2026-04-06 (session 5)  
 **Derived from:** docs/design-document.md §10 (Phased Roadmap)  
 **Status markers:** `[x]` done · `[ ]` open · `[!]` blocked · `[-]` deferred
 
@@ -219,42 +219,25 @@ Goal: AI assistant callable from any entity; all invocation modes; budget enforc
 
 ### 4A · Backend
 
-- [ ] Complete `core/Claude.php`
-  - Context assembly per design-document §7.4 token budget priority
-  - `Claude::renderTemplate(string $tpl, array $vars): string` — `{{variable}}` substitution
-  - HTTP client: native PHP streams (no cURL dependency); 60-second timeout
-  - Error handling: API errors surfaced as structured error response; never expose key
-
-- [ ] `POST /api/v1/worlds/:wid/ai/assist` — entity or world-level assist
-  - Auth → Guard (author) → RateLimit (20/user/hour, 100/world/hour)
-  - Validate: entity_id (optional), mode, user_prompt
-  - Decrypt API key (Crypto::decryptApiKey)
-  - Claude::buildContext → Claude::callApi
-  - Write ai_sessions row (tokens, model, status)
-  - Write lore_notes row (ai_generated=1, ai_session_id)
-  - Return response text + session_id + token counts
-  - NEVER return api_key in any response field
-
-- [ ] `POST /api/v1/worlds/:wid/ai/consistency-check`
-  - Assembles full world snapshot → consistency_check mode
-  - Same auth/rate-limit/logging pipeline as assist
-
-- [ ] `GET  /api/v1/worlds/:wid/ai/sessions` — paginated AI session history (Guard: author)
-- [ ] `GET  /api/v1/worlds/:wid/settings/ai/budget` — tokens used / limit / reset date (Guard: owner)
-
-- [ ] `GET    /api/v1/worlds/:wid/prompt-templates` — list world + platform templates (Guard: author)
-- [ ] `POST   /api/v1/worlds/:wid/prompt-templates` — create custom template (Guard: admin)
-- [ ] `PATCH  /api/v1/worlds/:wid/prompt-templates/:id` — edit template (Guard: admin)
-- [ ] `DELETE /api/v1/worlds/:wid/prompt-templates/:id` — delete (Guard: admin; cannot delete platform defaults)
+- [x] Complete `core/Claude.php`
+- [x] `POST /api/v1/worlds/:wid/ai/assist` — dual rate limits, buildContext → callApi, writes ai_sessions + lore_notes, returns note_id
+- [x] `POST /api/v1/worlds/:wid/ai/consistency-check`
+- [x] `GET  /api/v1/worlds/:wid/ai/sessions` — paginated, filterable by entity_id
+- [x] `GET  /api/v1/worlds/:wid/settings/ai/budget` — tokens used / limit / daily breakdown
+- [x] `GET    /api/v1/worlds/:wid/prompt-templates`
+- [x] `POST   /api/v1/worlds/:wid/prompt-templates`
+- [x] `PATCH  /api/v1/worlds/:wid/prompt-templates/:id`
+- [x] `DELETE /api/v1/worlds/:wid/prompt-templates/:id`
 
 ### 4B · Frontend
 
-- [ ] `src/components/ai/AiPanel.vue` — floating drawer; mode selector; prompt textarea; response card
-- [ ] `src/components/ai/AiResponseCard.vue` — rendered Markdown + Accept / Edit / Discard actions
-- [ ] `src/components/ai/AiPromptEditor.vue` — template variable preview + send button
-- [ ] `src/views/AiHistoryView.vue` — session history table with token counts
-- [ ] `src/views/WorldAiSettingsView.vue` — key entry form, fingerprint display, budget gauge
-- [ ] `src/stores/ai.js` — current session, loading state, response cache
+- [x] `src/components/ai/AiPanel.vue` — floating FAB + sliding drawer, mode selector, Ctrl+Enter send
+- [x] `src/components/ai/AiResponseCard.vue` — Markdown via marked+DOMPurify, promote-to-canonical
+- [x] `src/views/AiHistoryView.vue` — paginated session history table with expandable detail
+- [x] `src/views/WorldAiSettingsView.vue` — key entry → PUT saveAiKey, fingerprint display, budget gauge + daily usage
+- [x] `src/stores/ai.js` — Pinia store wrapping assist + consistencyCheck
+- [x] AiPanel wired into EntityDetailView; routes added for AI settings + history
+- [-] `src/components/ai/AiPromptEditor.vue` — deferred; AiPanel covers the use case
 
 ---
 

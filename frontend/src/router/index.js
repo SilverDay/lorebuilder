@@ -104,6 +104,16 @@ const routes = [
         name:      'AiHistory',
         component: () => import('@/views/AiHistoryView.vue'),
       },
+      {
+        path:      'members',
+        name:      'WorldMembers',
+        component: () => import('@/views/WorldMembersView.vue'),
+      },
+      {
+        path:      'export',
+        name:      'Export',
+        component: () => import('@/views/ExportView.vue'),
+      },
     ],
   },
 
