@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/api/client.js'
 import EntityMeta from '@/components/EntityMeta.vue'
@@ -38,6 +38,7 @@ async function load() {
 }
 
 onMounted(load)
+watch(() => route.params.eid, load)
 </script>
 
 <template>
