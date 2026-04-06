@@ -48,7 +48,10 @@ watch(page, load)
   <div class="page">
     <header class="page-header">
       <h1>Entities</h1>
-      <RouterLink :to="`/worlds/${wid}/entities/new`" class="btn btn-primary">New entity</RouterLink>
+      <div class="page-header-actions">
+        <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/entities/new`" class="btn btn-primary">New entity</RouterLink>
+      </div>
     </header>
 
     <div class="filter-bar">
