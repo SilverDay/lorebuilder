@@ -49,6 +49,8 @@ require __DIR__ . '/../api/TimelineController.php';
 require __DIR__ . '/../api/StoryArcController.php';
 require __DIR__ . '/../api/AiController.php';
 require __DIR__ . '/../api/ExportController.php';
+require __DIR__ . '/../api/ReferenceController.php';
+require __DIR__ . '/../api/OpenPointsController.php';
 
 // ─── 4. Security Headers ──────────────────────────────────────────────────────
 
@@ -209,6 +211,23 @@ Router::get('/api/v1/auth/oauth/anthropic', function (array $p): void {
 
 Router::get( '/api/v1/worlds/:wid/export',  [ExportController::class, 'export']);
 Router::post('/api/v1/worlds/:wid/import',  [ExportController::class, 'import']);
+
+// ── References ────────────────────────────────────────────────────────────────
+
+Router::get(   '/api/v1/worlds/:wid/references',                    [ReferenceController::class, 'index']);
+Router::post(  '/api/v1/worlds/:wid/references',                    [ReferenceController::class, 'create']);
+Router::get(   '/api/v1/worlds/:wid/references/:rid',               [ReferenceController::class, 'show']);
+Router::patch( '/api/v1/worlds/:wid/references/:rid',               [ReferenceController::class, 'update']);
+Router::delete('/api/v1/worlds/:wid/references/:rid',               [ReferenceController::class, 'destroy']);
+Router::put(   '/api/v1/worlds/:wid/references/:rid/entities',      [ReferenceController::class, 'linkEntities']);
+
+// ── Open Points ───────────────────────────────────────────────────────────────
+
+Router::get(   '/api/v1/worlds/:wid/open-points',                   [OpenPointsController::class, 'index']);
+Router::post(  '/api/v1/worlds/:wid/open-points',                   [OpenPointsController::class, 'create']);
+Router::get(   '/api/v1/worlds/:wid/open-points/:opid',             [OpenPointsController::class, 'show']);
+Router::patch( '/api/v1/worlds/:wid/open-points/:opid',             [OpenPointsController::class, 'update']);
+Router::delete('/api/v1/worlds/:wid/open-points/:opid',             [OpenPointsController::class, 'destroy']);
 
 // ── Relationship Graph ────────────────────────────────────────────────────────
 

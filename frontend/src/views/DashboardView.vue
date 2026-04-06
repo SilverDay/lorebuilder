@@ -69,16 +69,48 @@ const ARC_STATUS_LABEL = {
     <header class="page-header">
       <h1>{{ worlds.currentWorld?.name ?? 'Dashboard' }}</h1>
       <div class="page-header-actions">
-        <RouterLink :to="`/worlds/${wid}/entities`" class="btn btn-secondary">Entities</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/graph`" class="btn btn-secondary">Graph</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/timeline`" class="btn btn-secondary">Timeline</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/arcs`" class="btn btn-secondary">Story Arcs</RouterLink>
+        <RouterLink to="/worlds" class="btn btn-ghost">← All Worlds</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/settings/ai`" class="btn btn-ghost">AI Settings</RouterLink>
         <RouterLink :to="`/worlds/${wid}/members`" class="btn btn-ghost">Members</RouterLink>
         <RouterLink :to="`/worlds/${wid}/export`" class="btn btn-ghost">Export</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/settings/ai`" class="btn btn-ghost">AI Settings</RouterLink>
-        <RouterLink to="/worlds" class="btn btn-ghost">All worlds</RouterLink>
       </div>
     </header>
+
+    <!-- Quick Navigation -->
+    <nav class="dashboard-nav" aria-label="World sections">
+      <RouterLink :to="`/worlds/${wid}/entities`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">◈</span>
+        <span class="dashboard-nav-card__label">Entities</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/graph`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">⬡</span>
+        <span class="dashboard-nav-card__label">Relationship Graph</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/timeline`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">◷</span>
+        <span class="dashboard-nav-card__label">Timeline</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/arcs`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">◎</span>
+        <span class="dashboard-nav-card__label">Story Arcs</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/references`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">⊞</span>
+        <span class="dashboard-nav-card__label">References</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/open-points`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">◉</span>
+        <span class="dashboard-nav-card__label">Open Points</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/ai/history`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">✦</span>
+        <span class="dashboard-nav-card__label">AI History</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/audit-log`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">☰</span>
+        <span class="dashboard-nav-card__label">Audit Log</span>
+      </RouterLink>
+    </nav>
 
     <p v-if="loading" class="loading">Loading…</p>
     <p v-else-if="error" class="form-error" role="alert">{{ error }}</p>

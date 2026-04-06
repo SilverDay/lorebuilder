@@ -166,6 +166,22 @@ Resolved-date: 2026-04-06
 
 ---
 
+[FINDING-010]
+Date: 2026-04-06
+Severity: LOW
+File: api/ReferenceController.php
+Line: 302 (before fix)
+Description: ReferenceController::linkEntities() (PUT /references/:rid/entities) completed a
+  full replacement of the reference_entities join table inside a DB::transaction() but never
+  called self::audit(). The mutation — deleting and re-inserting all entity links — left no
+  trace in the audit_log, defeating the audit trail for this operation.
+Fix: Added self::audit($wid, $userId, 'reference.link_entities', $rid) after the transaction.
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2026-04-06
+
+---
+
 [FINDING-009]
 Date: 2026-04-06
 Severity: LOW

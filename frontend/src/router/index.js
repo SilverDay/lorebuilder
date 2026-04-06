@@ -114,6 +114,16 @@ const routes = [
         name:      'Export',
         component: () => import('@/views/ExportView.vue'),
       },
+      {
+        path:      'references',
+        name:      'References',
+        component: () => import('@/views/ReferencesView.vue'),
+      },
+      {
+        path:      'open-points',
+        name:      'OpenPoints',
+        component: () => import('@/views/OpenPointsView.vue'),
+      },
     ],
   },
 
