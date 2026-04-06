@@ -159,8 +159,8 @@ class EntityController
             'SELECT id, from_entity_id, to_entity_id, rel_type, is_bidirectional, strength, notes
                FROM entity_relationships
               WHERE world_id = :wid AND deleted_at IS NULL
-                AND (from_entity_id = :id OR to_entity_id = :id)',
-            ['wid' => $wid, 'id' => $id]
+                AND (from_entity_id = :id1 OR to_entity_id = :id2)',
+            ['wid' => $wid, 'id1' => $id, 'id2' => $id]
         );
 
         Router::json($entity);

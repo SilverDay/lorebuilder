@@ -204,11 +204,11 @@ class Claude
                    JOIN entities ef ON ef.id = r.from_entity_id
                    JOIN entities et ON et.id = r.to_entity_id
                   WHERE r.world_id = :wid
-                    AND (r.from_entity_id = :eid OR r.to_entity_id = :eid)
+                    AND (r.from_entity_id = :eid1 OR r.to_entity_id = :eid2)
                     AND r.deleted_at IS NULL
                   ORDER BY r.strength DESC
                   LIMIT 30',
-                ['wid' => $worldId, 'eid' => $entityId]
+                ['wid' => $worldId, 'eid1' => $entityId, 'eid2' => $entityId]
             );
 
             if (!empty($rels)) {
@@ -304,10 +304,10 @@ class Claude
                 'SELECT from_entity_id, to_entity_id
                    FROM entity_relationships
                   WHERE world_id = :wid
-                    AND (from_entity_id = :eid OR to_entity_id = :eid)
+                    AND (from_entity_id = :eid1 OR to_entity_id = :eid2)
                     AND deleted_at IS NULL
                   LIMIT 10',
-                ['wid' => $worldId, 'eid' => $entityId]
+                ['wid' => $worldId, 'eid1' => $entityId, 'eid2' => $entityId]
             );
 
             $counterpartIds = [];

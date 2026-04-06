@@ -97,13 +97,15 @@ class AuthController
         // Rate-limit before any DB work to prevent enumeration timing attacks
         RateLimit::checkLogin($data['login'], $_SERVER['REMOTE_ADDR'] ?? '');
 
-        // Lookup by username OR email
+        // Lookup by username OR email.
+        // PDO with ATTR_EMULATE_PREPARES=false requires unique placeholder names,
+        // so we bind the same value under two names.
         $user = DB::queryOne(
             'SELECT * FROM users
-              WHERE (username = :l OR email = :l)
+              WHERE (username = :lu OR email = :le)
                 AND deleted_at IS NULL
               LIMIT 1',
-            ['l' => $data['login']]
+            ['lu' => $data['login'], 'le' => $data['login']]
         );
 
         // Account lockout check (before password verify to prevent timing leaks)
