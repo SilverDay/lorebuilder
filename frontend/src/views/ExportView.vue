@@ -244,16 +244,14 @@ async function doImport() {
     <section class="settings-section">
       <h2>Generate import JSON with Claude</h2>
       <p class="muted">
-        Have a world living in notes, docs, or an ongoing conversation? Paste this prompt at the
-        start of a new Claude chat, describe your world, then ask Claude to generate the import JSON.
-        Save the output as a <code>.json</code> file and import it below.
+        Have a world living in notes, docs, or an existing conversation? Copy the prompt below and
+        use it in any of these ways:
       </p>
 
       <ol class="import-steps">
-        <li>Copy the prompt below.</li>
-        <li>Open a new conversation with Claude (claude.ai or any Claude app).</li>
-        <li>Paste the prompt, then describe your world — characters, places, factions, events, lore.</li>
-        <li>At the end, say: <em>"Now generate the LoreBuilder import JSON."</em></li>
+        <li><strong>Existing conversation:</strong> paste the prompt directly into the chat where your world was discussed, then say <em>"Now generate the LoreBuilder import JSON."</em> Claude will use everything already in that thread.</li>
+        <li><strong>New conversation from notes:</strong> open a new Claude chat, paste the prompt, paste your notes or lore text, then ask for the JSON.</li>
+        <li><strong>Long or old threads:</strong> start a fresh chat, paste the prompt, then paste a summary of your world — Claude produces cleaner results with a focused context.</li>
         <li>Save Claude's JSON response as a <code>.json</code> file and import it in the section below.</li>
       </ol>
 

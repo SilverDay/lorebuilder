@@ -1,8 +1,10 @@
 # LoreBuilder — Claude Import Prompt
 
-Copy everything below this line and paste it at the start of a new conversation with Claude.
-Then describe your world, characters, places, factions, events, and any other lore you want to capture.
-At the end, ask Claude: **"Now generate the LoreBuilder import JSON."**
+Copy everything below this line and use it in one of these ways:
+
+- **Existing conversation** — paste it directly into the chat where your world was discussed, then say **"Now generate the LoreBuilder import JSON."** Claude will use everything already in that thread.
+- **New conversation from notes** — open a new Claude chat, paste the prompt, paste your notes or lore text, then ask for the JSON.
+- **Long or old threads** — start a fresh chat, paste the prompt, then paste a summary of your world for cleaner results.
 
 ---
 
