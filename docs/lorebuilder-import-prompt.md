@@ -139,9 +139,22 @@ Free text — use natural language that fits the world (e.g. `"ally of"`, `"rule
       "is_canonical": true,
       "ai_generated": false
     }
+  ],
+
+  "open_points": [
+    {
+      "entity_id":   1,
+      "title":       "<short question or unresolved issue, required, max 512>",
+      "description": "<fuller context, optional>",
+      "status":      "<open | in_progress | resolved | wont_fix>",
+      "priority":    "<low | medium | high | critical>"
+    }
   ]
 }
 ```
+
+## Open points guidance
+Use `open_points` for anything unresolved, contradictory, or deliberately left ambiguous — questions the world still needs to answer, design decisions pending, plot holes, lore gaps. Notes are for established lore; open points are for things that still need work.
 
 ---
 

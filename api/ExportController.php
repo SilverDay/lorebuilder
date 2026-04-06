@@ -224,7 +224,8 @@ class ExportController
         $conflictMode = $query['conflict'] ?? 'skip';
 
         $stats = ['entities' => 0, 'relationships' => 0, 'notes' => 0,
-                  'timelines' => 0, 'events' => 0, 'arcs' => 0, 'tags' => 0];
+                  'timelines' => 0, 'events' => 0, 'arcs' => 0, 'tags' => 0,
+                  'open_points' => 0];
 
         DB::transaction(function () use ($wid, $userId, $data, $conflictMode, &$stats): void {
             // ── Tags ──────────────────────────────────────────────────────────
@@ -441,6 +442,29 @@ class ExportController
                     ]
                 );
                 $stats['notes']++;
+            }
+
+            // ── Open Points ───────────────────────────────────────────────────
+            $validOpStatuses   = ['open','in_progress','resolved','wont_fix'];
+            $validOpPriorities = ['low','medium','high','critical'];
+            foreach ((array) ($data['open_points'] ?? []) as $op) {
+                $title = mb_substr(trim((string) ($op['title'] ?? '')), 0, 512);
+                if ($title === '') continue;
+                $entId = $oldToNewEntity[(int) ($op['entity_id'] ?? 0)] ?? null;
+                DB::execute(
+                    'INSERT INTO open_points (world_id, entity_id, created_by, title, description, status, priority)
+                     VALUES (:wid, :eid, :uid, :title, :desc, :status, :priority)',
+                    [
+                        'wid'      => $wid,
+                        'eid'      => $entId,
+                        'uid'      => $userId,
+                        'title'    => $title,
+                        'desc'     => $op['description'] ?? null,
+                        'status'   => in_array($op['status'] ?? '', $validOpStatuses, true) ? $op['status'] : 'open',
+                        'priority' => in_array($op['priority'] ?? '', $validOpPriorities, true) ? $op['priority'] : 'medium',
+                    ]
+                );
+                $stats['open_points']++;
             }
         });
 
