@@ -621,9 +621,16 @@ input[type="search"] { max-width: 280px; }
 /* ── Role select (members table) ────────────────────────────────────────── */
 .role-select { font: inherit; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: .3rem; padding: .2rem .4rem; color: var(--color-text); font-size: .8rem; }
 
-/* ── Import stats ────────────────────────────────────────────────────────── */
+/* ── Import stats + prompt ───────────────────────────────────────────────── */
 .import-stats { font-size: .875rem; padding: .5rem .75rem; background: var(--color-surface2); border-radius: .4rem; border: 1px solid var(--color-border); }
 code        { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+.import-steps { margin: .75rem 0 1rem 1.25rem; padding: 0; color: var(--color-muted); font-size: .9rem; line-height: 1.8; }
+.import-steps em   { color: var(--color-text); font-style: normal; font-weight: 500; }
+.import-steps code { font-size: .85em; background: var(--color-surface2); padding: .1em .35em; border-radius: .25rem; }
+.import-prompt-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+.import-prompt-preview { background: var(--color-surface2); border: 1px solid var(--color-border); border-radius: .5rem; overflow: auto; max-height: 340px; }
+.import-prompt-preview pre { margin: 0; padding: 1rem; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: .78rem; line-height: 1.55; white-space: pre-wrap; color: var(--color-muted); }
 
 /* ── Form row (inline fields) ────────────────────────────────────────────── */
 .form-row { display: flex; gap: .75rem; flex-wrap: wrap; }

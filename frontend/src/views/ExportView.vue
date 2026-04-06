@@ -16,6 +16,152 @@ const importMsg   = ref('')
 const importError = ref('')
 const importStats = ref(null)
 
+// ── Claude import prompt ───────────────────────────────────────────────────────
+const promptCopied   = ref(false)
+const promptExpanded = ref(false)
+
+const CLAUDE_PROMPT = `You are a world-building assistant helping to structure lore for import into LoreBuilder.
+
+When the user asks you to generate the import JSON, output a single valid JSON object that
+strictly follows the schema below. Do not add any commentary, markdown fences, or text
+outside the JSON object itself.
+
+## Rules
+
+- \`lorebuilder_version\` must always be the string \`"1"\`.
+- Every object with an \`id\` field uses a **local integer ID** — these are only used to
+  cross-reference objects within this file (e.g. linking a note to an entity, or an event
+  to a timeline). Start entity IDs at 1, timeline IDs at 1, arc IDs at 1. They will be
+  remapped to real database IDs on import.
+- Omit any top-level array that has no entries (or include it as \`[]\`).
+- All string fields have maximum lengths — truncate if necessary (see limits below).
+- Unknown or ambiguous entity types default to \`"Concept"\`.
+- Unknown arc statuses default to \`"seed"\`.
+
+## Entity types (use exactly as written)
+\`Character\` \`Location\` \`Event\` \`Faction\` \`Artefact\` \`Creature\` \`Concept\` \`StoryArc\` \`Timeline\` \`Race\`
+
+## Entity statuses
+\`draft\` \`published\` \`archived\`
+
+## Arc statuses
+\`seed\` \`rising_action\` \`climax\` \`resolution\` \`complete\` \`abandoned\`
+
+## Timeline scale modes
+\`numeric\` \`date\` \`era\`
+
+## Relationship types
+Free text — use natural language that fits the world (e.g. \`"ally of"\`, \`"rules over"\`,
+\`"child of"\`, \`"sworn enemy of"\`, \`"created by"\`). Max 64 characters.
+
+---
+
+## JSON Schema
+
+\`\`\`json
+{
+  "lorebuilder_version": "1",
+  "exported_at": "<ISO 8601 timestamp or empty string>",
+
+  "world": {
+    "name":             "<string, required, max 255>",
+    "slug":             "<lowercase-hyphenated, max 100, derived from name>",
+    "description":      "<string, optional, max 2000>",
+    "genre":            "<string, optional, e.g. Fantasy / Sci-Fi / Horror>",
+    "tone":             "<string, optional, e.g. Dark, Hopeful, Gritty>",
+    "era_system":       "<string, optional, e.g. Age of Myth / Age of Steel>",
+    "content_warnings": "<string, optional>"
+  },
+
+  "tags": [
+    {
+      "name":  "<string, max 64>",
+      "color": "<hex color, e.g. #4A90A4>"
+    }
+  ],
+
+  "entities": [
+    {
+      "id":            1,
+      "type":          "<Entity type from list above>",
+      "name":          "<string, required, max 255>",
+      "status":        "<draft | published | archived>",
+      "short_summary": "<one-sentence description, max 512>",
+      "lore_body":     "<longer Markdown description, optional>",
+      "tags":          ["<tag name>"],
+      "attributes": [
+        {
+          "attr_key":   "<label, max 64>",
+          "attr_value": "<value, max 4000>",
+          "data_type":  "<string | integer | boolean | date | markdown>",
+          "sort_order": 0
+        }
+      ]
+    }
+  ],
+
+  "relationships": [
+    {
+      "from_entity_id": 1,
+      "to_entity_id":   2,
+      "rel_type":       "<free text, max 64>",
+      "strength":       null,
+      "notes":          "<optional context, max 1000>",
+      "bidirectional":  false
+    }
+  ],
+
+  "timelines": [
+    {
+      "id":          1,
+      "name":        "<string, required, max 255>",
+      "description": "<optional>",
+      "scale_mode":  "<numeric | date | era>"
+    }
+  ],
+
+  "events": [
+    {
+      "timeline_id":     1,
+      "entity_id":       1,
+      "label":           "<string, required, max 255>",
+      "description":     "<optional>",
+      "position_order":  0,
+      "position_label":  "<e.g. Year 340, max 128>",
+      "position_era":    "<e.g. Age of Myth, max 128>"
+    }
+  ],
+
+  "arcs": [
+    {
+      "id":         1,
+      "name":       "<string, required, max 255>",
+      "logline":    "<one-sentence pitch, max 512>",
+      "theme":      "<thematic statement, max 255>",
+      "status":     "<arc status from list above>",
+      "sort_order": 0,
+      "entity_ids": [1, 2]
+    }
+  ],
+
+  "notes": [
+    {
+      "entity_id":    1,
+      "content":      "<Markdown text, required>",
+      "is_canonical": true,
+      "ai_generated": false
+    }
+  ]
+}
+\`\`\`
+`
+
+async function copyPrompt() {
+  await navigator.clipboard.writeText(CLAUDE_PROMPT)
+  promptCopied.value = true
+  setTimeout(() => { promptCopied.value = false }, 2500)
+}
+
 async function doExport() {
   exporting.value   = true
   exportError.value = ''
@@ -94,12 +240,43 @@ async function doImport() {
       </form>
     </section>
 
+    <!-- Generate with Claude section -->
+    <section class="settings-section">
+      <h2>Generate import JSON with Claude</h2>
+      <p class="muted">
+        Have a world living in notes, docs, or an ongoing conversation? Paste this prompt at the
+        start of a new Claude chat, describe your world, then ask Claude to generate the import JSON.
+        Save the output as a <code>.json</code> file and import it below.
+      </p>
+
+      <ol class="import-steps">
+        <li>Copy the prompt below.</li>
+        <li>Open a new conversation with Claude (claude.ai or any Claude app).</li>
+        <li>Paste the prompt, then describe your world — characters, places, factions, events, lore.</li>
+        <li>At the end, say: <em>"Now generate the LoreBuilder import JSON."</em></li>
+        <li>Save Claude's JSON response as a <code>.json</code> file and import it in the section below.</li>
+      </ol>
+
+      <div class="import-prompt-actions">
+        <button class="btn btn-primary" @click="copyPrompt">
+          {{ promptCopied ? '✓ Copied!' : 'Copy prompt to clipboard' }}
+        </button>
+        <button class="btn btn-ghost" @click="promptExpanded = !promptExpanded">
+          {{ promptExpanded ? 'Hide prompt' : 'Preview prompt' }}
+        </button>
+      </div>
+
+      <div v-if="promptExpanded" class="import-prompt-preview">
+        <pre>{{ CLAUDE_PROMPT }}</pre>
+      </div>
+    </section>
+
     <!-- Import section -->
     <section class="settings-section">
       <h2>Import from JSON</h2>
       <p class="muted">
-        Imports entities, relationships, timelines, arcs and notes from a LoreBuilder JSON export.
-        Existing data is preserved — the import always adds new records.
+        Imports entities, relationships, timelines, arcs and notes from a LoreBuilder JSON export
+        or a Claude-generated import file. Existing data is preserved — the import always adds new records.
       </p>
 
       <form class="settings-form" @submit.prevent="doImport">
