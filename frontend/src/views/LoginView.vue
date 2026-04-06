@@ -65,7 +65,8 @@ async function submit() {
         {{ loading ? 'Signing in…' : 'Sign in' }}
       </button>
 
-      <p><a href="/register">Create an account</a></p>
+      <p><RouterLink to="/forgot-password">Forgot your password?</RouterLink></p>
+      <p><RouterLink to="/register">Create an account</RouterLink></p>
     </form>
   </div>
 </template>

@@ -21,6 +21,7 @@ function open(world) {
       <h1>Your Worlds</h1>
       <div class="page-header-actions">
         <RouterLink to="/worlds/new" class="btn btn-primary">New world</RouterLink>
+        <RouterLink to="/account/password" class="btn btn-ghost">Change password</RouterLink>
         <button class="btn btn-ghost" @click="auth.logout().then(() => $router.push('/login'))">
           Sign out
         </button>

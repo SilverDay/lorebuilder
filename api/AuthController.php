@@ -431,6 +431,39 @@ class AuthController
         echo json_encode(['data' => ['message' => 'Password updated. You can now log in.']], JSON_UNESCAPED_UNICODE);
     }
 
+    // ─── POST /api/v1/auth/password/change ───────────────────────────────────
+
+    public static function passwordChange(array $p): void
+    {
+        $session = Auth::requireSession();
+        $userId  = (int) $session['id'];
+
+        RateLimit::check('pwchange:' . $userId, 5, 900);  // 5 attempts per 15 minutes
+
+        $data = Validator::parseJson([
+            'current_password' => 'required|string|max:1024',
+            'new_password'     => 'required|string|min:' . self::MIN_PASSWORD_LEN . '|max:1024',
+        ]);
+
+        $user = DB::queryOne(
+            'SELECT password_hash FROM users WHERE id = :id AND deleted_at IS NULL AND is_active = 1',
+            ['id' => $userId]
+        );
+
+        if (!$user || !Auth::verifyPassword($data['current_password'], $user['password_hash'])) {
+            Router::jsonError(401, 'AUTH_INVALID', 'Current password is incorrect.');
+            return;
+        }
+
+        DB::execute(
+            'UPDATE users SET password_hash = :h WHERE id = :id',
+            ['h' => Auth::hashPassword($data['new_password']), 'id' => $userId]
+        );
+
+        self::audit(null, $userId, 'user.password.change', 'user', $userId);
+        echo json_encode(['data' => ['message' => 'Password updated successfully.']], JSON_UNESCAPED_UNICODE);
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     /**

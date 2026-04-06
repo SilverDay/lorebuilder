@@ -29,6 +29,24 @@ const routes = [
     meta:      { requiresGuest: true },
   },
   {
+    path:      '/forgot-password',
+    name:      'ForgotPassword',
+    component: () => import('@/views/ForgotPasswordView.vue'),
+    meta:      { requiresGuest: true },
+  },
+  {
+    path:      '/reset-password',
+    name:      'ResetPassword',
+    component: () => import('@/views/ResetPasswordView.vue'),
+    meta:      { requiresGuest: true },
+  },
+  {
+    path:      '/account/password',
+    name:      'ChangePassword',
+    component: () => import('@/views/ChangePasswordView.vue'),
+    meta:      { requiresAuth: true },
+  },
+  {
     path:      '/tutorial',
     name:      'Tutorial',
     component: () => import('@/views/TutorialView.vue'),

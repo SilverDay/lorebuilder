@@ -95,6 +95,7 @@ Router::post('/api/v1/auth/logout',               [AuthController::class, 'logou
 Router::get( '/api/v1/auth/me',                   [AuthController::class, 'me'],              auth: true,  csrf: false);
 Router::post('/api/v1/auth/password/reset-request',[AuthController::class,'passwordResetRequest'], auth: false, csrf: false);
 Router::post('/api/v1/auth/password/reset',       [AuthController::class, 'passwordReset'],   auth: false, csrf: false);
+Router::post('/api/v1/auth/password/change',      [AuthController::class, 'passwordChange'],  auth: true,  csrf: true);
 Router::post('/api/v1/auth/totp/verify',          [AuthController::class, 'totpVerify'],      auth: true,  csrf: false);
 Router::post('/api/v1/auth/totp/setup',           [AuthController::class, 'totpSetup'],       auth: true,  csrf: true);
 Router::post('/api/v1/auth/totp/confirm',         [AuthController::class, 'totpConfirm'],     auth: true,  csrf: true);

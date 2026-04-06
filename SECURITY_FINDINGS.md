@@ -166,6 +166,21 @@ Resolved-date: 2026-04-06
 
 ---
 
+[FINDING-011]
+Date: 2026-04-06
+Severity: MEDIUM
+File: api/AuthController.php
+Line: passwordChange() method (before fix)
+Description: passwordChange() verified the current password with no rate limit. A hijacked
+  session could be used to brute-force the current_password field without any throttling,
+  potentially confirming or changing the password without the account owner's knowledge.
+Fix: Added RateLimit::check('pwchange:{userId}', 5, 900) — 5 attempts per 15 minutes per user.
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2026-04-06
+
+---
+
 [FINDING-010]
 Date: 2026-04-06
 Severity: LOW
