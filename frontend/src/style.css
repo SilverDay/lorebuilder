@@ -283,9 +283,14 @@ input[type="search"] { max-width: 280px; }
 
 .attr-section-header { display: flex; align-items: center; justify-content: space-between; margin: .75rem 0 .35rem; }
 .attr-section-header h3 { margin: 0; }
-.attr-edit-list { display: flex; flex-direction: column; gap: .4rem; margin-bottom: .5rem; }
-.attr-edit-row { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: .3rem; align-items: center; }
-.attr-edit-key, .attr-edit-value, .attr-edit-type { font: inherit; font-size: .8rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: .3rem; padding: .25rem .4rem; color: var(--color-text); min-width: 0; }
+.attr-edit-list { display: flex; flex-direction: column; gap: .6rem; margin-bottom: .5rem; }
+.attr-edit-card { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: .4rem; padding: .5rem; }
+.attr-edit-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .4rem; }
+.attr-edit-card-num { font-size: .7rem; font-weight: 600; color: var(--color-muted); }
+.attr-edit-label { display: flex; flex-direction: column; gap: .15rem; font-size: .75rem; color: var(--color-muted); margin-bottom: .35rem; }
+.attr-edit-label:last-child { margin-bottom: 0; }
+.attr-edit-key, .attr-edit-value, .attr-edit-type { font: inherit; font-size: .8rem; background: var(--color-surface, var(--color-bg)); border: 1px solid var(--color-border); border-radius: .3rem; padding: .3rem .4rem; color: var(--color-text); width: 100%; box-sizing: border-box; }
+.attr-edit-value[rows] { resize: vertical; }
 .attr-edit-type { font-size: .75rem; }
 .attr-edit-actions { display: flex; gap: .15rem; }
 .attr-add-btn { margin-top: .1rem; font-size: .8rem; }

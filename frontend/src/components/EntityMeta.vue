@@ -124,17 +124,30 @@ async function saveAttrs() {
     <!-- Edit mode -->
     <template v-else>
       <div class="attr-edit-list">
-        <div v-for="(row, i) in draft" :key="i" class="attr-edit-row">
-          <input v-model="row.attr_key"   class="attr-edit-key"   placeholder="Key"   maxlength="64" />
-          <input v-model="row.attr_value" class="attr-edit-value" placeholder="Value" maxlength="4000" />
-          <select v-model="row.data_type" class="attr-edit-type">
-            <option v-for="t in ATTR_TYPES" :key="t" :value="t">{{ t }}</option>
-          </select>
-          <span class="attr-edit-actions">
-            <button type="button" class="btn-icon" title="Move up"   @click="moveUp(i)"">↑</button>
-            <button type="button" class="btn-icon" title="Move down" @click="moveDown(i)">↓</button>
-            <button type="button" class="btn-icon btn-icon--danger" title="Remove" @click="removeRow(i)">✕</button>
-          </span>
+        <div v-for="(row, i) in draft" :key="i" class="attr-edit-card">
+          <div class="attr-edit-card-header">
+            <span class="attr-edit-card-num">#{{ i + 1 }}</span>
+            <span class="attr-edit-actions">
+              <button type="button" class="btn-icon" title="Move up"   :disabled="i === 0" @click="moveUp(i)">↑</button>
+              <button type="button" class="btn-icon" title="Move down" :disabled="i === draft.length - 1" @click="moveDown(i)">↓</button>
+              <button type="button" class="btn-icon btn-icon--danger" title="Remove" @click="removeRow(i)">✕</button>
+            </span>
+          </div>
+          <label class="attr-edit-label">
+            Key
+            <input v-model="row.attr_key" class="attr-edit-key" placeholder="e.g. Age, Height, Alignment" maxlength="64" />
+          </label>
+          <label class="attr-edit-label">
+            Value
+            <textarea v-if="row.data_type === 'markdown'" v-model="row.attr_value" class="attr-edit-value" placeholder="Value" maxlength="4000" rows="3"></textarea>
+            <input v-else v-model="row.attr_value" class="attr-edit-value" placeholder="Value" maxlength="4000" />
+          </label>
+          <label class="attr-edit-label">
+            Type
+            <select v-model="row.data_type" class="attr-edit-type">
+              <option v-for="t in ATTR_TYPES" :key="t" :value="t">{{ t }}</option>
+            </select>
+          </label>
         </div>
       </div>
 

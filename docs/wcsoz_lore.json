@@ -1,0 +1,440 @@
+{
+  "lorebuilder_version": "1",
+  "exported_at": "2026-04-06T00:00:00Z",
+
+  "world": {
+    "name": "Wizard's Castle: Shadows of Zot",
+    "slug": "wizards-castle-shadows-of-zot",
+    "description": "A dark fantasy sword & sorcery world set on the ancient continent of Arboria, once united under the Kingdom of N'Dic and now fractured by centuries of war. The gods sang reality into existence — their Song sustains the world, while the Silence (entropy, unmaking) encroaches wherever conflict creates disharmony. Deep beneath the ruins of N'Dic's heartland, the subterranean castle of the Gnomic wizard Zot waits — filled with esurient monsters, fabulous treasures, and the legendary Orb of Power. None who have entered have ever emerged victoriously.",
+    "genre": "Dark Fantasy / Sword & Sorcery",
+    "tone": "Dark, mythic, ambiguous — history feels like legend, narrators are unreliable",
+    "era_system": "Cycles (pre-Fracturing / The Fracturing / Age of Ruins)",
+    "content_warnings": "Violence, war, themes of entropy and unmaking"
+  },
+
+  "tags": [
+    { "name": "canon", "color": "#534AB7" },
+    { "name": "open-question", "color": "#D85A30" },
+    { "name": "cosmology", "color": "#1D9E75" },
+    { "name": "in-progress", "color": "#BA7517" },
+    { "name": "n-dic", "color": "#378ADD" },
+    { "name": "the-silence", "color": "#444441" },
+    { "name": "the-song", "color": "#639922" },
+    { "name": "lysandra-myth", "color": "#D4537E" },
+    { "name": "race", "color": "#888780" },
+    { "name": "faction-relevant", "color": "#E24B4A" }
+  ],
+
+  "entities": [
+    {
+      "id": 1,
+      "type": "Location",
+      "name": "Arboria",
+      "status": "published",
+      "short_summary": "Ancient continent named for its once-vast unbroken forests, now scarred by centuries of war and layered with the ruins of fallen civilizations.",
+      "lore_body": "Arboria is an ancient continent, old beyond reliable reckoning. Its forests once stretched unbroken from the Eastern Reaches to the Western Shores — vast, dark, and older than any kingdom. The name itself derives from those primordial forests, though most have long since been felled for warships, siege engines, and funeral pyres.\n\nThe land is scarred. Travelers crossing Arboria move through layers of history — ruins so numerous and varied that scholars debate how many distinct civilizations rose and fell before N'Dic ever raised its first banner.\n\nCertain regions are simply avoided — places where the wars left wounds that never healed, where old magic has warped soil and sky alike.\n\nToday Arboria is a patchwork of successor states, petty kingdoms, free cities, and ungoverned wilderness. None commands the loyalty the old N'Dic throne once held.",
+      "tags": ["canon", "n-dic"],
+      "attributes": [
+        { "attr_key": "Status", "attr_value": "Fractured — patchwork of successor states", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Geography", "attr_value": "Single continent; temperate heartlands, harsh coasts, magically warped interior regions", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Notable Feature", "attr_value": "Layers of ruins from multiple pre-N'Dic civilizations — history is archaeological", "data_type": "string", "sort_order": 2 }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Location",
+      "name": "Kingdom of N'Dic",
+      "status": "published",
+      "short_summary": "Once the greatest political achievement Arboria had seen, spanning the continent coast to coast — now a ghost, a name, and a quarrel among successor states.",
+      "lore_body": "At its height, N'Dic was a true continent-spanning kingdom that brought disparate peoples under a single throne through centuries of statecraft, strategic marriages, trade agreements, and the occasional well-placed assassination.\n\nThe throne sat in **Calundrath**, built at the geographic heart of Arboria. The capital was magnificent: tiered towers, a great university, markets drawing merchants from every corner of the continent, and an extensive undercity of cisterns, vaults, and forgotten passages.\n\nN'Dic was not a gentle kingdom — it was pragmatic, occasionally brutal, deeply hierarchical. But it was *stable*. For several generations, ordinary people simply lived their lives without soldiers burning their harvests.\n\n**The Fracturing** — nearly two hundred years of cascading succession wars — destroyed it. The throne passed by noble council rather than primogeniture; every succession became a crisis. Three simultaneous claimants triggered the final collapse.\n\nCalundrath fell twice. The great university burned in the Forty-Third Year. Noble houses were erased. Roads fell to ruin.\n\nToday at least four successor states claim the N'Dic throne. None has the power to press it. The loss of records means much of N'Dic's history now exists only as legend — a deliberate lore opportunity.",
+      "tags": ["canon", "n-dic", "faction-relevant"],
+      "attributes": [
+        { "attr_key": "Capital", "attr_value": "Calundrath (contested, partially ruined)", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Government (historical)", "attr_value": "Noble council succession — source of its eventual collapse", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Current Status", "attr_value": "Dissolved; four successor states claim legitimacy", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "The Fracturing Duration", "attr_value": "~200 years of cascading succession wars", "data_type": "string", "sort_order": 3 }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Location",
+      "name": "Calundrath",
+      "status": "published",
+      "short_summary": "The former capital of N'Dic, built at the geographic heart of Arboria — sacked twice, partially ruined, now contested between successor states.",
+      "lore_body": "Calundrath was deliberately placed at the geographic center of Arboria so no corner of the kingdom could claim the capital favored one coast over another. At its height it was magnificent — tiered towers of white and ochre stone, a university of considerable renown, markets drawing merchants from every corner of the continent, and beneath it all an extensive undercity of cisterns, vaults, and forgotten passages.\n\nThe city fell twice during the Fracturing. What stands today is a shadow of the original, occupied by whichever faction currently controls the heartland. The great university was burned in the Forty-Third Year of the Fracturing — the loss of knowledge was incalculable. Entire disciplines of scholarship simply ceased to exist.",
+      "tags": ["canon", "n-dic"],
+      "attributes": [
+        { "attr_key": "Status", "attr_value": "Contested; changes hands approximately once per generation", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Sackings", "attr_value": "Twice during the Fracturing", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Lost Institution", "attr_value": "Great university — burned in the Forty-Third Year; entire disciplines of scholarship erased", "data_type": "string", "sort_order": 2 }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Location",
+      "name": "The Wizard's Castle",
+      "status": "published",
+      "short_summary": "The vast subterranean castle of the Gnomic wizard Zot — filled with esurient monsters, fabulous treasures, and the Orb of Power. None who have entered have ever emerged victoriously.",
+      "lore_body": "The castle sits at the edge of what was once the N'Dic heartland. It is not ruined, not contested — simply *avoided*. No army has ever successfully occupied it. No successor state has formally claimed it.\n\nIts subterranean architecture defies easy explanation: some sections show clear Dwarf influence, yet no Dwarf contract records for its construction exist — a matter of significant craft honor among the Khorum.\n\nThe monsters within are *esurient* — hungry, not merely evil. Whether they were always there or were created and summoned by Zot is unknown.\n\nEvery adventurer who entered is either dead or still somewhere below. The castle has a perfect kill record. The bold youths who venture in come from all the successor states — some seek the Orb, some seek treasure, some are running from something, some are sent by factions with their own agendas.\n\n**None has emerged victoriously.**",
+      "tags": ["canon", "faction-relevant"],
+      "attributes": [
+        { "attr_key": "Location", "attr_value": "Edge of the former N'Dic heartland", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Architecture", "attr_value": "Subterranean; shows Dwarf influence with no surviving contract records", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Survival Rate", "attr_value": "Zero — none has ever emerged victoriously", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Contents", "attr_value": "Esurient monsters, fabulous treasures, the Orb of Zot", "data_type": "string", "sort_order": 3 }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "Character",
+      "name": "Zot",
+      "status": "published",
+      "short_summary": "Gnomic wizard and creator of the Orb of Power — not a villain but a desperate idealist who witnessed the wars of the Fracturing and sought to end them through absolute authority.",
+      "lore_body": "Zot was a Gnomic scholar from a minor settlement in the Arborian interior. He was, by all accounts that survive, a *witness* — he lived through three of the succession wars, watched Calundrath burn the second time from a hillside outside the city walls, and kept meticulous journals documenting not battles but consequences: villages emptied, children orphaned, knowledge lost.\n\nHe became consumed by a single question: **What would it take to make it stop?**\n\nHis pursuit drove him from scholarship into sorcery, from sorcery into obsession, and from obsession into the years-long working that produced the Orb of Power — not a weapon in the conventional sense, but something more dangerous: an instrument of absolute authority designed to make resistance to its bearer not merely difficult but *metaphysically impossible*.\n\nZot's intention was not conquest. It was **finality**. One ruler. One peace. Forever. Whether that vision was noble, naive, or monstrous is deliberately left open.\n\nAfter completing the Orb, he vanished. His fate is unknown. His journals may survive somewhere in the depths of the castle.",
+      "tags": ["canon", "open-question"],
+      "attributes": [
+        { "attr_key": "Race", "attr_value": "Gnomic (Arcani)", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Motivation", "attr_value": "End the wars of the Fracturing through absolute, permanent authority — not conquest but finality", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Fate", "attr_value": "Unknown — vanished after completing the Orb. Dead? Transcended? Trapped within the Orb?", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Surviving Records", "attr_value": "Journals may exist in the castle's depths", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Moral Framing", "attr_value": "Deliberately ambiguous — noble idealist, naive fool, or monstrous tyrant-in-waiting", "data_type": "string", "sort_order": 4 }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Artefact",
+      "name": "The Orb of Power",
+      "status": "published",
+      "short_summary": "A Gnomic working of extraordinary complexity forged by Zot — an instrument of absolute authority designed to make resistance to its bearer metaphysically impossible.",
+      "lore_body": "The Orb of Power (also called the Orb of Zot) is the culmination of Zot's life's work — a years-long magical working of a complexity that no other mage has since matched or fully understood.\n\nIt is not a weapon in the conventional sense. It was designed to confer absolute authority upon its bearer — making resistance not merely difficult but *metaphysically impossible*. Zot's intent was finality: one ruler, one peace, forever.\n\nBecause it is a Gnomic working, scholars suspect it contains **nested layers of function** whose purpose remains entirely unclear. The obvious power is real, but what else it does — or is designed to do — is unknown.\n\nGnomish scholars are divided: some consider it the greatest achievement their people ever produced; others consider it a catastrophic warning. A significant faction simply wants access for study.\n\nThe Orb sits somewhere in the depths of the castle, waiting.",
+      "tags": ["canon", "open-question"],
+      "attributes": [
+        { "attr_key": "Creator", "attr_value": "Zot (Gnomic wizard)", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Function (known)", "attr_value": "Confers absolute authority — resistance becomes metaphysically impossible", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Function (suspected)", "attr_value": "Contains nested layers of additional purpose — unknown", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Location", "attr_value": "Somewhere in the depths of the Wizard's Castle", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Silence Connection?", "attr_value": "Open question — did Zot know about the Silence? Was the Orb designed as a weapon against it?", "data_type": "string", "sort_order": 4 }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Concept",
+      "name": "The Song",
+      "status": "published",
+      "short_summary": "The act by which the gods sang reality into existence — still sustaining Arboria, carried in different strands by each of the peoples of the world.",
+      "lore_body": "In the beginning, the gods sang. Their song entwined with magic and wove reality into existence — Arboria itself is the product of that Song, and the Song continues, sustaining the world.\n\nEach of the peoples of Arboria carries a strand of the original Song, reflecting their deepest nature:\n\n- **Elves (Sylvari)** — *The Living Thread*: nature, growth, cycles, the voice of the world\n- **Dwarfs (Khorum)** — *The Deep Beat*: foundation, permanence, the heartbeat of stone\n- **Gnomes (Arcani)** — *The Arcane Fugue*: structure, the mathematics of magic, hidden patterns\n- **Humans** — *The Restless Melody*: change, yearning, ambition, improvisation\n- **Orcs (Grauth)** — *The War Chant*: memory, honor, the rhythm of becoming\n- **Halflings** — *The River Song*: connection, trade, the flow between things\n\nNo strand alone is complete. The great harmony of all strands woven together is capable of banishing the Silence — but achieving that harmony requires bards of each people who can truly hear their strand.\n\nBelief in the Song is contested — some Elven elders call it heresy.",
+      "tags": ["canon", "cosmology", "the-song"],
+      "attributes": [
+        { "attr_key": "Nature", "attr_value": "The act of divine creation — ongoing, sustaining reality", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Threat", "attr_value": "Disrupted by disharmony (war, conflict) — allows the Silence to encroach", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Contested?", "attr_value": "Yes — some Elven elders call belief in the Song heresy", "data_type": "string", "sort_order": 2 }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Concept",
+      "name": "The Silence",
+      "status": "published",
+      "short_summary": "The absence of the Song — entropy, death, and unmaking that encroaches on Arboria wherever war and conflict create disharmony in the world's sustaining music.",
+      "lore_body": "The Silence is not a being or a god — it is an *absence*. Where the Song sustains and creates, the Silence unmakes. It is entropy given direction: death, dissolution, the slow erasure of everything the Song wove into existence.\n\nIt encroaches wherever disharmony weakens the Song. Wars, prolonged conflict, and widespread suffering create the cracks through which the Silence seeps. The Fracturing of N'Dic — two hundred years of continent-wide war — was therefore not merely a political catastrophe but a **cosmically significant wound** in the fabric of reality.\n\nPhysical manifestations of the Silence's touch include creatures and places warped by its influence — animals behaving wrongly, regions where life refuses to take hold, a wrongness that those sensitive to the Song can feel before they can name it.\n\nThe Silence cannot be permanently destroyed — only pushed back. The myth of Lysandra suggests a great harmony of all the racial strands of the Song can banish it, but only for a time.",
+      "tags": ["canon", "cosmology", "the-silence"],
+      "attributes": [
+        { "attr_key": "Nature", "attr_value": "Absence of the Song — entropy, unmaking, dissolution", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Cause", "attr_value": "Encroaches through disharmony created by war and conflict", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Manifestations", "attr_value": "Creatures touched by it, regions where life fails, a sensed wrongness", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Permanence", "attr_value": "Cannot be permanently destroyed — only pushed back", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "The Fracturing Connection", "attr_value": "Two centuries of war created a cosmically significant wound allowing major Silence encroachment", "data_type": "string", "sort_order": 4 }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Race",
+      "name": "Elves (Sylvari)",
+      "status": "published",
+      "short_summary": "Ancient, forest-bound people whose music connects directly to the Song of creation — their bards are uniquely potent, and they carry the weight of every forest lost to war.",
+      "lore_body": "The Elves are old — not merely long-lived but old in the way that forests are old: patient, deeply rooted, aware of cycles that shorter-lived races cannot perceive.\n\nElven settlements do not exist *in* forests — they *are* forests. Architecture is grown over decades, not built. An Elven city looks indistinguishable from old-growth woodland. That is deliberate.\n\n**Music is magic.** Elven song ties directly into the fabric of nature and the Song of creation. Elven bards are uniquely potent — other races also have bards, but their music influences rather than participates in the fundamental weave of reality. Elven music can do things no other race's music can.\n\nElven magic is organic and slow — it works with living systems and cannot be rushed. A working that produces dramatic results likely began decades or centuries ago.\n\nThe **Lament Scrolls** are maintained by Remembrancers — ongoing records of every forest lost to war, treated not as mourning documents but as debts recorded for eventual settlement.\n\nSong strand: *The Living Thread* — nature, growth, cycles, the voice of the world itself.",
+      "tags": ["canon", "race", "the-song"],
+      "attributes": [
+        { "attr_key": "Endonym", "attr_value": "Sylvari", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Song Strand", "attr_value": "The Living Thread — nature, growth, cycles", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Magic Type", "attr_value": "Organic, slow, works with living systems — effects may be decades or centuries in the making", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Cultural Wound", "attr_value": "The felling of Arboria's forests for war — recorded as debts in the Lament Scrolls", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Music & The Song", "attr_value": "Elven bards connect directly to the Song of creation — uniquely potent compared to all other races", "data_type": "string", "sort_order": 4 },
+        { "attr_key": "Contested Belief", "attr_value": "Some elders call belief in the Song heresy — not universally accepted even among Elves", "data_type": "string", "sort_order": 5 }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Race",
+      "name": "Dwarfs (Khorum)",
+      "status": "published",
+      "short_summary": "Underground kingdom-builders whose philosophical approach to craftsmanship produces the finest made things in Arboria — and who have unresolved questions about who built the Wizard's Castle.",
+      "lore_body": "The Dwarfs are a people of depth in every sense. Their underground kingdoms are vast, engineered, and magnificent — cathedral halls carved from living rock, aqueducts spanning mountain ranges, forges burning continuously for centuries.\n\nTheir craftsmanship is **philosophical**: material has integrity, and a craftsman's job is to reveal what the material wants to become, not impose upon it. A master Dwarf smith works *with* the metal. This produces results that are simply better than anything made by other hands.\n\nDwarfs maintain genealogical and craft records of extraordinary detail — who made what, from what materials, using which techniques, going back dozens of generations. This extends to debts, agreements, and grievances.\n\nThe Wizard's Castle is a matter of **significant craft honor**: its architecture shows clear Dwarf influence, yet no contract records for its construction survive. Either the records were lost, or someone went to considerable lengths to ensure they were destroyed.\n\nSong strand: *The Deep Beat* — foundation, permanence, the heartbeat of stone.",
+      "tags": ["canon", "race"],
+      "attributes": [
+        { "attr_key": "Endonym", "attr_value": "Khorum", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Song Strand", "attr_value": "The Deep Beat — foundation, permanence, the heartbeat of stone", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Magic Relationship", "attr_value": "Material and practical — enchantment as a workable property. Pure sorcery is uncomfortable to them.", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Castle Interest", "attr_value": "Dwarf influence visible in castle architecture; no contract records exist — craft honor matter", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Post-Fracturing", "attr_value": "Split between isolationist kingdoms and commercially aggressive ones — varies enormously by clan", "data_type": "string", "sort_order": 4 }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "Race",
+      "name": "Gnomes (Arcani)",
+      "status": "published",
+      "short_summary": "A people for whom magic is a sixth sense and a native language — their precision and ability to read, diagnose, and unravel magical workings is unmatched.",
+      "lore_body": "Gnomes experience magic as a sixth sense — born aware of the magical field underlying Arboria the way humans are born able to hear. This is not trained perception; it is native.\n\nFor Gnomes, magic is not a tool or discipline. It is closer to **language** — a native tongue they think in, not merely speak. Their magical tradition prizes precision and nuance above power. A Gnomic working is typically subtle, densely layered, and deeply considered. They can identify the framework of a working, diagnose its weaknesses, and — with sufficient study — unravel or redirect it.\n\nThis made Gnomes extremely sought-after by all sides during the Fracturing's wars. They survived better than most as a result.\n\nZot was Gnomic. The Orb of Power is therefore a Gnomic working — which means it is almost certainly far more subtle and complex than it appears, with nested layers of function whose purpose remains unknown.\n\nGnomic scholars are divided on Zot: greatest mage their people produced, or catastrophic warning?\n\nSong strand: *The Arcane Fugue* — structure, the mathematics of magic, hidden patterns.",
+      "tags": ["canon", "race", "the-song"],
+      "attributes": [
+        { "attr_key": "Endonym", "attr_value": "Arcani", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Song Strand", "attr_value": "The Arcane Fugue — structure, the mathematics of magic, hidden patterns", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Magic Relationship", "attr_value": "Magic as sixth sense and native language — precision over power, can unravel other workings", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Homeland", "attr_value": "None — community is intellectual rather than territorial; scattered across Arboria", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Divided on Zot", "attr_value": "Greatest mage ever produced vs. catastrophic warning — and a third faction just wants the Orb for study", "data_type": "string", "sort_order": 4 }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "Race",
+      "name": "Humans",
+      "status": "published",
+      "short_summary": "The restless architects and destroyers of N'Dic — curious, competitive, and constitutionally unable to accept that some things are not for them.",
+      "lore_body": "Humans built N'Dic. Humans tore it apart. They are doing it again on a smaller scale.\n\nWhat defines Humanity in Arboria is a combination that other races find exhausting: curiosity without patience, ambition without perspective, adaptability without wisdom, and an almost total inability to accept that some things are not for them. They live short lives and spend them reaching.\n\nThis is not entirely negative. Human energy and willingness to attempt the impossible have produced genuine wonders — the N'Dic road system, Calundrath itself, the political framework that held the continent together for three centuries.\n\nThe problem is making them cooperate.\n\nHumans are disproportionately represented among those who venture into the castle — partly demographics, mostly character. The combination of greed, curiosity, and an incomplete appreciation of mortality makes the castle's promise irresistible to a certain human type.\n\nSong strand: *The Restless Melody* — change, yearning, ambition, improvisation.",
+      "tags": ["canon", "race"],
+      "attributes": [
+        { "attr_key": "Song Strand", "attr_value": "The Restless Melody — change, yearning, ambition, improvisation", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Historical Role", "attr_value": "Built N'Dic; caused its collapse; building successor states in the same pattern", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Castle Adventurers", "attr_value": "Disproportionately human — greed + curiosity + incomplete appreciation of mortality", "data_type": "string", "sort_order": 2 }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "Race",
+      "name": "Orcs (Grauth)",
+      "status": "published",
+      "short_summary": "A warrior people with a cultural depth predating N'Dic — built on Memory, Honor, and Becoming, and whose oral tradition preserves knowledge no surviving document records.",
+      "lore_body": "The Orcs are perhaps the most misunderstood people in Arboria. Large, physically formidable, organized around warrior traditions — and possessed of cultural depth that predates N'Dic by centuries.\n\n**Three pillars of Grauth culture:**\n\n*Memory* is sacred. The Orcs maintain no written tradition — by choice, not incapacity. All history, genealogy, law, and story is carried in an oral tradition of extraordinary precision by **Vorath** (memory-keepers) who train from childhood. The loss of a Vorath in battle is considered a catastrophe far greater than any warrior.\n\n*Honor* is structural — a system of obligations between individuals, clans, and generations. These are binding contracts maintained by cultural force, not merely social niceties. An Orc who violates a sworn obligation is a wound in the social fabric.\n\n*Becoming* is philosophical — a person is not what they are born but what they forge themselves into. Scholar, warrior, artist: depth of commitment matters, not the field.\n\n**The critical lore asset:** The Vorath oral tradition predates N'Dic's written records. Orcs remember things no surviving document records. They have accounts of Arboria before the kingdom, before the wars, possibly before things other races consider ancient history.\n\nSong strand: *The War Chant* — memory, honor, the rhythm of becoming.",
+      "tags": ["canon", "race", "the-song"],
+      "attributes": [
+        { "attr_key": "Endonym", "attr_value": "Grauth", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Song Strand", "attr_value": "The War Chant — memory, honor, the rhythm of becoming", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Three Pillars", "attr_value": "Memory (oral tradition via Vorath), Honor (binding obligation system), Becoming (forging oneself through commitment)", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Vorath", "attr_value": "Memory-keepers who carry the entire oral tradition; loss of one is catastrophic", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Unique Lore Asset", "attr_value": "Oral tradition predates N'Dic's written records — Orcs remember pre-kingdom Arboria", "data_type": "string", "sort_order": 4 }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "Race",
+      "name": "Halflings",
+      "status": "draft",
+      "short_summary": "River and coastal traders, politically neutral by long tradition, with an intelligence network built on being consistently underestimated.",
+      "lore_body": "Halflings are river and coastal traders who have maintained political neutrality through multiple cycles of Arborian conflict. Their neutrality is not passivity — it is a carefully maintained strategic position that has served them well through every war.\n\nTheir intelligence network is built on a single foundation: other races consistently underestimate them. This has proven to be an extraordinary advantage.\n\nSong strand: *The River Song* — connection, trade, the flow between things.",
+      "tags": ["canon", "race", "in-progress"],
+      "attributes": [
+        { "attr_key": "Song Strand", "attr_value": "The River Song — connection, trade, the flow between things", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Political Position", "attr_value": "Neutral by long tradition — strategic, not passive", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Advantage", "attr_value": "Consistently underestimated — foundation of their intelligence network", "data_type": "string", "sort_order": 2 }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "Character",
+      "name": "Lysandra",
+      "status": "draft",
+      "short_summary": "A young Elven girl who hears the Song of creation more clearly than almost any other — whose gift makes her a target of the Silence, and whose quest will determine whether the Silence can be pushed back.",
+      "lore_body": "Lysandra is a minor by Elven reckoning — still supposed to attend school, though she prefers wandering the forest. She is not yet aware of her gift: she hears the Song of nature and creation more clearly than almost any other living being.\n\nHer story begins with violence — a wolf touched by the Silence attacks her. In the aftermath she begins to sense that the Silence seems to *target* her, which means her presence endangers her family and her people.\n\nAn elder who believes the old legend sends her away in secret — not all elders share this belief; some call it heresy, and the elder acts alone at personal risk. A friend discovers she is leaving and follows, initially in secret. She is accompanied throughout by a falcon she rescued as a chick.\n\n**Her quest:** find bards of the other races who can hear their own strand of the Song. Weave all strands into a great harmony to banish the Silence — for a while.\n\n**Three open questions** before the full origin myth can be written:\n1. Who is the friend — race, personality, why they follow?\n2. Does the elder give her something — an object, a name to find, a fragment of legend?\n3. What is the falcon's name?",
+      "tags": ["in-progress", "open-question", "lysandra-myth", "the-song"],
+      "attributes": [
+        { "attr_key": "Race", "attr_value": "Elf (Sylvari)", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Age", "attr_value": "Minor by Elven reckoning", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Gift", "attr_value": "Hears the Song more clearly than almost any other — unaware of this initially", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Departure", "attr_value": "Sent away in secret by an elder; friend follows; accompanied by a rescued falcon", "data_type": "string", "sort_order": 3 },
+        { "attr_key": "Quest", "attr_value": "Find bards of each race who hear their strand of the Song; weave a great harmony to banish the Silence", "data_type": "string", "sort_order": 4 },
+        { "attr_key": "Open Question — Friend", "attr_value": "Race, personality, and reason for following TBD", "data_type": "string", "sort_order": 5 },
+        { "attr_key": "Open Question — Elder's Gift", "attr_value": "Whether the elder gives her an object, a name to find, or a fragment of legend TBD", "data_type": "string", "sort_order": 6 },
+        { "attr_key": "Open Question — Falcon Name", "attr_value": "TBD", "data_type": "string", "sort_order": 7 }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "Character",
+      "name": "Lysandra's Elder",
+      "status": "draft",
+      "short_summary": "An Elven elder who believes the legend of the Song and acts alone — at personal risk — to send Lysandra away before the Silence can use her to harm her people.",
+      "lore_body": "This elder stands apart from the Elven establishment on the question of the Song. While other elders dismiss the legend or actively call it heresy, this one believes — and more importantly, *acts* on that belief at personal cost.\n\nThe decision to send Lysandra away is made alone, in secret. The elder understands that Lysandra's gift makes her a target of the Silence, and that her presence endangers those around her. The sending-away is framed as something else — perhaps study with a distant relative, perhaps a journey — so that Lysandra does not initially understand its true purpose.\n\nThis suggests the elder knows more about the legend of the Song than they reveal. Possibly connected to the Remembrancers.",
+      "tags": ["in-progress", "open-question", "lysandra-myth"],
+      "attributes": [
+        { "attr_key": "Race", "attr_value": "Elf (Sylvari)", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Position", "attr_value": "Believes the Song legend — minority view, some call it heresy", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Action", "attr_value": "Sends Lysandra away in secret, at personal risk, before the Silence can use her presence to harm her people", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Open Question", "attr_value": "Name, exact role, and whether they give Lysandra something TBD", "data_type": "string", "sort_order": 3 }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "Character",
+      "name": "Lysandra's Companion (unnamed)",
+      "status": "draft",
+      "short_summary": "A friend who discovers Lysandra is leaving and follows in secret — race, personality, and motivation all TBD.",
+      "lore_body": "This character discovers Lysandra's departure and chooses to follow, initially without her knowledge. The nature of their friendship — and why they choose to follow rather than raise an alarm — is a key open question.\n\nTwo possibilities worth considering:\n- Another young Elf — familiar, close, perhaps the more socially conventional foil to Lysandra's forest-wandering nature\n- A member of another race — which would immediately hint at the harmony to come, and give the story an early cross-cultural friendship at its emotional core\n\nTheir presence alongside Lysandra from the beginning means they will witness everything — and may be the viewpoint through which readers first understand what Lysandra's gift actually is.",
+      "tags": ["in-progress", "open-question", "lysandra-myth"],
+      "attributes": [
+        { "attr_key": "Race", "attr_value": "TBD — Elf or another race (see open questions)", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Relationship to Lysandra", "attr_value": "Close friend who follows her in secret", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Open Question", "attr_value": "Race, name, personality, and reason for following all TBD", "data_type": "string", "sort_order": 2 }
+      ]
+    },
+    {
+      "id": 18,
+      "type": "Character",
+      "name": "Lysandra's Falcon (unnamed)",
+      "status": "draft",
+      "short_summary": "A falcon Lysandra rescued as a chick — her constant companion, symbolically associated with far-sight, the sky perspective, and connection across distances.",
+      "lore_body": "Lysandra rescued this falcon as a chick. It has been her companion since, and travels with her when she is sent away by the elder.\n\nThe falcon's symbolic weight is considerable: falcons suggest far-sight (seeing things others miss), the sky perspective (above the forest, beyond borders), and messenger potential (connection across distances). Whether the falcon has any sensitivity to the Silence or the Song — even subtle animal unease — is an open question that could serve as an early warning system in the narrative.",
+      "tags": ["in-progress", "open-question", "lysandra-myth"],
+      "attributes": [
+        { "attr_key": "Species", "attr_value": "Falcon", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Name", "attr_value": "TBD", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Symbolic Weight", "attr_value": "Far-sight, sky perspective, connection across distances", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Open Question", "attr_value": "Name TBD; possible sensitivity to the Silence or Song to be decided", "data_type": "string", "sort_order": 3 }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "Event",
+      "name": "The Fracturing",
+      "status": "published",
+      "short_summary": "The ~200-year cascade of succession wars that destroyed the Kingdom of N'Dic — politically catastrophic and cosmically significant, as the disharmony it created allowed the Silence to encroach.",
+      "lore_body": "The Fracturing did not happen in a single catastrophic moment — it happened slowly, then all at once. Three simultaneous claimants to the N'Dic throne each had defensible claims, triggering a cascade of wars that drew in more factions with each conflict.\n\nCalundrath fell twice. The great university burned in the Forty-Third Year. Noble houses were erased. Roads collapsed. The ruins multiplied.\n\nThe wars lasted — with intervals of exhausted peace — for nearly two hundred years. Too many records were destroyed, too many chroniclers killed. What survives is fragmentary and contradictory — which is precisely why the history of N'Dic feels like legend to those living now.\n\nCosmically: the Fracturing represents the single greatest wound in the Song in recorded history. Two centuries of disharmony allowed the Silence to encroach in ways not seen before. The consequences of this may not yet be fully apparent.",
+      "tags": ["canon", "n-dic", "the-silence", "cosmology"],
+      "attributes": [
+        { "attr_key": "Duration", "attr_value": "~200 years, with intervals of exhausted peace", "data_type": "string", "sort_order": 0 },
+        { "attr_key": "Cause", "attr_value": "Three simultaneous throne claimants following centuries of weakening council succession", "data_type": "string", "sort_order": 1 },
+        { "attr_key": "Key Losses", "attr_value": "Calundrath sacked twice; great university burned; noble houses erased; road network collapsed", "data_type": "string", "sort_order": 2 },
+        { "attr_key": "Cosmic Significance", "attr_value": "Greatest wound in the Song in recorded history — opened the world to major Silence encroachment", "data_type": "string", "sort_order": 3 }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "StoryArc",
+      "name": "The Myth of Lysandra",
+      "status": "draft",
+      "short_summary": "An ancient myth being discovered piece by piece by players — a young Elven girl who hears the Song must find bards of each race to weave a great harmony and banish the Silence.",
+      "lore_body": "This is the mythic spine of the WCSOZ lore — an ancient story that predates the game's present and is discovered archaeologically by players through in-game events that unlock lore fragments on the site.\n\nThe myth is delivered not as front-loaded exposition but as fragments recovered in non-linear order — inscriptions, recovered ballads, journal entries, monsters that carry the Silence's mark. Players assemble the story like archaeologists.\n\nKey narrative beats (in story order, not discovery order):\n1. Lysandra wanders the forest, hears the Song without knowing what it is\n2. A Silence-touched wolf attacks her; she begins to sense she is targeted\n3. An elder sends her away in secret; a friend follows; the falcon accompanies\n4. She encounters bards of other races who hear their strand of the Song\n5. The strands are woven into a great harmony\n6. The Silence is banished — for a while\n\nThree open questions before the full myth can be written:\n- Who is the friend?\n- What does the elder give her?\n- What is the falcon's name?",
+      "tags": ["in-progress", "open-question", "lysandra-myth", "the-song", "the-silence"]
+    }
+  ],
+
+  "relationships": [
+    { "from_entity_id": 5, "to_entity_id": 4, "rel_type": "created and abandoned", "strength": null, "notes": "Zot built the castle and forged the Orb of Power within it before vanishing.", "bidirectional": false },
+    { "from_entity_id": 5, "to_entity_id": 6, "rel_type": "created", "strength": null, "notes": "The Orb is the culmination of Zot's life's work — a Gnomic working of extraordinary complexity.", "bidirectional": false },
+    { "from_entity_id": 6, "to_entity_id": 4, "rel_type": "resides within", "strength": null, "notes": "The Orb waits somewhere in the castle's depths.", "bidirectional": false },
+    { "from_entity_id": 7, "to_entity_id": 8, "rel_type": "opposed by", "strength": null, "notes": "The Song sustains reality; the Silence is its absence and seeks to unmake what the Song created.", "bidirectional": false },
+    { "from_entity_id": 8, "to_entity_id": 19, "rel_type": "empowered by", "strength": null, "notes": "The Fracturing created massive disharmony that allowed the Silence to encroach significantly.", "bidirectional": false },
+    { "from_entity_id": 19, "to_entity_id": 2, "rel_type": "destroyed", "strength": null, "notes": "The Fracturing ended N'Dic as a functioning continental kingdom.", "bidirectional": false },
+    { "from_entity_id": 2, "to_entity_id": 3, "rel_type": "capital of", "strength": null, "notes": "Calundrath was the deliberate geographic-center capital of N'Dic.", "bidirectional": false },
+    { "from_entity_id": 4, "to_entity_id": 2, "rel_type": "located within former territory of", "strength": null, "notes": "The castle sits at the edge of what was once the N'Dic heartland.", "bidirectional": false },
+    { "from_entity_id": 5, "to_entity_id": 11, "rel_type": "member of", "strength": null, "notes": "Zot was Gnomic — the Orb is therefore a Gnomic working.", "bidirectional": false },
+    { "from_entity_id": 15, "to_entity_id": 9, "rel_type": "member of", "strength": null, "notes": "Lysandra is Elven (Sylvari).", "bidirectional": false },
+    { "from_entity_id": 15, "to_entity_id": 16, "rel_type": "sent away by", "strength": null, "notes": "The elder sends Lysandra away in secret before the Silence can use her presence to harm her people.", "bidirectional": false },
+    { "from_entity_id": 15, "to_entity_id": 17, "rel_type": "followed by", "strength": null, "notes": "The companion discovers Lysandra's departure and follows in secret.", "bidirectional": false },
+    { "from_entity_id": 15, "to_entity_id": 18, "rel_type": "bonded with", "strength": null, "notes": "Lysandra rescued the falcon as a chick; it accompanies her throughout.", "bidirectional": false },
+    { "from_entity_id": 8, "to_entity_id": 15, "rel_type": "targets", "strength": null, "notes": "The Silence appears to specifically target Lysandra, making her dangerous to those around her.", "bidirectional": false },
+    { "from_entity_id": 15, "to_entity_id": 7, "rel_type": "uniquely hears", "strength": null, "notes": "Lysandra hears the Song of creation more clearly than almost any other living being.", "bidirectional": false },
+    { "from_entity_id": 20, "to_entity_id": 15, "rel_type": "centers on", "strength": null, "notes": "Lysandra is the protagonist of the myth.", "bidirectional": false },
+    { "from_entity_id": 9, "to_entity_id": 7, "rel_type": "most closely connected to", "strength": null, "notes": "Elven music ties directly into the Song — their bards are uniquely potent.", "bidirectional": false },
+    { "from_entity_id": 11, "to_entity_id": 5, "rel_type": "produced", "strength": null, "notes": "Zot was Gnomic — claimed by some as their greatest mage, by others as their greatest warning.", "bidirectional": false },
+    { "from_entity_id": 13, "to_entity_id": 7, "rel_type": "carries strand of", "strength": null, "notes": "Orcs carry The War Chant strand of the Song; their Vorath oral tradition predates N'Dic's records.", "bidirectional": false },
+    { "from_entity_id": 2, "to_entity_id": 1, "rel_type": "once ruled", "strength": null, "notes": "N'Dic at its height spanned the continent of Arboria coast to coast.", "bidirectional": false }
+  ],
+
+  "timelines": [
+    {
+      "id": 1,
+      "name": "The Ages of Arboria",
+      "description": "The broad historical arc of the continent from its mythic origins through N'Dic's golden age, the Fracturing, and the current Age of Ruins.",
+      "scale_mode": "era"
+    }
+  ],
+
+  "events": [
+    { "timeline_id": 1, "entity_id": 7, "label": "The First Song — creation of Arboria", "description": "The gods sang reality into existence. Song entwined with magic wove the world of Arboria.", "position_order": 0, "position_label": "Age of Myth", "position_era": "Age of Myth" },
+    { "timeline_id": 1, "entity_id": 2, "label": "N'Dic rises to continental dominance", "description": "Through centuries of statecraft, N'Dic brings all of Arboria's peoples under one throne.", "position_order": 1, "position_label": "Age of the Kingdom", "position_era": "Age of the Kingdom" },
+    { "timeline_id": 1, "entity_id": 19, "label": "The Fracturing begins", "description": "Three simultaneous throne claimants trigger cascading succession wars across Arboria.", "position_order": 2, "position_label": "Year 0 of the Fracturing", "position_era": "The Fracturing" },
+    { "timeline_id": 1, "entity_id": 3, "label": "The great university of Calundrath burns", "description": "Burned in the Forty-Third Year of the Fracturing — entire disciplines of scholarship erased.", "position_order": 3, "position_label": "Year 43 of the Fracturing", "position_era": "The Fracturing" },
+    { "timeline_id": 1, "entity_id": 5, "label": "Zot forges the Orb of Power and vanishes", "description": "After years of working, Zot completes the Orb and disappears. The castle is sealed.", "position_order": 4, "position_label": "Many cycles ago", "position_era": "Age of Ruins" },
+    { "timeline_id": 1, "entity_id": 15, "label": "Lysandra is sent away — the myth begins", "description": "An elder sends Lysandra away in secret. A friend follows. The falcon accompanies. The quest for the great harmony begins.", "position_order": 5, "position_label": "Ancient past (exact era TBD)", "position_era": "Age of Myth" }
+  ],
+
+  "arcs": [
+    {
+      "id": 1,
+      "name": "The Myth of Lysandra",
+      "logline": "A young Elven girl who hears the Song of creation must find bards of every race to weave a great harmony and push back the encroaching Silence — for a while.",
+      "theme": "No voice alone is enough; harmony requires difference.",
+      "status": "seed",
+      "sort_order": 0,
+      "entity_ids": [15, 16, 17, 18, 7, 8, 9]
+    },
+    {
+      "id": 2,
+      "name": "The Mystery of Zot",
+      "logline": "Who was the Gnomic wizard, what did he truly intend, where did he go — and does the Orb contain answers, or only deeper questions?",
+      "theme": "The road to salvation and the road to tyranny look identical from the start.",
+      "status": "seed",
+      "sort_order": 1,
+      "entity_ids": [5, 6, 4, 11]
+    },
+    {
+      "id": 3,
+      "name": "The Fracturing and Its Shadow",
+      "logline": "The fall of N'Dic was not merely political — it was a cosmic wound, and its consequences in the Silence's encroachment have not yet fully played out.",
+      "theme": "Disharmony does not end when the fighting stops.",
+      "status": "seed",
+      "sort_order": 2,
+      "entity_ids": [19, 2, 3, 8, 7]
+    }
+  ],
+
+  "notes": [
+    {
+      "entity_id": 5,
+      "content": "**Open question:** Does Zot's knowledge of the Silence connect to the Orb's purpose? Was it designed not just as a political instrument but as a weapon against cosmic entropy? This reframes everything about his story if true.",
+      "is_canonical": false,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 6,
+      "content": "**Design note:** The Orb's nested Gnomic layers of function are a long-game lore mystery. Players who find journal fragments or encounter Gnomic scholar NPCs should receive contradictory theories — never a definitive answer until (if ever) a player actually claims the Orb.",
+      "is_canonical": false,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 15,
+      "content": "**Three open questions that must be resolved before the full origin myth is written:**\n1. Who is the friend — race, name, personality, why they follow?\n2. Does the elder give Lysandra something — an object, a name to find, a fragment of the legend?\n3. What is the falcon's name?\n\nThese should be decided collaboratively before writing the myth as discoverable lore fragments.",
+      "is_canonical": false,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 20,
+      "content": "**Delivery method:** The myth is not presented as front-loaded lore. Players discover fragments non-linearly through in-game events — recovered ballads, carved inscriptions, journal entries, monsters marked by the Silence. The site assembles the myth archaeologically as fragments are unlocked. No single fragment tells the whole story.",
+      "is_canonical": true,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 8,
+      "content": "**Tone note:** The Silence should never be described as a villain or given dialogue. It is an absence, not a presence. Manifestations (touched creatures, dead regions) should feel *wrong* before they feel *dangerous* — the wrongness is the tell.",
+      "is_canonical": true,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 13,
+      "content": "**Lore asset reminder:** The Vorath oral tradition predates N'Dic's written records. This makes Orc NPCs or quest lines a potential source of pre-Fracturing knowledge unavailable anywhere else — including possible accounts of the Silence's previous encroachments.",
+      "is_canonical": true,
+      "ai_generated": false
+    }
+  ]
+}
