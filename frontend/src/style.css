@@ -327,7 +327,7 @@ input[type="search"] { max-width: 280px; }
 
 /* ── Entity Detail: Centre panel content sections ────────────────────────── */
 
-.entity-header-row { margin-bottom: .75rem; }
+.entity-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: .75rem; }
 .entity-header-row h1 { font-size: 1.4rem; margin: 0 0 .35rem; }
 .entity-summary-text { font-size: .9rem; color: var(--color-muted); line-height: 1.5; }
 .detail-section { margin-bottom: 1.25rem; }

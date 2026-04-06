@@ -199,12 +199,7 @@ watch(() => route.params.eid, load)
 
     <template v-else-if="entity">
       <header class="page-header">
-        <div class="page-header-actions">
-          <RouterLink :to="`/worlds/${wid}/entities/${eid}/edit`" class="btn btn-secondary">
-            Edit
-          </RouterLink>
-          <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
-        </div>
+        <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
       </header>
 
       <div class="entity-detail-grid">
@@ -216,13 +211,18 @@ watch(() => route.params.eid, load)
         <!-- Centre panel: main content -->
         <main class="panel panel-notes">
 
-          <!-- 1) Name + type/status badges -->
+          <!-- 1) Name + type/status badges + edit button -->
           <div class="entity-header-row">
-            <h1 class="entity-title">{{ entity.name }}</h1>
-            <div class="meta-badges">
-              <span class="badge badge-type">{{ entity.type }}</span>
-              <span class="badge" :class="STATUS_COLOR[entity.status]">{{ entity.status }}</span>
+            <div>
+              <h1 class="entity-title">{{ entity.name }}</h1>
+              <div class="meta-badges">
+                <span class="badge badge-type">{{ entity.type }}</span>
+                <span class="badge" :class="STATUS_COLOR[entity.status]">{{ entity.status }}</span>
+              </div>
             </div>
+            <RouterLink :to="`/worlds/${wid}/entities/${eid}/edit`" class="btn btn-secondary">
+              Edit
+            </RouterLink>
           </div>
 
           <!-- 2) Tags (editable) -->
