@@ -46,7 +46,7 @@ async function submit() {
       <p v-if="error" class="form-error" role="alert">{{ error }}</p>
 
       <label>
-        Username
+        Username or email
         <input v-model="username" type="text" autocomplete="username" required />
       </label>
 

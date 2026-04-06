@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function login(username, password, totpCode = null) {
-    const body = { username, password }
+    const body = { login: username, password }
     if (totpCode) body.totp_code = totpCode
     const { data } = await api.post('/api/v1/auth/login', body)
     user.value = data
