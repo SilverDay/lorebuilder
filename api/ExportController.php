@@ -252,7 +252,7 @@ class ExportController
             }
 
             // ── Entities ──────────────────────────────────────────────────────
-            $validTypes   = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline'];
+            $validTypes   = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race'];
             $validStatuses = ['draft','published','archived'];
             $oldToNewEntity = [];
 
@@ -303,7 +303,7 @@ class ExportController
                             'wid'   => $wid,
                             'key'   => $key,
                             'val'   => mb_substr((string) ($attr['attr_value'] ?? ''), 0, 4000),
-                            'dtype' => $attr['data_type'] ?? 'text',
+                            'dtype' => in_array($attr['data_type'] ?? '', ['string','integer','boolean','date','markdown'], true) ? $attr['data_type'] : 'string',
                             'sort'  => (int) ($attr['sort_order'] ?? $i),
                         ]
                     );
