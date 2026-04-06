@@ -1100,3 +1100,20 @@ kbd {
   .tut-sidebar__back { padding: 0; border-top: none; margin-top: 0; }
   .tut-content  { padding: 1.5rem 1.25rem 3rem; }
 }
+
+/* ── Notes feed (world-level notes view) ─────────────────────────────────── */
+.notes-feed { display: flex; flex-direction: column; gap: .5rem; }
+.note-feed-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: .9rem 1rem;
+  transition: border-color var(--transition);
+}
+.note-feed-card:hover { border-color: var(--color-accent); }
+.note-feed-card__header { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: .35rem; }
+.note-feed-card__entity { font-size: .8rem; font-weight: 500; color: var(--color-accent); }
+.note-feed-card__entity--world { color: var(--color-muted); }
+.note-feed-card__meta   { font-size: .75rem; color: var(--color-muted); margin-left: auto; }
+.note-feed-card__excerpt { font-size: .875rem; color: var(--color-muted); line-height: 1.6; margin-bottom: .35rem; }
+.note-feed-card__link { font-size: .8rem; color: var(--color-accent); }

@@ -95,6 +95,10 @@ const ARC_STATUS_LABEL = {
         <span class="dashboard-nav-card__icon">◎</span>
         <span class="dashboard-nav-card__label">Story Arcs</span>
       </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/notes`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon">✎</span>
+        <span class="dashboard-nav-card__label">Lore Notes</span>
+      </RouterLink>
       <RouterLink :to="`/worlds/${wid}/references`" class="dashboard-nav-card">
         <span class="dashboard-nav-card__icon">⊞</span>
         <span class="dashboard-nav-card__label">References</span>

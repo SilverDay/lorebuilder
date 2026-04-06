@@ -122,6 +122,11 @@ const routes = [
         component: () => import('@/views/ExportView.vue'),
       },
       {
+        path:      'notes',
+        name:      'Notes',
+        component: () => import('@/views/NotesView.vue'),
+      },
+      {
         path:      'references',
         name:      'References',
         component: () => import('@/views/ReferencesView.vue'),

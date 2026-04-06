@@ -32,35 +32,98 @@ class NoteController
         Guard::requireWorldAccess($wid, $userId, 'viewer', $isPlatformAdmin);
 
         $q = Validator::parseQuery([
-            'canonical' => 'nullable|bool',
-            'limit'     => 'nullable|int|min:1|max:100',
-            'offset'    => 'nullable|int|min:0',
+            'canonical'    => 'nullable|bool',
+            'ai_generated' => 'nullable|bool',
+            'page'         => 'nullable|int|min:1',
+            'per_page'     => 'nullable|int|min:1|max:100',
         ]);
 
-        $where  = ['n.world_id = :wid', 'n.entity_id IS NULL', 'n.deleted_at IS NULL'];
-        $params = ['wid' => $wid];
+        $page    = (int) ($q['page']     ?? 1);
+        $perPage = (int) ($q['per_page'] ?? 30);
+        $offset  = ($page - 1) * $perPage;
 
-        if (isset($q['canonical'])) {
-            $where[]         = 'n.is_canonical = :canon';
-            $params['canon'] = (int) $q['canonical'];
+        // Four explicit query branches — no dynamic SQL
+        if (isset($q['canonical']) && isset($q['ai_generated'])) {
+            $notes = DB::query(
+                'SELECT n.id, n.entity_id, n.content, n.is_canonical, n.ai_generated,
+                        n.created_by, n.created_at, n.promoted_by, n.promoted_at,
+                        u.display_name AS author_name, e.name AS entity_name
+                   FROM lore_notes n
+                   JOIN users u ON u.id = n.created_by
+                   LEFT JOIN entities e ON e.id = n.entity_id AND e.deleted_at IS NULL
+                  WHERE n.world_id = :wid AND n.deleted_at IS NULL
+                    AND n.is_canonical = :canon AND n.ai_generated = :ai
+                  ORDER BY n.created_at DESC
+                  LIMIT :lim OFFSET :off',
+                ['wid' => $wid, 'canon' => (int) $q['canonical'],
+                 'ai' => (int) $q['ai_generated'], 'lim' => $perPage, 'off' => $offset]
+            );
+            $total = (int) DB::queryOne(
+                'SELECT COUNT(*) AS n FROM lore_notes WHERE world_id = :wid AND deleted_at IS NULL
+                  AND is_canonical = :canon AND ai_generated = :ai',
+                ['wid' => $wid, 'canon' => (int) $q['canonical'], 'ai' => (int) $q['ai_generated']]
+            )['n'];
+        } elseif (isset($q['canonical'])) {
+            $notes = DB::query(
+                'SELECT n.id, n.entity_id, n.content, n.is_canonical, n.ai_generated,
+                        n.created_by, n.created_at, n.promoted_by, n.promoted_at,
+                        u.display_name AS author_name, e.name AS entity_name
+                   FROM lore_notes n
+                   JOIN users u ON u.id = n.created_by
+                   LEFT JOIN entities e ON e.id = n.entity_id AND e.deleted_at IS NULL
+                  WHERE n.world_id = :wid AND n.deleted_at IS NULL
+                    AND n.is_canonical = :canon
+                  ORDER BY n.created_at DESC
+                  LIMIT :lim OFFSET :off',
+                ['wid' => $wid, 'canon' => (int) $q['canonical'], 'lim' => $perPage, 'off' => $offset]
+            );
+            $total = (int) DB::queryOne(
+                'SELECT COUNT(*) AS n FROM lore_notes WHERE world_id = :wid AND deleted_at IS NULL AND is_canonical = :canon',
+                ['wid' => $wid, 'canon' => (int) $q['canonical']]
+            )['n'];
+        } elseif (isset($q['ai_generated'])) {
+            $notes = DB::query(
+                'SELECT n.id, n.entity_id, n.content, n.is_canonical, n.ai_generated,
+                        n.created_by, n.created_at, n.promoted_by, n.promoted_at,
+                        u.display_name AS author_name, e.name AS entity_name
+                   FROM lore_notes n
+                   JOIN users u ON u.id = n.created_by
+                   LEFT JOIN entities e ON e.id = n.entity_id AND e.deleted_at IS NULL
+                  WHERE n.world_id = :wid AND n.deleted_at IS NULL
+                    AND n.ai_generated = :ai
+                  ORDER BY n.created_at DESC
+                  LIMIT :lim OFFSET :off',
+                ['wid' => $wid, 'ai' => (int) $q['ai_generated'], 'lim' => $perPage, 'off' => $offset]
+            );
+            $total = (int) DB::queryOne(
+                'SELECT COUNT(*) AS n FROM lore_notes WHERE world_id = :wid AND deleted_at IS NULL AND ai_generated = :ai',
+                ['wid' => $wid, 'ai' => (int) $q['ai_generated']]
+            )['n'];
+        } else {
+            $notes = DB::query(
+                'SELECT n.id, n.entity_id, n.content, n.is_canonical, n.ai_generated,
+                        n.created_by, n.created_at, n.promoted_by, n.promoted_at,
+                        u.display_name AS author_name, e.name AS entity_name
+                   FROM lore_notes n
+                   JOIN users u ON u.id = n.created_by
+                   LEFT JOIN entities e ON e.id = n.entity_id AND e.deleted_at IS NULL
+                  WHERE n.world_id = :wid AND n.deleted_at IS NULL
+                  ORDER BY n.created_at DESC
+                  LIMIT :lim OFFSET :off',
+                ['wid' => $wid, 'lim' => $perPage, 'off' => $offset]
+            );
+            $total = (int) DB::queryOne(
+                'SELECT COUNT(*) AS n FROM lore_notes WHERE world_id = :wid AND deleted_at IS NULL',
+                ['wid' => $wid]
+            )['n'];
         }
 
-        $limit  = (int) ($q['limit']  ?? 50);
-        $offset = (int) ($q['offset'] ?? 0);
-
-        $notes = DB::query(
-            'SELECT n.id, n.entity_id, n.content, n.is_canonical, n.ai_generated,
-                    n.created_by, n.created_at, n.promoted_by, n.promoted_at,
-                    u.display_name AS author_name
-               FROM lore_notes n
-               JOIN users u ON u.id = n.created_by
-              WHERE ' . implode(' AND ', $where) . '
-              ORDER BY n.created_at DESC
-              LIMIT :lim OFFSET :off',
-            array_merge($params, ['lim' => $limit, 'off' => $offset])
-        );
-
-        Router::json($notes, 200, ['limit' => $limit, 'offset' => $offset, 'count' => count($notes)]);
+        http_response_code(200);
+        echo json_encode([
+            'data' => $notes,
+            'meta' => ['total' => $total, 'page' => $page, 'per_page' => $perPage,
+                       'pages' => (int) ceil(max(1, $total) / $perPage)],
+        ]);
     }
 
     // ─── GET /api/v1/worlds/:wid/entities/:id/notes ──────────────────────────
