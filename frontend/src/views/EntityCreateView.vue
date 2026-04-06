@@ -15,7 +15,7 @@ const lore    = ref('')
 const error   = ref('')
 const loading = ref(false)
 
-const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline']
+const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
 
 async function submit() {
   error.value   = ''

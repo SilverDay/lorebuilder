@@ -14,7 +14,7 @@ const filter   = ref({ type: '', status: '', tag: '', q: '' })
 const page     = ref(1)
 const limit    = 30
 
-const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline']
+const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
 
 async function load() {
   loading.value = true

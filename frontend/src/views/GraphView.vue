@@ -35,6 +35,7 @@ const TYPE_COLORS = {
   Concept:   { background: '#7F8C8D', border: '#555f60', font: '#ffffff' },
   StoryArc:  { background: '#F39C12', border: '#b07d0d', font: '#ffffff' },
   Timeline:  { background: '#1ABC9C', border: '#0e8c72', font: '#ffffff' },
+  Race:      { background: '#8B5CF6', border: '#5b21b6', font: '#ffffff' },
 }
 const DEFAULT_COLOR = { background: '#95A5A6', border: '#6d7f80', font: '#ffffff' }
 

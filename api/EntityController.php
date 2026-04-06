@@ -25,7 +25,7 @@ class EntityController
 {
     private const VALID_TYPES = [
         'Character','Location','Event','Faction',
-        'Artefact','Creature','Concept','StoryArc','Timeline',
+        'Artefact','Creature','Concept','StoryArc','Timeline','Race',
     ];
 
     private const VALID_ATTR_TYPES = ['string','integer','boolean','date','markdown'];

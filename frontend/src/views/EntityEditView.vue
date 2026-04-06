@@ -16,7 +16,7 @@ const lore    = ref('')
 const error   = ref('')
 const loading = ref(false)
 
-const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline']
+const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
 
 onMounted(async () => {
   const { data } = await api.get(`/api/v1/worlds/${wid}/entities/${eid}`)
