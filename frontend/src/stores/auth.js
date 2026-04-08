@@ -7,7 +7,7 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { api, request } from '@/api/client.js'
+import { api, request, invalidateCsrfToken } from '@/api/client.js'
 
 export const useAuthStore = defineStore('auth', () => {
   const user    = ref(null)   // { id, username, display_name, totp_enabled }
@@ -35,6 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (totpCode) body.totp_code = totpCode
     const { data } = await api.post('/api/v1/auth/login', body)
     user.value = data
+    invalidateCsrfToken()  // Login rotates session; old CSRF token is invalid
     return data
   }
 
