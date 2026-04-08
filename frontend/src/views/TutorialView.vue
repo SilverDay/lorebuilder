@@ -45,7 +45,6 @@ const NAV = [
     <!-- ── Sidebar ── -->
     <aside class="tut-sidebar">
       <div class="tut-sidebar__brand">
-        <RouterLink to="/" class="tut-sidebar__logo">LoreBuilder</RouterLink>
         <span class="tut-sidebar__label">User Guide</span>
       </div>
       <nav class="tut-nav">
@@ -90,10 +89,24 @@ const NAV = [
             context, so the more detail you add here the better.
           </li>
           <li>
-            <strong>Open the Dashboard</strong> — the dashboard gives you a stat overview and
-            quick links to every section of your world.
+            <strong>Open the Dashboard</strong> — the dashboard shows entity counts by type
+            (click any stat card to jump to a filtered entity list) and quick-nav cards for
+            settings, members, export, and help.
           </li>
         </ol>
+
+        <h3>Navigation</h3>
+        <p>
+          A persistent top bar appears on every page once you are logged in. It contains:
+        </p>
+        <ul class="tut-list">
+          <li><strong>LoreBuilder</strong> — returns to your world list.</li>
+          <li><strong>Dashboard</strong> — shown when you are inside a world (hidden if you are already on the dashboard).</li>
+          <li><strong>Search</strong> — opens a search overlay to find entities by name. You can also press <kbd>Ctrl+K</kbd>.</li>
+          <li><strong>Account</strong> — profile, password, and two-factor settings.</li>
+          <li><strong>Sign out</strong> and a <strong>theme toggle</strong> (light / dark mode).</li>
+        </ul>
+
         <div class="tut-tip">
           <strong>Tip:</strong> The world description and tone fields are the first thing the AI
           reads when you ask it a question. A sentence or two about the setting and mood goes a
@@ -293,17 +306,28 @@ const NAV = [
       <section id="ai-assistant" class="tut-section">
         <h2>AI Assistant</h2>
         <p>
-          The AI assistant uses your configured provider (Claude, ChatGPT, or Gemini) to answer questions about your world, generate
-          backstory, synthesise arc summaries, and spot inconsistencies — with full
+          The AI assistant uses your configured provider to answer questions about your world,
+          generate backstory, synthesise arc summaries, and spot inconsistencies — with full
           context of your entities, relationships, and notes.
         </p>
 
-        <h3>Setting up your API key</h3>
+        <h3>Supported providers</h3>
+        <div class="tut-type-grid">
+          <div class="tut-type-pill">Anthropic (Claude)</div>
+          <div class="tut-type-pill">OpenAI (ChatGPT)</div>
+          <div class="tut-type-pill">Google (Gemini)</div>
+          <div class="tut-type-pill">Ollama (local)</div>
+        </div>
+
+        <h3>Setting up your AI provider</h3>
         <ol class="tut-steps">
           <li>Go to <em>AI Settings</em> from your world dashboard.</li>
-          <li>Choose your AI provider (Anthropic, OpenAI, or Google) and model.</li>
-          <li>Enter your API key. The key is encrypted before storage and
-          is never returned to the browser.</li>
+          <li>Choose your AI provider and model from the dropdowns.</li>
+          <li>For cloud providers (Anthropic, OpenAI, Google): enter your API key.
+          The key is encrypted before storage and is never returned to the browser.</li>
+          <li>For <strong>Ollama</strong>: no API key is needed. Optionally set a custom
+          endpoint URL if your Ollama instance is not on the default address. You can also
+          type a custom model name not listed in the dropdown.</li>
           <li>Optionally set a token budget to avoid unexpected usage.</li>
         </ol>
 
