@@ -141,10 +141,10 @@ const ARC_STATUS_LABEL = {
       <section class="dashboard-section">
         <h2>Entities</h2>
         <div class="stat-cards">
-          <div v-for="row in entityByType" :key="row.type" class="stat-card">
+          <RouterLink v-for="row in entityByType" :key="row.type" :to="`/worlds/${wid}/entities?type=${row.type}`" class="stat-card stat-card--link">
             <div class="stat-value">{{ row.count }}</div>
             <div class="stat-label">{{ row.type }}</div>
-          </div>
+          </RouterLink>
           <div v-if="!entityByType.length" class="empty-state">No entities yet.</div>
         </div>
       </section>

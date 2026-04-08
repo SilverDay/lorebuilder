@@ -9,7 +9,7 @@ const wid    = route.params.wid
 const entities = ref([])
 const total    = ref(0)
 const loading  = ref(false)
-const filter   = ref({ type: '', status: '', tag: '', q: '' })
+const filter   = ref({ type: route.query.type ?? '', status: '', tag: '', q: '' })
 const page     = ref(1)
 const limit    = 30
 

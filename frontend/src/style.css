@@ -1170,6 +1170,17 @@ input[type="search"] {
   text-align: center;
 }
 
+.stat-card--link {
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.stat-card--link:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow);
+}
+
 .stat-value {
   font-size: 1.75rem;
   font-weight: 700;
