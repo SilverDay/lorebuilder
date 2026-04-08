@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { api } from '@/api/client.js'
@@ -10,7 +10,6 @@ import RelationshipList from '@/components/RelationshipList.vue'
 import AiPanel from '@/components/ai/AiPanel.vue'
 
 const route  = useRoute()
-const router = useRouter()
 const wid    = computed(() => route.params.wid)
 const eid    = computed(() => route.params.eid)
 
