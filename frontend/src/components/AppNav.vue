@@ -30,7 +30,7 @@ async function signOut() {
 
 <template>
   <nav v-if="auth.isAuthenticated" class="app-nav">
-    <RouterLink to="/worlds" class="app-nav__brand"><img src="/images/lorebuilder-logo.jpg" alt="LoreBuilder" class="app-nav__logo" />LoreBuilder</RouterLink>
+    <RouterLink to="/worlds" class="app-nav__brand"><img :src="'/images/lorebuilder-logo.jpg'" alt="LoreBuilder" class="app-nav__logo" />LoreBuilder</RouterLink>
     <div class="app-nav__links">
       <RouterLink v-if="wid && !isDashboard" :to="`/worlds/${wid}`" class="btn btn-ghost btn-sm">Dashboard</RouterLink>
       <RouterLink v-if="isAccount && worlds.currentWorldId" :to="`/worlds/${worlds.currentWorldId}`" class="btn btn-ghost btn-sm">Dashboard</RouterLink>
