@@ -8,22 +8,20 @@ import SearchModal from '@/components/SearchModal.vue'
 
 const auth  = useAuthStore()
 const route = useRoute()
-const { theme, cycle } = useTheme()
+const { theme, effective, toggle } = useTheme()
 
 const showSearch = ref(false)
 
 const currentWorldId = computed(() => route.params?.wid ?? null)
 
 const themeIcon = computed(() => {
-  if (theme.value === 'light') return '☀'
-  if (theme.value === 'dark') return '🌙'
-  return '⚙'
+  return effective() === 'dark' ? '🌙' : '☀'
 })
 
 const themeLabel = computed(() => {
-  if (theme.value === 'light') return 'Theme: Light — click to switch'
-  if (theme.value === 'dark') return 'Theme: Dark — click to switch'
-  return 'Theme: System — click to switch'
+  return effective() === 'dark'
+    ? 'Theme: Dark — click to switch to light'
+    : 'Theme: Light — click to switch to dark'
 })
 
 function onKeydown(e) {
@@ -50,6 +48,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
   <button
     class="theme-toggle"
     :aria-label="themeLabel"
-    @click="cycle"
+    @click="toggle"
   >{{ themeIcon }}</button>
 </template>

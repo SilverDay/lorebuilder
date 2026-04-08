@@ -54,14 +54,19 @@ if (typeof window !== 'undefined') {
 }
 
 export function useTheme() {
-  function cycle() {
-    const order = ['system', 'dark', 'light']
-    const idx = order.indexOf(theme.value)
-    theme.value = order[(idx + 1) % order.length]
+  /** Returns the actual visible theme ('light' or 'dark'). */
+  function effective() {
+    return resolveEffective(theme.value)
+  }
+
+  /** Toggle between light and dark based on what's currently displayed. */
+  function toggle() {
+    theme.value = effective() === 'dark' ? 'light' : 'dark'
   }
 
   return {
     theme,
-    cycle,
+    effective,
+    toggle,
   }
 }
