@@ -28,10 +28,16 @@ function onKeydown(e) {
 
 onMounted(() => window.addEventListener('keydown', onKeydown))
 onUnmounted(() => window.removeEventListener('keydown', onKeydown))
+
+function openSearch() {
+  if (auth.isAuthenticated && currentWorldId.value) {
+    showSearch.value = true
+  }
+}
 </script>
 
 <template>
-  <AppNav />
+  <AppNav @search="openSearch" />
   <RouterView />
   <ToastContainer />
   <SearchModal
