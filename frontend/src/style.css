@@ -2345,6 +2345,19 @@ code {
   flex-wrap: wrap;
 }
 
+.app-nav__theme {
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  margin-left: .25rem;
+}
+
 @media (max-width: 600px) {
   .app-nav {
     padding: 1rem 1.25rem;
