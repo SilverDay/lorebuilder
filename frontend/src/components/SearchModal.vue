@@ -73,7 +73,7 @@ nextTick(() => inputEl.value?.focus())
             class="search-input"
             aria-label="Search entities"
           />
-          <kbd class="search-kbd">Esc</kbd>
+          <kbd class="search-kbd" @click="emit('close')" role="button" tabindex="0">Esc</kbd>
         </div>
 
         <div class="search-results">
@@ -146,10 +146,12 @@ nextTick(() => inputEl.value?.focus())
 .search-kbd {
   font-size: .7rem;
   padding: .15rem .4rem;
+  margin-left: .5rem;
   border: 1px solid var(--color-border);
   border-radius: 4px;
   color: var(--color-muted);
   background: var(--color-surface2);
+  cursor: pointer;
 }
 
 .search-results {
