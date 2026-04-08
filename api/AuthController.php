@@ -75,6 +75,8 @@ class AuthController
             self::sendVerificationEmail($data['email'], $data['display_name'], $verifyToken);
         }
 
+        self::sendRegistrationNotification($data['username'], $data['email'], $data['display_name']);
+
         http_response_code(201);
         echo json_encode([
             'data' => [
@@ -568,6 +570,21 @@ class AuthController
                  . "This link expires in 1 hour. If you did not request a reset, ignore this email.\n\nLoreBuilder";
 
         self::sendMail($email, $subject, $body);
+    }
+
+    /**
+     * Notify admin of a new user registration.
+     */
+    private static function sendRegistrationNotification(string $username, string $email, string $displayName): void
+    {
+        $subject = 'LoreBuilder: New user registered';
+        $body    = "A new user has registered on LoreBuilder.\n\n"
+                 . "Username: {$username}\n"
+                 . "Display name: {$displayName}\n"
+                 . "Email: {$email}\n"
+                 . "Time: " . date('Y-m-d H:i:s T') . "\n";
+
+        self::sendMail('klingner@silverday.de', $subject, $body);
     }
 
     /**
