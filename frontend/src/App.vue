@@ -9,21 +9,13 @@ import SearchModal from '@/components/SearchModal.vue'
 
 const auth  = useAuthStore()
 const route = useRoute()
-const { theme, effective, toggle } = useTheme()
+const { effective, toggle } = useTheme()
 
 const showSearch = ref(false)
 
 const currentWorldId = computed(() => route.params?.wid ?? null)
 
-const themeIcon = computed(() => {
-  return effective() === 'dark' ? '🌙' : '☀'
-})
-
-const themeLabel = computed(() => {
-  return effective() === 'dark'
-    ? 'Theme: Dark — click to switch to light'
-    : 'Theme: Light — click to switch to dark'
-})
+const themeIcon = computed(() => effective() === 'dark' ? '🌙' : '☀')
 
 function onKeydown(e) {
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -48,8 +40,9 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
     @close="showSearch = false"
   />
   <button
+    v-if="!auth.isAuthenticated"
     class="theme-toggle"
-    :aria-label="themeLabel"
+    aria-label="Toggle theme"
     @click="toggle"
   >{{ themeIcon }}</button>
 </template>
