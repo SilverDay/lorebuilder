@@ -2342,6 +2342,15 @@ code {
   letter-spacing: -.01em;
   color: var(--color-text);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.app-nav__logo {
+  height: 28px;
+  width: auto;
+  border-radius: 4px;
 }
 
 .app-nav__brand:hover {
@@ -2403,6 +2412,15 @@ code {
   font-weight: 700;
   letter-spacing: -.01em;
   color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.landing-nav__logo {
+  height: 28px;
+  width: auto;
+  border-radius: 4px;
 }
 
 .landing-nav__links {

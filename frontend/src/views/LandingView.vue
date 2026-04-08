@@ -65,7 +65,7 @@ const FEATURES = [
 
     <!-- ── Nav ── -->
     <nav class="landing-nav">
-      <span class="landing-nav__brand">LoreBuilder</span>
+      <span class="landing-nav__brand"><img src="/images/lorebuilder-logo.jpg" alt="LoreBuilder" class="landing-nav__logo" />LoreBuilder</span>
       <div class="landing-nav__links">
         <RouterLink to="/tutorial" class="btn btn-ghost btn-sm">User Guide</RouterLink>
         <RouterLink to="/login" class="btn btn-ghost btn-sm">Sign in</RouterLink>
