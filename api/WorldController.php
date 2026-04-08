@@ -147,6 +147,7 @@ class WorldController
             'status'           => 'nullable|in:active,archived',
             'ai_model'         => 'nullable|string|max:64',
             'ai_provider'      => 'nullable|string|max:32',
+            'ai_endpoint_url'  => 'nullable|string|max:512',
         ]);
 
         if (empty($data)) {
@@ -154,10 +155,20 @@ class WorldController
             return;
         }
 
+        // Validate Ollama endpoint URL for SSRF prevention
+        if (isset($data['ai_endpoint_url']) && $data['ai_endpoint_url'] !== null && $data['ai_endpoint_url'] !== '') {
+            try {
+                OllamaProvider::validateEndpoint($data['ai_endpoint_url']);
+            } catch (AiProviderException $e) {
+                Router::jsonError(400, 'VALIDATION_ERROR', $e->getMessage());
+                return;
+            }
+        }
+
         $sets   = [];
         $params = ['id' => $wid];
 
-        $allowed = ['name', 'description', 'genre', 'tone', 'era_system', 'content_warnings', 'status', 'ai_model', 'ai_provider'];
+        $allowed = ['name', 'description', 'genre', 'tone', 'era_system', 'content_warnings', 'status', 'ai_model', 'ai_provider', 'ai_endpoint_url'];
         foreach ($allowed as $col) {
             if (array_key_exists($col, $data)) {
                 $sets[]       = "{$col} = :{$col}";

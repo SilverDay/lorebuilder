@@ -41,6 +41,7 @@ require __DIR__ . '/../core/AiProvider.php';
 require __DIR__ . '/../core/providers/AnthropicProvider.php';
 require __DIR__ . '/../core/providers/OpenAiProvider.php';
 require __DIR__ . '/../core/providers/GeminiProvider.php';
+require __DIR__ . '/../core/providers/OllamaProvider.php';
 require __DIR__ . '/../core/AiEngine.php';
 require __DIR__ . '/../core/Router.php';
 

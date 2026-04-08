@@ -31,9 +31,12 @@ const keySaved    = ref(false)
 // Provider/model selection state
 const selectedProvider = ref('anthropic')
 const selectedModel    = ref('')
+const endpointUrl      = ref('')
 const savingProvider   = ref(false)
 const providerSaved    = ref(false)
 const providerError    = ref('')
+
+const isOllama = computed(() => selectedProvider.value === 'ollama')
 
 const currentProviderModels = computed(() => {
   const p = providers.value[selectedProvider.value]
@@ -72,6 +75,7 @@ async function loadBudget() {
     // Load current provider/model from world config
     selectedProvider.value = data.ai_provider ?? 'anthropic'
     selectedModel.value    = data.ai_model ?? ''
+    endpointUrl.value      = data.ai_endpoint_url ?? ''
     // If no model set, use provider default
     if (!selectedModel.value) {
       const p = providers.value[selectedProvider.value]
@@ -112,13 +116,18 @@ async function saveProviderModel() {
   providerError.value  = ''
   providerSaved.value  = false
   try {
-    await api.patch(`/api/v1/worlds/${wid}`, {
+    const payload = {
       ai_provider: selectedProvider.value,
       ai_model:    selectedModel.value,
-    })
+    }
+    if (isOllama.value) {
+      payload.ai_endpoint_url = endpointUrl.value.trim() || null
+    }
+    await api.patch(`/api/v1/worlds/${wid}`, payload)
     if (budget.value) {
-      budget.value.ai_provider = selectedProvider.value
-      budget.value.ai_model    = selectedModel.value
+      budget.value.ai_provider     = selectedProvider.value
+      budget.value.ai_model        = selectedModel.value
+      budget.value.ai_endpoint_url = payload.ai_endpoint_url ?? null
     }
     providerSaved.value = true
   } catch (e) {
@@ -174,6 +183,33 @@ onMounted(async () => {
                 :value="mid"
               >{{ label }}</option>
             </select>
+            <small v-if="isOllama">Enter any model name available on your Ollama instance. The list above shows common models.</small>
+          </label>
+
+          <!-- Ollama: custom model name input -->
+          <label v-if="isOllama">
+            Custom model name (optional)
+            <input
+              v-model="selectedModel"
+              type="text"
+              placeholder="e.g. llama3.1:latest or a custom model"
+              :disabled="savingProvider"
+              maxlength="64"
+            />
+            <small>Override the dropdown above with any model name installed on your Ollama server.</small>
+          </label>
+
+          <!-- Ollama: endpoint URL -->
+          <label v-if="isOllama">
+            Ollama endpoint URL
+            <input
+              v-model="endpointUrl"
+              type="url"
+              placeholder="http://localhost:11434"
+              :disabled="savingProvider"
+              maxlength="512"
+            />
+            <small>Must be localhost or a private network address. Leave blank for http://localhost:11434.</small>
           </label>
 
           <p v-if="providerError" class="form-error" role="alert">{{ providerError }}</p>
@@ -189,9 +225,14 @@ onMounted(async () => {
         </form>
       </section>
 
-      <!-- API Key Section -->
+      <!-- API Key Section (not needed for Ollama unless using a proxy) -->
       <section class="settings-section">
-        <h2>{{ currentProviderLabel }} API Key</h2>
+        <h2>{{ isOllama ? 'Authentication (Optional)' : currentProviderLabel + ' API Key' }}</h2>
+
+        <p v-if="isOllama" class="muted" style="font-size:.85rem;margin-bottom:.75rem">
+          Ollama runs locally and typically doesn't require an API key.
+          Only configure a key if your Ollama endpoint is behind an authentication proxy.
+        </p>
 
         <div v-if="budget.ai_key_fingerprint" class="key-status">
           <span class="badge badge-success">Key configured</span>

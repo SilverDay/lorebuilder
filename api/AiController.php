@@ -189,7 +189,7 @@ class AiController
         Guard::requireWorldAccess($wid, $userId, minRole: 'owner');
 
         $world = DB::queryOne(
-            'SELECT ai_key_mode, ai_key_fingerprint, ai_model, ai_provider,
+            'SELECT ai_key_mode, ai_key_fingerprint, ai_model, ai_provider, ai_endpoint_url,
                     ai_token_budget, ai_tokens_used, ai_budget_resets_at
                FROM worlds
               WHERE id = :wid AND deleted_at IS NULL',
@@ -220,6 +220,7 @@ class AiController
                 'ai_key_fingerprint' => $world['ai_key_fingerprint'],
                 'ai_provider'        => $world['ai_provider'] ?? 'anthropic',
                 'ai_model'           => $world['ai_model'],
+                'ai_endpoint_url'    => $world['ai_endpoint_url'] ?? null,
                 'ai_token_budget'    => (int) $world['ai_token_budget'],
                 'ai_tokens_used'     => (int) $world['ai_tokens_used'],
                 'ai_budget_resets_at' => $world['ai_budget_resets_at'],
@@ -414,7 +415,7 @@ class AiController
     ): void {
         // Determine provider from world config
         $worldRow = DB::queryOne(
-            'SELECT ai_provider FROM worlds WHERE id = :wid AND deleted_at IS NULL',
+            'SELECT ai_provider, ai_endpoint_url FROM worlds WHERE id = :wid AND deleted_at IS NULL',
             ['wid' => $wid]
         );
         $providerId = $worldRow['ai_provider'] ?? 'anthropic';

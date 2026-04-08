@@ -44,6 +44,7 @@ class AiEngine
         'anthropic' => AnthropicProvider::class,
         'openai'    => OpenAiProvider::class,
         'google'    => GeminiProvider::class,
+        'ollama'    => OllamaProvider::class,
     ];
 
     /**
@@ -136,7 +137,7 @@ class AiEngine
         // ── 1. World config (NEVER DROP) ──────────────────────────────────────
         $world = DB::queryOne(
             'SELECT id, name, genre, tone, era_system, content_warnings,
-                    ai_model, ai_provider, ai_token_budget, ai_tokens_used
+                    ai_model, ai_provider, ai_endpoint_url, ai_token_budget, ai_tokens_used
                FROM worlds
               WHERE id = :wid AND deleted_at IS NULL',
             ['wid' => $worldId]
@@ -484,6 +485,12 @@ PROMPT;
     ): array {
         $providerClass = self::getProvider($providerId);
 
+        // Set endpoint URL for Ollama provider (per-world custom endpoint)
+        if ($providerId === 'ollama' && method_exists($providerClass, 'setEndpoint')) {
+            $endpointUrl = $context['world']['ai_endpoint_url'] ?? null;
+            $providerClass::setEndpoint($endpointUrl);
+        }
+
         try {
             $response = $providerClass::call(
                 $context['system'] ?? '',
@@ -604,6 +611,14 @@ PROMPT;
 
         if ($world === null) {
             throw new AiEngineException('World not found.');
+        }
+
+        // Ollama doesn't require an API key — return empty string or user key for proxy-auth
+        if ($providerId === 'ollama') {
+            if ($world['ai_key_mode'] === 'user' && !empty($world['ai_key_enc'])) {
+                return self::decryptUserKey((string) $world['ai_key_enc']);
+            }
+            return ''; // No key needed for local Ollama
         }
 
         return match ($world['ai_key_mode']) {

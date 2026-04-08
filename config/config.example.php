@@ -29,6 +29,10 @@ define('PLATFORM_ANTHROPIC_KEY', '');
 define('PLATFORM_OPENAI_KEY',    '');
 define('PLATFORM_GEMINI_KEY',    '');
 
+// Ollama / Local Models
+// Default endpoint for Ollama. Per-world overrides are stored in the DB.
+define('OLLAMA_DEFAULT_ENDPOINT', 'http://localhost:11434');
+
 // ─── Session ──────────────────────────────────────────────────────────────────
 define('SESSION_LIFETIME',      28800);   // 8 hours idle timeout (seconds)
 define('SESSION_REMEMBER_DAYS', 30);      // "Remember me" token lifetime
