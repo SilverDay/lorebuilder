@@ -488,6 +488,7 @@ PROMPT;
         // Set endpoint URL for Ollama provider (per-world custom endpoint)
         if ($providerId === 'ollama' && method_exists($providerClass, 'setEndpoint')) {
             $endpointUrl = $context['world']['ai_endpoint_url'] ?? null;
+            /** @var OllamaProvider $providerClass */
             $providerClass::setEndpoint($endpointUrl);
         }
 
