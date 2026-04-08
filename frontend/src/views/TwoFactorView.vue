@@ -217,7 +217,7 @@ async function disableTotp() {
       </template>
 
       <p style="margin-top:1rem">
-        <RouterLink to="/worlds">← Back to my worlds</RouterLink>
+        <RouterLink to="/account/settings">← Back to account</RouterLink>
       </p>
     </div>
   </div>

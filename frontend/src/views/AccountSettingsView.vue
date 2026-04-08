@@ -98,7 +98,7 @@ async function deleteAccount() {
   <div class="page page-narrow">
     <header class="page-header">
       <h1>Account Settings</h1>
-      <RouterLink to="/worlds" class="btn btn-ghost">← My Worlds</RouterLink>
+      <button class="btn btn-ghost" @click="router.back()">← Back</button>
     </header>
 
     <p v-if="loading" class="loading">Loading…</p>

@@ -66,7 +66,7 @@ async function submit() {
         </form>
       </template>
 
-      <p><RouterLink to="/worlds">← Back to my worlds</RouterLink></p>
+      <p><RouterLink to="/account/settings">← Back to account</RouterLink></p>
     </div>
   </div>
 </template>
