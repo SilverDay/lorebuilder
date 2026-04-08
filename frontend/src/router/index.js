@@ -41,6 +41,12 @@ const routes = [
     meta:      { requiresGuest: true },
   },
   {
+    path:      '/account/settings',
+    name:      'AccountSettings',
+    component: () => import('@/views/AccountSettingsView.vue'),
+    meta:      { requiresAuth: true },
+  },
+  {
     path:      '/account/password',
     name:      'ChangePassword',
     component: () => import('@/views/ChangePasswordView.vue'),
@@ -106,6 +112,12 @@ const routes = [
         component: () => import('@/views/EntityEditView.vue'),
       },
       {
+        path:      'trash',
+        name:      'Trash',
+        component: () => import('@/views/EntityTrashView.vue'),
+        meta:      { requiresAdmin: true },
+      },
+      {
         path:      'graph',
         name:      'Graph',
         component: () => import('@/views/GraphView.vue'),
@@ -124,6 +136,11 @@ const routes = [
         path:      'audit-log',
         name:      'AuditLog',
         component: () => import('@/views/AuditLogView.vue'),
+      },
+      {
+        path:      'settings/general',
+        name:      'WorldSettings',
+        component: () => import('@/views/WorldSettingsView.vue'),
       },
       {
         path:      'settings/ai',

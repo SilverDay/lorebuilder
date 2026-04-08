@@ -92,7 +92,7 @@ async function saveAttrs() {
     <!-- Attributes -->
     <div class="attr-section-header">
       <h3>Attributes</h3>
-      <button v-if="!editing" class="btn-icon" title="Edit attributes" @click="startEdit">✏</button>
+      <button v-if="!editing" class="btn-icon" title="Edit attributes" aria-label="Edit attributes" @click="startEdit">✏</button>
     </div>
 
     <!-- Read mode -->
@@ -115,9 +115,9 @@ async function saveAttrs() {
           <div class="attr-edit-card-header">
             <span class="attr-edit-card-num">#{{ i + 1 }}</span>
             <span class="attr-edit-actions">
-              <button type="button" class="btn-icon" title="Move up"   :disabled="i === 0" @click="moveUp(i)">↑</button>
-              <button type="button" class="btn-icon" title="Move down" :disabled="i === draft.length - 1" @click="moveDown(i)">↓</button>
-              <button type="button" class="btn-icon btn-icon--danger" title="Remove" @click="removeRow(i)">✕</button>
+              <button type="button" class="btn-icon" title="Move up" aria-label="Move attribute up" :disabled="i === 0" @click="moveUp(i)">↑</button>
+              <button type="button" class="btn-icon" title="Move down" aria-label="Move attribute down" :disabled="i === draft.length - 1" @click="moveDown(i)">↓</button>
+              <button type="button" class="btn-icon btn-icon--danger" title="Remove" aria-label="Remove attribute" @click="removeRow(i)">✕</button>
             </span>
           </div>
           <label class="attr-edit-label">

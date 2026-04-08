@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — World & Membership Controller
  *
@@ -156,7 +157,7 @@ class WorldController
         $sets   = [];
         $params = ['id' => $wid];
 
-        $allowed = ['name','description','genre','tone','era_system','content_warnings','status','ai_model','ai_provider'];
+        $allowed = ['name', 'description', 'genre', 'tone', 'era_system', 'content_warnings', 'status', 'ai_model', 'ai_provider'];
         foreach ($allowed as $col) {
             if (array_key_exists($col, $data)) {
                 $sets[]       = "{$col} = :{$col}";
@@ -250,8 +251,14 @@ class WorldController
             ['role' => $data['role'], 'wid' => $wid, 'uid' => $targetUid]
         );
 
-        self::audit($wid, $actorId, 'world.member.role_change', 'user', $targetUid,
-            ['old_role' => $target['role'], 'new_role' => $data['role']]);
+        self::audit(
+            $wid,
+            $actorId,
+            'world.member.role_change',
+            'user',
+            $targetUid,
+            ['old_role' => $target['role'], 'new_role' => $data['role']]
+        );
 
         Router::json(['updated' => true, 'role' => $data['role']]);
     }
@@ -324,13 +331,25 @@ class WorldController
         DB::execute(
             'INSERT INTO world_invitations (world_id, invited_by, email, role, token, expires_at)
              VALUES (:wid, :by, :email, :role, :token, :exp)',
-            ['wid' => $wid, 'by' => $userId, 'email' => $data['email'],
-             'role' => $data['role'], 'token' => $token, 'exp' => $expires]
+            [
+                'wid' => $wid,
+                'by' => $userId,
+                'email' => $data['email'],
+                'role' => $data['role'],
+                'token' => $token,
+                'exp' => $expires
+            ]
         );
 
         self::sendInvitationEmail($wid, $data['email'], $data['role'], $token);
-        self::audit($wid, $userId, 'world.invitation.send', 'world', $wid,
-            ['email' => $data['email'], 'role' => $data['role']]);
+        self::audit(
+            $wid,
+            $userId,
+            'world.invitation.send',
+            'world',
+            $wid,
+            ['email' => $data['email'], 'role' => $data['role']]
+        );
 
         http_response_code(201);
         echo json_encode(['data' => ['invited' => true]], JSON_UNESCAPED_UNICODE);
@@ -386,8 +405,12 @@ class WorldController
                  VALUES (:wid, :uid, :role, :by, NOW())
                  ON DUPLICATE KEY UPDATE
                      role = VALUES(role), deleted_at = NULL, joined_at = NOW()',
-                ['wid' => $inv['world_id'], 'uid' => $userId,
-                 'role' => $inv['role'], 'by' => $inv['invited_by']]
+                [
+                    'wid' => $inv['world_id'],
+                    'uid' => $userId,
+                    'role' => $inv['role'],
+                    'by' => $inv['invited_by']
+                ]
             );
 
             DB::execute(
@@ -490,8 +513,8 @@ class WorldController
         $fromName = defined('MAIL_FROM_NAME') ? MAIL_FROM_NAME : 'LoreBuilder';
         $subject  = "You've been invited to join \"{$name}\" on LoreBuilder";
         $body     = "You've been invited to join \"{$name}\" as a {$role}.\n\n"
-                  . "Accept your invitation:\n{$url}\n\n"
-                  . "This link expires in 7 days.\n\nLoreBuilder";
+            . "Accept your invitation:\n{$url}\n\n"
+            . "This link expires in 7 days.\n\nLoreBuilder";
         $headers  = "From: {$fromName} <{$from}>\r\nContent-Type: text/plain; charset=UTF-8\r\n";
 
         mail($email, $subject, $body, $headers);

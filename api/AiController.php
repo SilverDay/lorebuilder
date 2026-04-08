@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — AI Controller
  *
@@ -220,7 +221,7 @@ class AiController
                 'ai_model'           => $world['ai_model'],
                 'ai_token_budget'    => (int) $world['ai_token_budget'],
                 'ai_tokens_used'     => (int) $world['ai_tokens_used'],
-                'ai_budget_resets_at'=> $world['ai_budget_resets_at'],
+                'ai_budget_resets_at' => $world['ai_budget_resets_at'],
                 'usage_by_day'       => $usageByDay,
             ],
         ]);
@@ -471,8 +472,17 @@ class AiController
 
             // Record failed session before returning error
             $sessionId = self::writeSession(
-                $wid, $userId, $entityId, $mode, $worldModel,
-                0, 0, 0, hash('sha256', $userPrompt), 'error', $sessionError
+                $wid,
+                $userId,
+                $entityId,
+                $mode,
+                $worldModel,
+                0,
+                0,
+                0,
+                hash('sha256', $userPrompt),
+                'error',
+                $sessionError
             );
 
             $code = str_contains($e->getMessage(), 'API key') ? 'AI_KEY_INVALID' : 'INTERNAL_ERROR';
@@ -484,9 +494,17 @@ class AiController
         // 5. Write ai_sessions row
         $promptHash = hash('sha256', $context['system'] . "\n\n" . $userPrompt);
         $sessionId  = self::writeSession(
-            $wid, $userId, $entityId, $mode, $result['model'],
-            $result['prompt_tokens'], $result['completion_tokens'], $result['total_tokens'],
-            $promptHash, 'success', null
+            $wid,
+            $userId,
+            $entityId,
+            $mode,
+            $result['model'],
+            $result['prompt_tokens'],
+            $result['completion_tokens'],
+            $result['total_tokens'],
+            $promptHash,
+            'success',
+            null
         );
 
         // 6. Write lore_notes row (ai_generated=1, links to session)

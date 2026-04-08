@@ -50,8 +50,8 @@ try {
     $apiKey  = AiEngine::resolveApiKey($wid, $providerId);
     $context = AiEngine::buildContext(0, $wid, 'consistency_check');
     $prompt  = 'Analyse this world for narrative inconsistencies, contradictions, '
-             . 'unresolved plot threads, and logical gaps. Provide a structured report '
-             . 'with severity ratings (Critical / High / Medium / Low) for each issue.';
+        . 'unresolved plot threads, and logical gaps. Provide a structured report '
+        . 'with severity ratings (Critical / High / Medium / Low) for each issue.';
     $result  = AiEngine::callApi($context, $prompt, $apiKey, $world['ai_model'], 4096, $providerId);
 } catch (AiEngineException $e) {
     fwrite(STDERR, "AI error: {$e->getMessage()}\n");

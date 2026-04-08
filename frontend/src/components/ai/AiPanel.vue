@@ -79,7 +79,7 @@ function clear() {
     <aside v-if="open" class="ai-panel" role="complementary" aria-label="AI assistant">
       <header class="ai-panel__header">
         <h2>AI Assistant</h2>
-        <button class="btn btn-ghost btn-sm" @click="togglePanel">✕</button>
+        <button class="btn btn-ghost btn-sm" aria-label="Close AI panel" @click="togglePanel">✕</button>
       </header>
 
       <div class="ai-panel__body">

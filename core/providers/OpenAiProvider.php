@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — OpenAI (ChatGPT) Provider
  *
@@ -132,12 +133,12 @@ class OpenAiProvider implements AiProvider
         $outputTokens  = (int) ($usage['completion_tokens']  ?? 0);
 
         return new AiResponse(
-            text:             $text,
-            promptTokens:     $inputTokens,
+            text: $text,
+            promptTokens: $inputTokens,
             completionTokens: $outputTokens,
-            totalTokens:      $inputTokens + $outputTokens,
-            model:            $body['model'] ?? $model,
-            provider:         self::id(),
+            totalTokens: $inputTokens + $outputTokens,
+            model: $body['model'] ?? $model,
+            provider: self::id(),
         );
     }
 

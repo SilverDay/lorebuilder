@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — Anthropic (Claude) Provider
  *
@@ -132,12 +133,12 @@ class AnthropicProvider implements AiProvider
         $outputTokens = (int) ($usage['output_tokens'] ?? 0);
 
         return new AiResponse(
-            text:             $text,
-            promptTokens:     $inputTokens,
+            text: $text,
+            promptTokens: $inputTokens,
             completionTokens: $outputTokens,
-            totalTokens:      $inputTokens + $outputTokens,
-            model:            $body['model'] ?? $model,
-            provider:         self::id(),
+            totalTokens: $inputTokens + $outputTokens,
+            model: $body['model'] ?? $model,
+            provider: self::id(),
         );
     }
 

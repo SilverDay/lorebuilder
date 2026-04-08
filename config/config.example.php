@@ -44,7 +44,7 @@ define('RATE_REGISTER_LIMIT',   5);       // per IP per hour
 define('STORAGE_PATH',  '/var/www/lorebuilder/storage');
 define('UPLOAD_PATH',   STORAGE_PATH . '/uploads');
 define('LOG_PATH',      STORAGE_PATH . '/logs/app.log');
-define('AUDIT_LOG_PATH',STORAGE_PATH . '/logs/audit.log');
+define('AUDIT_LOG_PATH', STORAGE_PATH . '/logs/audit.log');
 define('BACKUP_PATH',   STORAGE_PATH . '/backups');
 
 // ─── Mail ─────────────────────────────────────────────────────────────────────
@@ -59,4 +59,4 @@ define('SMTP_ENCRYPTION',   'tls');       // 'tls' | 'ssl' | ''
 
 // ─── Registration ─────────────────────────────────────────────────────────────
 define('REGISTRATION_OPEN',         true);   // false = invite-only
-define('REQUIRE_EMAIL_VERIFICATION',true);
+define('REQUIRE_EMAIL_VERIFICATION', true);

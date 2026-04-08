@@ -144,6 +144,8 @@ function togglePhysics() {
       v-show="!loading && !error"
       ref="container"
       class="graph-container"
+      role="img"
+      aria-label="Entity relationship graph"
     ></div>
   </div>
 </template>

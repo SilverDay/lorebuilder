@@ -72,48 +72,54 @@ const ARC_STATUS_LABEL = {
         <RouterLink to="/worlds" class="btn btn-ghost">← All Worlds</RouterLink>
         <RouterLink :to="`/worlds/${wid}/tutorial`" class="btn btn-ghost">Help</RouterLink>
         <RouterLink :to="`/worlds/${wid}/settings/ai`" class="btn btn-ghost">AI Settings</RouterLink>
+        <RouterLink :to="`/worlds/${wid}/settings/general`" class="btn btn-ghost">World Settings</RouterLink>
         <RouterLink :to="`/worlds/${wid}/members`" class="btn btn-ghost">Members</RouterLink>
         <RouterLink :to="`/worlds/${wid}/export`" class="btn btn-ghost">Export</RouterLink>
+        <RouterLink to="/account/settings" class="btn btn-ghost">Account</RouterLink>
       </div>
     </header>
 
     <!-- Quick Navigation -->
     <nav class="dashboard-nav" aria-label="World sections">
       <RouterLink :to="`/worlds/${wid}/entities`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">◈</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">◈</span>
         <span class="dashboard-nav-card__label">Entities</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/graph`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">⬡</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">⬡</span>
         <span class="dashboard-nav-card__label">Relationship Graph</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/timeline`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">◷</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">◷</span>
         <span class="dashboard-nav-card__label">Timeline</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/arcs`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">◎</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">◎</span>
         <span class="dashboard-nav-card__label">Story Arcs</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/notes`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">✎</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">✎</span>
         <span class="dashboard-nav-card__label">Lore Notes</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/references`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">⊞</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">⊞</span>
         <span class="dashboard-nav-card__label">References</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/open-points`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">◉</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">◉</span>
         <span class="dashboard-nav-card__label">Open Points</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/ai/history`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">✦</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">✦</span>
         <span class="dashboard-nav-card__label">AI History</span>
       </RouterLink>
       <RouterLink :to="`/worlds/${wid}/audit-log`" class="dashboard-nav-card">
-        <span class="dashboard-nav-card__icon">☰</span>
+        <span class="dashboard-nav-card__icon" aria-hidden="true">☰</span>
         <span class="dashboard-nav-card__label">Audit Log</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/trash`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon" aria-hidden="true">♻</span>
+        <span class="dashboard-nav-card__label">Trash</span>
       </RouterLink>
     </nav>
 

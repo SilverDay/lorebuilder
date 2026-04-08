@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — Google Gemini Provider
  *
@@ -145,12 +146,12 @@ class GeminiProvider implements AiProvider
         $outputTokens = (int) ($usage['candidatesTokenCount'] ?? 0);
 
         return new AiResponse(
-            text:             $text,
-            promptTokens:     $inputTokens,
+            text: $text,
+            promptTokens: $inputTokens,
             completionTokens: $outputTokens,
-            totalTokens:      $inputTokens + $outputTokens,
-            model:            $model,
-            provider:         self::id(),
+            totalTokens: $inputTokens + $outputTokens,
+            model: $model,
+            provider: self::id(),
         );
     }
 

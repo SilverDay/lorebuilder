@@ -602,6 +602,73 @@ class EntityController
         Router::json(['nodes' => $nodes, 'edges' => $edges]);
     }
 
+    // ─── GET /api/v1/worlds/:wid/entities/trash ────────────────────────────
+
+    public static function trash(array $p): void
+    {
+        $wid    = (int) $p['wid'];
+        $userId = $p['user']['id'];
+        $isPlatformAdmin = (bool) $p['user']['is_platform_admin'];
+
+        Guard::requireWorldAccess($wid, $userId, 'admin', $isPlatformAdmin);
+
+        $q = Validator::parseQuery([
+            'page'     => 'nullable|int|min:1',
+            'per_page' => 'nullable|int|min:1|max:100',
+        ]);
+
+        $page    = (int) ($q['page']     ?? 1);
+        $perPage = (int) ($q['per_page'] ?? 50);
+        $offset  = ($page - 1) * $perPage;
+
+        $total = (int) DB::queryOne(
+            'SELECT COUNT(*) AS n FROM entities WHERE world_id = :wid AND deleted_at IS NOT NULL',
+            ['wid' => $wid]
+        )['n'];
+
+        $rows = DB::query(
+            'SELECT id, name, type, status, deleted_at
+               FROM entities
+              WHERE world_id = :wid AND deleted_at IS NOT NULL
+              ORDER BY deleted_at DESC
+              LIMIT :limit OFFSET :offset',
+            ['wid' => $wid, 'limit' => $perPage, 'offset' => $offset]
+        );
+
+        Router::json($rows, ['total' => $total, 'page' => $page]);
+    }
+
+    // ─── POST /api/v1/worlds/:wid/entities/:id/restore ──────────────────────
+
+    public static function restore(array $p): void
+    {
+        $wid    = (int) $p['wid'];
+        $id     = (int) $p['id'];
+        $userId = $p['user']['id'];
+        $isPlatformAdmin = (bool) $p['user']['is_platform_admin'];
+
+        Guard::requireWorldAccess($wid, $userId, 'admin', $isPlatformAdmin);
+
+        // Fetch soft-deleted entity (including deleted ones)
+        $entity = DB::queryOne(
+            'SELECT id, name FROM entities WHERE id = :id AND world_id = :wid AND deleted_at IS NOT NULL',
+            ['id' => $id, 'wid' => $wid]
+        );
+
+        if (!$entity) {
+            Router::jsonError(404, 'NOT_FOUND', 'Deleted entity not found.');
+            return;
+        }
+
+        DB::execute(
+            'UPDATE entities SET deleted_at = NULL WHERE id = :id AND world_id = :wid',
+            ['id' => $id, 'wid' => $wid]
+        );
+
+        self::audit($wid, $userId, 'entity.restore', 'entity', $id);
+        Router::json(['restored' => true]);
+    }
+
     // ─── Private Helpers ──────────────────────────────────────────────────────
 
     /**

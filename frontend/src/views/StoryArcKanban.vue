@@ -114,6 +114,8 @@ async function onDrop(e, toStatus) {
             :key="arc.id"
             class="kanban-card"
             draggable="true"
+            role="listitem"
+            :aria-label="`${arc.name} — drag to change status`"
             @dragstart="onDragStart(arc)"
           >
             <div class="kanban-card-title">{{ arc.name }}</div>

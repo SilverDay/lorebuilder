@@ -236,7 +236,7 @@ watch(() => route.params.eid, () => {
           <div class="detail-section">
             <div class="detail-section-header">
               <h2>Tags</h2>
-              <button v-if="!editingTags" class="btn-icon" title="Edit tags" @click="startTagEdit">✏</button>
+              <button v-if="!editingTags" class="btn-icon" title="Edit tags" aria-label="Edit tags" @click="startTagEdit">✏</button>
             </div>
 
             <template v-if="!editingTags">
@@ -296,7 +296,7 @@ watch(() => route.params.eid, () => {
           <div class="detail-section">
             <div class="detail-section-header">
               <h2>Open Points</h2>
-              <button class="btn-icon" title="Add open point" @click="showAddPoint = !showAddPoint">＋</button>
+              <button class="btn-icon" title="Add open point" aria-label="Add open point" @click="showAddPoint = !showAddPoint">＋</button>
             </div>
 
             <!-- Add form -->

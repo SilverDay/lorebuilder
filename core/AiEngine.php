@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — AI Engine
  *

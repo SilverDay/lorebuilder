@@ -262,7 +262,7 @@ async function deletePoint() {
     <Teleport to="body">
       <div v-if="selected" class="drawer-backdrop" @click.self="selected = null">
         <aside class="drawer">
-          <button class="drawer-close" @click="selected = null">✕</button>
+          <button class="drawer-close" aria-label="Close open point details" @click="selected = null">✕</button>
 
           <p v-if="detailLoading" class="loading">Loading…</p>
           <template v-else>

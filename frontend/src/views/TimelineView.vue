@@ -157,6 +157,8 @@ onBeforeUnmount(() => {
       v-show="currentTimeline && !loading"
       ref="container"
       class="timeline-container"
+      role="img"
+      aria-label="Timeline visualization"
     ></div>
   </div>
 </template>
