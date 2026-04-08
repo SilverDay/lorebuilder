@@ -32,6 +32,7 @@ class AiController
         'consistency_check',
         'world_overview',
         'custom',
+        'image_prompt',
     ];
 
     /** Per-user AI request limit per hour. */
@@ -70,7 +71,7 @@ class AiController
 
         $data = Validator::parseJson([
             'entity_id'   => 'int|nullable',
-            'mode'        => 'required|string|in:entity_assist,arc_synthesiser,world_overview,custom',
+            'mode'        => 'required|string|in:entity_assist,arc_synthesiser,world_overview,custom,image_prompt',
             'user_prompt' => 'required|string|min:1|max:4000',
         ]);
 
@@ -262,7 +263,7 @@ class AiController
         Guard::requireWorldAccess($wid, $userId, minRole: 'admin');
 
         $data = Validator::parseJson([
-            'mode'       => 'required|string|in:entity_assist,arc_synthesiser,consistency_check,world_overview,custom',
+            'mode'       => 'required|string|in:entity_assist,arc_synthesiser,consistency_check,world_overview,custom,image_prompt',
             'name'       => 'required|string|max:128',
             'system_tpl' => 'required|string|max:8000',
             'user_tpl'   => 'required|string|max:4000',

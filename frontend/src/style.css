@@ -1592,6 +1592,55 @@ input[type="search"] {
   flex-wrap: wrap;
 }
 
+/* ── AI Image Prompt ─────────────────────────────────────────────────────── */
+
+.ai-image-prompt {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+.ai-image-prompt__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .75rem;
+}
+
+.ai-image-prompt__header h3 {
+  margin: 0;
+  font-size: .9rem;
+  color: var(--color-text);
+}
+
+.ai-image-prompt__editor {
+  width: 100%;
+  min-height: 180px;
+  padding: .75rem;
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  resize: vertical;
+}
+
+.ai-image-prompt__editor:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, .25);
+}
+
+.ai-image-prompt__hint {
+  margin: .5rem 0;
+  font-size: .75rem;
+  color: var(--color-muted);
+}
+
 /* ── Settings pages ──────────────────────────────────────────────────────── */
 
 .settings-section {

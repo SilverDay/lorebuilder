@@ -408,6 +408,42 @@ class AiEngine
             }
         }
 
+        // ── Mode-specific instruction block ────────────────────────────────────
+        if ($mode === 'image_prompt') {
+            $genre = $world['genre'] ?? 'fantasy';
+            $tone  = $world['tone']  ?? 'epic';
+            $sections['mode_instruction'] = <<<PROMPT
+
+IMAGE PROMPT GENERATION INSTRUCTIONS:
+You are an expert at writing detailed image-generation prompts for AI art tools
+(Midjourney, DALL-E, Stable Diffusion, Flux, etc.).
+
+Based on the entity data and world context above, produce a richly detailed
+visual description. Structure your output as follows:
+
+**Subject**: Describe the entity's physical appearance, attire, pose, expression,
+distinguishing features. Draw from entity attributes and lore.
+
+**Environment**: Describe the setting, lighting, atmosphere. Derive from the
+world's genre ({$genre}) and tone ({$tone}).
+
+**Style**: Suggest an art style that fits the world's aesthetic. For example:
+epic fantasy → "oil painting, baroque lighting"; sci-fi → "concept art, cinematic";
+horror → "dark atmospheric digital painting".
+
+**Technical details**: Camera angle, composition, color palette.
+
+**Negative prompt**: List common artefacts to exclude (e.g. "blurry, deformed hands,
+extra limbs, watermark, text, low quality").
+
+Format the final prompt as a single block of descriptive text (suitable for
+pasting into an image generator), followed by a separate "Negative prompt:" line.
+Use vivid, concrete visual language. Avoid abstract or narrative descriptions
+that image generators cannot interpret.
+
+PROMPT;
+        }
+
         // ── Assemble final system prompt ───────────────────────────────────────
         $system = implode('', array_values($sections));
 

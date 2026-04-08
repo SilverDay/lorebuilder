@@ -29,11 +29,18 @@ const MODES = [
   { value: 'entity_assist',   label: 'Entity Assist' },
   { value: 'arc_synthesiser', label: 'Arc Synthesiser' },
   { value: 'world_overview',  label: 'World Overview' },
+  { value: 'image_prompt',    label: 'Image Prompt' },
   { value: 'custom',          label: 'Custom' },
 ]
 
+const isImagePrompt = computed(() => mode.value === 'image_prompt')
+
+// Editable copy of the image prompt result
+const editablePrompt = ref('')
+const copied = ref(false)
+
 const canSubmit = computed(() =>
-  prompt.value.trim().length > 0 && !ai.loading
+  (prompt.value.trim().length > 0 || isImagePrompt.value) && !ai.loading
 )
 
 function togglePanel() {
@@ -43,13 +50,19 @@ function togglePanel() {
 
 async function submit() {
   if (!canSubmit.value) return
+  copied.value = false
+  const userPrompt = prompt.value.trim() || (isImagePrompt.value ? 'Generate a detailed image prompt for this entity.' : '')
+  if (!userPrompt) return
   try {
     const result = await ai.assist(
       props.worldId,
       mode.value,
-      prompt.value.trim(),
-      mode.value === 'entity_assist' ? props.entityId : null
+      userPrompt,
+      mode.value === 'entity_assist' || mode.value === 'image_prompt' ? props.entityId : null
     )
+    if (isImagePrompt.value && result?.text) {
+      editablePrompt.value = result.text
+    }
     emit('response', result)
   } catch {
     // error displayed via ai.error
@@ -58,7 +71,21 @@ async function submit() {
 
 function clear() {
   prompt.value = ''
+  editablePrompt.value = ''
+  copied.value = false
   ai.clearResult()
+}
+
+async function copyPrompt() {
+  try {
+    await navigator.clipboard.writeText(editablePrompt.value)
+    copied.value = true
+    setTimeout(() => { copied.value = false }, 2000)
+  } catch {
+    // Fallback: select textarea content
+    const ta = document.querySelector('.ai-image-prompt__editor')
+    if (ta) { ta.select(); document.execCommand('copy'); copied.value = true }
+  }
 }
 </script>
 
@@ -95,11 +122,13 @@ function clear() {
 
         <!-- Prompt textarea -->
         <label class="ai-panel__label">
-          Your request
+          {{ isImagePrompt ? 'Describe the visual you want (optional — leave blank for automatic)' : 'Your request' }}
           <textarea
             v-model="prompt"
             class="ai-panel__textarea"
-            placeholder="Describe what you need, e.g. 'Write a backstory for this character' or 'Suggest plot hooks involving this entity'…"
+            :placeholder="isImagePrompt
+              ? 'e.g. \'Full body portrait in dramatic lighting\' or leave blank to auto-generate from entity data…'
+              : 'Describe what you need, e.g. \'Write a backstory for this character\' or \'Suggest plot hooks involving this entity\'…'"
             rows="5"
             :disabled="ai.loading"
             @keydown.ctrl.enter.prevent="submit"
@@ -114,10 +143,10 @@ function clear() {
             :disabled="!canSubmit"
             @click="submit"
           >
-            {{ ai.loading ? 'Thinking…' : 'Ask AI' }}
+            {{ ai.loading ? 'Thinking…' : isImagePrompt ? 'Generate Image Prompt' : 'Ask AI' }}
           </button>
           <button
-            v-if="prompt || ai.lastResult"
+            v-if="prompt || ai.lastResult || editablePrompt"
             class="btn btn-ghost btn-sm"
             @click="clear"
             :disabled="ai.loading"
@@ -129,9 +158,38 @@ function clear() {
         <!-- Error -->
         <p v-if="ai.error" class="form-error" role="alert">{{ ai.error }}</p>
 
-        <!-- Response -->
+        <!-- Image Prompt: editable + copyable result -->
+        <div v-if="isImagePrompt && editablePrompt" class="ai-image-prompt">
+          <div class="ai-image-prompt__header">
+            <h3>Generated Image Prompt</h3>
+            <button
+              class="btn btn-secondary btn-sm"
+              @click="copyPrompt"
+              :aria-label="copied ? 'Copied!' : 'Copy prompt to clipboard'"
+            >
+              {{ copied ? '✓ Copied' : 'Copy' }}
+            </button>
+          </div>
+          <textarea
+            v-model="editablePrompt"
+            class="ai-image-prompt__editor"
+            rows="12"
+            aria-label="Editable image generation prompt"
+          />
+          <p class="ai-image-prompt__hint">Edit the prompt above, then copy and paste into your image generator.</p>
+          <!-- Token meta -->
+          <div v-if="ai.lastResult" class="ai-response-card__meta">
+            <span class="badge badge-ai">{{ ai.lastResult.model }}</span>
+            <span class="ai-response-card__tokens">
+              {{ ai.lastResult.prompt_tokens?.toLocaleString() }} in
+              · {{ ai.lastResult.completion_tokens?.toLocaleString() }} out
+            </span>
+          </div>
+        </div>
+
+        <!-- Standard Response (non-image modes) -->
         <AiResponseCard
-          v-if="ai.lastResult"
+          v-if="!isImagePrompt && ai.lastResult"
           :result="ai.lastResult"
           :world-id="worldId"
           :entity-id="entityId"
