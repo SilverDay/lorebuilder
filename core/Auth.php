@@ -28,6 +28,9 @@ declare(strict_types=1);
 
 class AuthException extends \RuntimeException
 {
+    public ?float $retryAfter = null;
+    public ?string $field = null;
+
     public function __construct(
         string $message,
         public readonly string $errorCode,
