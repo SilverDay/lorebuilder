@@ -635,7 +635,7 @@ class EntityController
             ['wid' => $wid, 'limit' => $perPage, 'offset' => $offset]
         );
 
-        Router::json($rows, ['total' => $total, 'page' => $page]);
+        Router::json($rows, 200, ['total' => $total, 'page' => $page]);
     }
 
     // ─── POST /api/v1/worlds/:wid/entities/:id/restore ──────────────────────
