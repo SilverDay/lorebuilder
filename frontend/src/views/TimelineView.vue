@@ -135,7 +135,6 @@ onBeforeUnmount(() => {
   <div class="page">
     <header class="page-header">
       <h1>Timelines</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
     </header>
 
     <p v-if="error" class="form-error" role="alert">{{ error }}</p>

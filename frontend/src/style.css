@@ -2310,6 +2310,47 @@ code {
   }
 }
 
+/* ── App Nav (logged-in) ─────────────────────────────────────────────────── */
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+
+.app-nav__brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.app-nav__brand:hover {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.app-nav__links {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .app-nav {
+    padding: 1rem 1.25rem;
+  }
+}
+
 /* ── Landing page ────────────────────────────────────────────────────────── */
 
 .landing {

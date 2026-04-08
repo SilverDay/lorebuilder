@@ -133,7 +133,6 @@ function togglePhysics() {
         <button class="btn btn-secondary" @click="togglePhysics">
           {{ physics ? 'Freeze layout' : 'Animate layout' }}
         </button>
-        <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
       </div>
     </header>
 

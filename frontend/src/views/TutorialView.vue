@@ -58,8 +58,7 @@ const NAV = [
         >{{ item.label }}</button>
       </nav>
       <div class="tut-sidebar__back">
-        <RouterLink v-if="wid" :to="`/worlds/${wid}`" class="btn btn-ghost btn-sm">← Dashboard</RouterLink>
-        <RouterLink v-else to="/" class="btn btn-ghost btn-sm">← Home</RouterLink>
+        <RouterLink v-if="!wid" to="/" class="btn btn-ghost btn-sm">← Home</RouterLink>
       </div>
     </aside>
 

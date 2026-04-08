@@ -98,7 +98,6 @@ async function deleteAccount() {
   <div class="page page-narrow">
     <header class="page-header">
       <h1>Account Settings</h1>
-      <button class="btn btn-ghost" @click="router.back()">← Back</button>
     </header>
 
     <p v-if="loading" class="loading">Loading…</p>

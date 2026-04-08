@@ -88,7 +88,6 @@ onMounted(load)
   <div class="page">
     <header class="page-header">
       <h1>Members</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
     </header>
 
     <p v-if="error" class="form-error" role="alert">{{ error }}</p>

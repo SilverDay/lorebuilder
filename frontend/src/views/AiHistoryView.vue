@@ -51,7 +51,6 @@ onMounted(load)
   <div class="page">
     <header class="page-header">
       <h1>AI Session History</h1>
-      <RouterLink :to="`/worlds/${wid}/settings/ai`" class="btn btn-ghost">← AI Settings</RouterLink>
     </header>
 
     <p v-if="loading" class="loading">Loading…</p>

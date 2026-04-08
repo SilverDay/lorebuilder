@@ -3,6 +3,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.js'
 import { useTheme } from '@/composables/useTheme.js'
+import AppNav from '@/components/AppNav.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
 import SearchModal from '@/components/SearchModal.vue'
 
@@ -38,6 +39,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
+  <AppNav />
   <RouterView />
   <ToastContainer />
   <SearchModal

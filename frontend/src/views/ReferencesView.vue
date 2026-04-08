@@ -154,7 +154,6 @@ async function deleteRef() {
     <header class="page-header">
       <h1>References</h1>
       <div class="page-header-actions">
-        <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
         <button class="btn btn-primary" @click="showCreate = !showCreate">
           + New Reference
         </button>

@@ -83,7 +83,6 @@ async function save() {
   <div class="page">
     <header class="page-header">
       <h1>World Settings</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
     </header>
 
     <p v-if="loading" class="loading">Loading…</p>

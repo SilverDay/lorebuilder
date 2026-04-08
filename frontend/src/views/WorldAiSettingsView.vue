@@ -152,7 +152,6 @@ onMounted(async () => {
   <div class="page">
     <header class="page-header">
       <h1>AI Settings</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
     </header>
 
     <p v-if="loading" class="loading">Loading…</p>

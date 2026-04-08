@@ -59,7 +59,6 @@ function toggleRow(id) {
   <div class="page">
     <header class="page-header">
       <h1>Audit Log</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
     </header>
 
     <div class="filter-bar">

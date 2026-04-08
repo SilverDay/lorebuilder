@@ -89,7 +89,6 @@ async function onDrop(e, toStatus) {
   <div class="page page-wide">
     <header class="page-header">
       <h1>Story Arcs</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
     </header>
 
     <p v-if="error" class="form-error" role="alert">{{ error }}</p>

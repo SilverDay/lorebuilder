@@ -206,7 +206,6 @@ watch(() => route.params.eid, () => {
     <template v-else-if="entity">
       <header class="page-header">
         <span></span>
-        <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Back</RouterLink>
       </header>
 
       <div class="entity-detail-grid">

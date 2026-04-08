@@ -2,11 +2,9 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWorldStore } from '@/stores/world.js'
-import { useAuthStore } from '@/stores/auth.js'
 
 const router = useRouter()
 const worlds = useWorldStore()
-const auth   = useAuthStore()
 
 onMounted(() => worlds.fetchWorlds())
 
@@ -21,10 +19,6 @@ function open(world) {
       <h1>Your Worlds</h1>
       <div class="page-header-actions">
         <RouterLink to="/worlds/new" class="btn btn-primary">New world</RouterLink>
-        <RouterLink to="/account/settings" class="btn btn-ghost">Account</RouterLink>
-        <button class="btn btn-ghost" @click="auth.logout().then(() => $router.push('/login'))">
-          Sign out
-        </button>
       </div>
     </header>
 

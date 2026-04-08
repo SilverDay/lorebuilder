@@ -157,7 +157,6 @@ async function deletePoint() {
     <header class="page-header">
       <h1>Open Points</h1>
       <div class="page-header-actions">
-        <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
         <button class="btn btn-primary" @click="showCreate = !showCreate">
           + New Open Point
         </button>

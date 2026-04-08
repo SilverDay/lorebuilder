@@ -229,7 +229,6 @@ async function doImport() {
   <div class="page">
     <header class="page-header">
       <h1>Export / Import</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
     </header>
 
     <!-- Export section -->

@@ -68,15 +68,6 @@ const ARC_STATUS_LABEL = {
   <div class="page">
     <header class="page-header">
       <h1>{{ worlds.currentWorld?.name ?? 'Dashboard' }}</h1>
-      <div class="page-header-actions">
-        <RouterLink to="/worlds" class="btn btn-ghost">← All Worlds</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/tutorial`" class="btn btn-ghost">Help</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/settings/ai`" class="btn btn-ghost">AI Settings</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/settings/general`" class="btn btn-ghost">World Settings</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/members`" class="btn btn-ghost">Members</RouterLink>
-        <RouterLink :to="`/worlds/${wid}/export`" class="btn btn-ghost">Export</RouterLink>
-        <RouterLink to="/account/settings" class="btn btn-ghost">Account</RouterLink>
-      </div>
     </header>
 
     <!-- Quick Navigation -->
@@ -120,6 +111,26 @@ const ARC_STATUS_LABEL = {
       <RouterLink :to="`/worlds/${wid}/trash`" class="dashboard-nav-card">
         <span class="dashboard-nav-card__icon" aria-hidden="true">♻</span>
         <span class="dashboard-nav-card__label">Trash</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/tutorial`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon" aria-hidden="true">ⓘ</span>
+        <span class="dashboard-nav-card__label">Help</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/settings/general`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon" aria-hidden="true">⚙</span>
+        <span class="dashboard-nav-card__label">World Settings</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/settings/ai`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon" aria-hidden="true">⚡</span>
+        <span class="dashboard-nav-card__label">AI Settings</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/members`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon" aria-hidden="true">♟</span>
+        <span class="dashboard-nav-card__label">Members</span>
+      </RouterLink>
+      <RouterLink :to="`/worlds/${wid}/export`" class="dashboard-nav-card">
+        <span class="dashboard-nav-card__icon" aria-hidden="true">⇅</span>
+        <span class="dashboard-nav-card__label">Export / Import</span>
       </RouterLink>
     </nav>
 

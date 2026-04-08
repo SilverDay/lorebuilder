@@ -49,7 +49,6 @@ function excerpt(content) {
   <div class="page">
     <header class="page-header">
       <h1>Lore Notes</h1>
-      <RouterLink :to="`/worlds/${wid}`" class="btn btn-ghost">← Dashboard</RouterLink>
     </header>
 
     <p class="muted" style="margin-bottom:1rem">
