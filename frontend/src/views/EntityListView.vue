@@ -1,19 +1,35 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { api } from '@/api/client.js'
 
 const route  = useRoute()
+const router = useRouter()
 const wid    = route.params.wid
 
 const entities = ref([])
 const total    = ref(0)
 const loading  = ref(false)
-const filter   = ref({ type: route.query.type ?? '', status: '', tag: '', q: '' })
-const page     = ref(1)
+const filter   = ref({
+  type:   route.query.type   ?? '',
+  status: route.query.status ?? '',
+  tag:    route.query.tag    ?? '',
+  q:      route.query.q      ?? '',
+})
+const page     = ref(Number(route.query.page) || 1)
 const limit    = 30
 
 const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
+
+function syncQueryParams() {
+  const query = {}
+  if (filter.value.type)   query.type   = filter.value.type
+  if (filter.value.status) query.status = filter.value.status
+  if (filter.value.tag)    query.tag    = filter.value.tag
+  if (filter.value.q)      query.q      = filter.value.q
+  if (page.value > 1)      query.page   = String(page.value)
+  router.replace({ query })
+}
 
 async function load() {
   loading.value = true
@@ -39,8 +55,8 @@ async function load() {
 }
 
 onMounted(load)
-watch(filter, () => { page.value = 1; load() }, { deep: true })
-watch(page, load)
+watch(filter, () => { page.value = 1; syncQueryParams(); load() }, { deep: true })
+watch(page, () => { syncQueryParams(); load() })
 </script>
 
 <template>
