@@ -2615,6 +2615,10 @@ code {
   border-radius: var(--radius-sm);
   white-space: nowrap;
   transition: color .15s, background .15s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .world-subnav__link:hover {
