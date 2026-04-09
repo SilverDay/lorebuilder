@@ -10,13 +10,27 @@ const wid    = route.params.wid
 const entities = ref([])
 const total    = ref(0)
 const loading  = ref(false)
+
+const storageKey = `lb-entity-filter-${wid}`
+const hasQueryParams = !!(route.query.type || route.query.status || route.query.tag || route.query.q || route.query.page)
+
+function loadSavedFilter() {
+  try {
+    const saved = sessionStorage.getItem(storageKey)
+    if (saved) return JSON.parse(saved)
+  } catch { /* ignore */ }
+  return null
+}
+
+const saved = !hasQueryParams ? loadSavedFilter() : null
+
 const filter   = ref({
-  type:   route.query.type   ?? '',
-  status: route.query.status ?? '',
-  tag:    route.query.tag    ?? '',
-  q:      route.query.q      ?? '',
+  type:   route.query.type   ?? saved?.type   ?? '',
+  status: route.query.status ?? saved?.status ?? '',
+  tag:    route.query.tag    ?? saved?.tag    ?? '',
+  q:      route.query.q      ?? saved?.q      ?? '',
 })
-const page     = ref(Number(route.query.page) || 1)
+const page     = ref(Number(route.query.page) || saved?.page || 1)
 const limit    = 30
 
 const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
@@ -29,6 +43,9 @@ function syncQueryParams() {
   if (filter.value.q)      query.q      = filter.value.q
   if (page.value > 1)      query.page   = String(page.value)
   router.replace({ query })
+  try {
+    sessionStorage.setItem(storageKey, JSON.stringify({ ...filter.value, page: page.value }))
+  } catch { /* quota exceeded — ignore */ }
 }
 
 async function load() {
@@ -54,7 +71,10 @@ async function load() {
   }
 }
 
-onMounted(load)
+onMounted(() => {
+  if (saved) syncQueryParams()
+  load()
+})
 watch(filter, () => { page.value = 1; syncQueryParams(); load() }, { deep: true })
 watch(page, () => { syncQueryParams(); load() })
 </script>
