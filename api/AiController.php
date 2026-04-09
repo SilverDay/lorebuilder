@@ -117,11 +117,7 @@ class AiController
         // Apply template rendering (same as runAssist)
         $tpl = AiEngine::loadTemplate($mode, $wid);
         if ($tpl !== null) {
-            $vars = [
-                'world'        => $context['world']  ?? [],
-                'entity'       => $context['entity'] ?? [],
-                'user_request' => $userPrompt,
-            ];
+            $vars = self::buildTemplateVars($context, $userPrompt);
             if (!empty($tpl['system_tpl'])) {
                 $context['system'] = AiEngine::renderTemplate($tpl['system_tpl'], $vars);
             }
@@ -506,11 +502,7 @@ class AiController
         // 3. Load prompt template and render
         $tpl = AiEngine::loadTemplate($mode, $wid);
         if ($tpl !== null) {
-            $vars = [
-                'world'        => $context['world']  ?? [],
-                'entity'       => $context['entity'] ?? [],
-                'user_request' => $userPrompt,
-            ];
+            $vars = self::buildTemplateVars($context, $userPrompt);
             // Override system prompt if template provides one
             if (!empty($tpl['system_tpl'])) {
                 $context['system'] = AiEngine::renderTemplate($tpl['system_tpl'], $vars);
@@ -626,6 +618,33 @@ class AiController
     }
 
     // ─── Private Helpers ──────────────────────────────────────────────────────
+
+    /**
+     * Build template variables from context, populating entity sub-keys
+     * (attributes, relationships, notes, arcs, timeline_position) from
+     * the assembled context sections so {{entity.attributes}} etc. resolve.
+     */
+    private static function buildTemplateVars(array $context, string $userPrompt): array
+    {
+        $entity = $context['entity'] ?? [];
+        $sections = $context['sections'] ?? [];
+
+        // Merge assembled section text into entity for template resolution
+        if (!empty($entity)) {
+            $entity['attributes']        = trim($sections['entity'] ?? '');
+            $entity['relationships']     = trim($sections['relationships'] ?? '');
+            $entity['notes']             = trim($sections['notes'] ?? '');
+            $entity['arcs']              = trim($sections['arcs'] ?? '');
+            $entity['timeline_position'] = trim($sections['timeline'] ?? '');
+            $entity['summary']           = $entity['short_summary'] ?? '';
+        }
+
+        return [
+            'world'        => $context['world']  ?? [],
+            'entity'       => $entity,
+            'user_request' => $userPrompt,
+        ];
+    }
 
     private static function writeSession(
         int     $wid,

@@ -450,6 +450,7 @@ PROMPT;
 
         return [
             'system'      => $system,
+            'sections'    => $sections,
             'world'       => $world,
             'entity'      => $entity,
             'budget_used' => $used,
