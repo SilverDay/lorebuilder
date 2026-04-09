@@ -45,7 +45,7 @@ class EntityController
             'status'  => 'nullable|in:draft,published,archived',
             'tag'     => 'nullable|int',
             'page'    => 'nullable|int|min:1',
-            'per_page'=> 'nullable|int|min:1|max:100',
+            'per_page'=> 'nullable|int|min:1|max:500',
         ]);
 
         $page    = (int) ($q['page']     ?? 1);
