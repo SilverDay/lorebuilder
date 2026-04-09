@@ -254,7 +254,7 @@ class AiEngine
         $relSection = '';
         if ($entityId > 0) {
             $rels = DB::query(
-                'SELECT r.rel_type, r.strength, r.notes AS rel_notes, r.bidirectional,
+                'SELECT r.rel_type, r.strength, r.notes AS rel_notes, r.is_bidirectional,
                         ef.name AS from_name, ef.type AS from_type,
                         et.name AS to_name,   et.type AS to_type,
                         r.from_entity_id, r.to_entity_id
