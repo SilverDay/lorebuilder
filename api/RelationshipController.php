@@ -62,6 +62,26 @@ class RelationshipController
         Router::json($rows);
     }
 
+    // ─── GET /api/v1/worlds/:wid/relationships/types ────────────────────────
+
+    public static function types(array $p): void
+    {
+        $wid    = (int) $p['wid'];
+        $userId = $p['user']['id'];
+        $isPlatformAdmin = (bool) $p['user']['is_platform_admin'];
+
+        Guard::requireWorldAccess($wid, $userId, 'viewer', $isPlatformAdmin);
+
+        $rows = DB::query(
+            'SELECT DISTINCT rel_type FROM entity_relationships
+              WHERE world_id = :wid AND deleted_at IS NULL
+              ORDER BY rel_type ASC',
+            ['wid' => $wid]
+        );
+
+        Router::json(array_column($rows, 'rel_type'));
+    }
+
     // ─── POST /api/v1/worlds/:wid/relationships ───────────────────────────────
 
     public static function create(array $p): void

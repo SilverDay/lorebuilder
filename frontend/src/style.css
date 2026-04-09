@@ -1084,6 +1084,12 @@ input[type="search"] {
   border-radius: .3rem;
 }
 
+.reltype-new-hint {
+  font-size: .8rem;
+  color: var(--color-primary);
+  margin-top: .2rem;
+}
+
 .rel-edit-inline {
   flex-direction: row !important;
   align-items: center;

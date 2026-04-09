@@ -172,6 +172,7 @@ Router::get('/api/v1/worlds/:wid/search',            [EntityController::class, '
 // ── Relationships ─────────────────────────────────────────────────────────────
 
 Router::get('/api/v1/worlds/:wid/relationships',     [RelationshipController::class, 'index']);
+Router::get('/api/v1/worlds/:wid/relationships/types', [RelationshipController::class, 'types']);
 Router::post('/api/v1/worlds/:wid/relationships',     [RelationshipController::class, 'create']);
 Router::patch('/api/v1/worlds/:wid/relationships/:id', [RelationshipController::class, 'update']);
 Router::delete('/api/v1/worlds/:wid/relationships/:id', [RelationshipController::class, 'destroy']);

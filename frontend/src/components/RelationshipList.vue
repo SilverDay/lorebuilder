@@ -62,12 +62,46 @@ const addSaving = ref(false)
 const addError  = ref('')
 const addForm   = ref({ to_entity_id: '', rel_type: '', is_bidirectional: false, strength: '', notes: '' })
 
+// ── Relationship type autocomplete ────────────────────────────────────────────
+const knownRelTypes      = ref([])
+const showRelTypeResults = ref(false)
+
+async function loadRelTypes() {
+  try {
+    const { data } = await api.get(`/api/v1/worlds/${props.worldId}/relationships/types`)
+    knownRelTypes.value = data ?? []
+  } catch {
+    knownRelTypes.value = []
+  }
+}
+
+const filteredRelTypes = computed(() => {
+  const q = addForm.value.rel_type.toLowerCase().trim()
+  if (!q) return knownRelTypes.value.slice(0, 15)
+  return knownRelTypes.value.filter(t => t.toLowerCase().includes(q)).slice(0, 15)
+})
+
+const relTypeIsNew = computed(() => {
+  const q = addForm.value.rel_type.trim().toLowerCase()
+  return q && !knownRelTypes.value.some(t => t.toLowerCase() === q)
+})
+
+function selectRelType(t) {
+  addForm.value.rel_type = t
+  showRelTypeResults.value = false
+}
+
+function onRelTypeBlur() {
+  setTimeout(() => { showRelTypeResults.value = false }, 200)
+}
+
 function openAdd() {
   addForm.value = { to_entity_id: '', rel_type: '', is_bidirectional: false, strength: '', notes: '' }
   addError.value = ''
   clearEntity()
   showAdd.value  = true
   loadEntities()
+  loadRelTypes()
 }
 
 async function saveAdd() {
@@ -197,7 +231,21 @@ function counterpart(rel) {
       </label>
       <label>
         Relationship type
-        <input v-model="addForm.rel_type" type="text" maxlength="64" placeholder="e.g. ally of, child of" required />
+        <div class="entity-search-wrapper">
+          <input v-model="addForm.rel_type" type="text" maxlength="64"
+                 placeholder="e.g. ally of, child of" required autocomplete="off"
+                 @focus="showRelTypeResults = true"
+                 @blur="onRelTypeBlur" />
+          <ul v-if="showRelTypeResults && filteredRelTypes.length" class="entity-search-results">
+            <li v-for="t in filteredRelTypes" :key="t" @mousedown.prevent="selectRelType(t)"
+                :class="{ selected: addForm.rel_type === t }">
+              <span class="entity-search-name">{{ t }}</span>
+            </li>
+          </ul>
+          <p v-if="showRelTypeResults && relTypeIsNew && addForm.rel_type.trim()" class="reltype-new-hint">
+            New type: <strong>{{ addForm.rel_type.trim() }}</strong>
+          </p>
+        </div>
       </label>
       <label class="rel-edit-inline">
         <input v-model="addForm.is_bidirectional" type="checkbox" />
