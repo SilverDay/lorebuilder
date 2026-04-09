@@ -104,15 +104,15 @@ watch(page, () => { syncQueryParams(); load() })
         <option value="">All types</option>
         <option v-for="t in TYPES" :key="t" :value="t">{{ t }}</option>
       </select>
+      <select v-model="filter.tag" aria-label="Filter by tag">
+        <option value="">All tags</option>
+        <option v-for="t in worldTags" :key="t.id" :value="String(t.id)">{{ t.name }}</option>
+      </select>
       <select v-model="filter.status" aria-label="Filter by status">
         <option value="">All statuses</option>
         <option value="draft">Draft</option>
         <option value="published">Published</option>
         <option value="archived">Archived</option>
-      </select>
-      <select v-model="filter.tag" aria-label="Filter by tag">
-        <option value="">All tags</option>
-        <option v-for="t in worldTags" :key="t.id" :value="String(t.id)">{{ t.name }}</option>
       </select>
     </div>
 
