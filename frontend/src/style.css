@@ -1599,8 +1599,8 @@ input[type="search"] {
   word-break: break-word;
   max-height: 20rem;
   overflow-y: auto;
-  color: var(--text);
-  background: rgba(0,0,0,.1);
+  color: #e0e0e0;
+  background: rgba(255,255,255,.05);
 }
 
 /* ── AI Response Card ────────────────────────────────────────────────────── */
