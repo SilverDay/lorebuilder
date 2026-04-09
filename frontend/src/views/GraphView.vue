@@ -8,8 +8,9 @@
  * - Physics toggle (force-directed ↔ static)
  * - Click node → navigate to EntityDetailView
  * - Bidirectional edges rendered with arrows on both ends
+ * - Filter by entity type (toggle chips)
  */
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, reactive, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Network, DataSet } from 'vis-network/standalone'
 import { api } from '@/api/client.js'
@@ -23,6 +24,12 @@ const loading    = ref(true)
 const error      = ref('')
 const physics    = ref(true)
 let   network    = null
+
+// Raw graph data kept for re-filtering
+let rawNodes = []
+let rawEdges = []
+let visNodes = null
+let visEdges = null
 
 // ── Colour palette keyed by entity type ──────────────────────────────────────
 const TYPE_COLORS = {
@@ -43,6 +50,98 @@ function nodeColor(type) {
   return TYPE_COLORS[type] ?? DEFAULT_COLOR
 }
 
+// ── Type filter ──────────────────────────────────────────────────────────────
+// Track which types exist in the data and which are active
+const availableTypes = ref([])            // sorted list of types present
+const activeTypes    = reactive(new Set()) // toggled-on types
+
+function toggleType(type) {
+  if (activeTypes.has(type)) {
+    activeTypes.delete(type)
+  } else {
+    activeTypes.add(type)
+  }
+  applyFilter()
+}
+
+function showAll() {
+  availableTypes.value.forEach(t => activeTypes.add(t))
+  applyFilter()
+}
+
+function hideAll() {
+  activeTypes.clear()
+  applyFilter()
+}
+
+const allActive = computed(() => activeTypes.size === availableTypes.value.length)
+const noneActive = computed(() => activeTypes.size === 0)
+
+function applyFilter() {
+  if (!visNodes || !visEdges) return
+
+  // Determine visible node IDs
+  const visibleIds = new Set()
+  const nodesToAdd = []
+  const nodeIdsToRemove = []
+
+  for (const n of rawNodes) {
+    const visible = activeTypes.has(n.type)
+    const exists  = visNodes.get(n.id) !== null
+    if (visible) {
+      visibleIds.add(n.id)
+      if (!exists) nodesToAdd.push(mapNode(n))
+    } else if (exists) {
+      nodeIdsToRemove.push(n.id)
+    }
+  }
+
+  // Determine visible edges (both endpoints must be visible)
+  const edgesToAdd = []
+  const edgeIdsToRemove = []
+
+  for (const e of rawEdges) {
+    const visible = visibleIds.has(e.from) && visibleIds.has(e.to)
+    const exists  = visEdges.get(e.id) !== null
+    if (visible && !exists) {
+      edgesToAdd.push(mapEdge(e))
+    } else if (!visible && exists) {
+      edgeIdsToRemove.push(e.id)
+    }
+  }
+
+  // Batch updates
+  if (nodeIdsToRemove.length) visNodes.remove(nodeIdsToRemove)
+  if (edgeIdsToRemove.length) visEdges.remove(edgeIdsToRemove)
+  if (nodesToAdd.length)      visNodes.add(nodesToAdd)
+  if (edgesToAdd.length)      visEdges.add(edgesToAdd)
+}
+
+// ── Node/Edge mapping helpers ────────────────────────────────────────────────
+function mapNode(n) {
+  return {
+    id:    n.id,
+    label: n.label,
+    title: `${n.type} — ${n.status}`,
+    color: nodeColor(n.type),
+    font:  { color: nodeColor(n.type).font },
+    shape: 'box',
+  }
+}
+
+function mapEdge(e) {
+  return {
+    id:     e.id,
+    from:   e.from,
+    to:     e.to,
+    label:  e.label,
+    title:  e.label,
+    width:  Math.max(1, Math.round((e.strength ?? 5) / 2)),
+    arrows: e.is_bidirectional ? 'to, from' : 'to',
+    font:   { size: 10, align: 'middle' },
+  }
+}
+
 onMounted(async () => {
   loading.value = true
   error.value   = ''
@@ -59,31 +158,17 @@ onMounted(async () => {
 
   loading.value = false
 
-  // Map nodes — vis-network uses { id, label, color, title } shape
-  const nodes = new DataSet(
-    (graphData.nodes ?? []).map(n => ({
-      id:    n.id,
-      label: n.label,
-      title: `${n.type} — ${n.status}`,
-      color: nodeColor(n.type),
-      font:  { color: nodeColor(n.type).font },
-      shape: 'box',
-    }))
-  )
+  // Stash raw data for filtering
+  rawNodes = graphData.nodes ?? []
+  rawEdges = graphData.edges ?? []
 
-  // Map edges
-  const edges = new DataSet(
-    (graphData.edges ?? []).map(e => ({
-      id:     e.id,
-      from:   e.from,
-      to:     e.to,
-      label:  e.label,
-      title:  e.label,
-      width:  Math.max(1, Math.round((e.strength ?? 5) / 2)),
-      arrows: e.is_bidirectional ? 'to, from' : 'to',
-      font:   { size: 10, align: 'middle' },
-    }))
-  )
+  // Discover types present in data and activate all
+  const types = [...new Set(rawNodes.map(n => n.type))].sort()
+  availableTypes.value = types
+  types.forEach(t => activeTypes.add(t))
+
+  visNodes = new DataSet(rawNodes.map(mapNode))
+  visEdges = new DataSet(rawEdges.map(mapEdge))
 
   const options = {
     physics: {
@@ -104,7 +189,7 @@ onMounted(async () => {
 
   await new Promise(resolve => setTimeout(resolve, 0))  // let DOM settle
 
-  network = new Network(container.value, { nodes, edges }, options)
+  network = new Network(container.value, { nodes: visNodes, edges: visEdges }, options)
 
   // Click node → EntityDetailView
   network.on('click', params => {
@@ -135,6 +220,23 @@ function togglePhysics() {
         </button>
       </div>
     </header>
+
+    <!-- Type filter chips -->
+    <div v-if="availableTypes.length" class="graph-filters">
+      <span class="graph-filters-label">Filter:</span>
+      <button
+        v-for="t in availableTypes"
+        :key="t"
+        class="graph-chip"
+        :class="{ 'graph-chip--off': !activeTypes.has(t) }"
+        :style="activeTypes.has(t)
+          ? { background: nodeColor(t).background, borderColor: nodeColor(t).border, color: nodeColor(t).font }
+          : {}"
+        @click="toggleType(t)"
+      >{{ t }}</button>
+      <button class="btn btn-ghost btn-sm" :disabled="allActive" @click="showAll">All</button>
+      <button class="btn btn-ghost btn-sm" :disabled="noneActive" @click="hideAll">None</button>
+    </div>
 
     <p v-if="loading" class="loading">Loading graph…</p>
     <p v-else-if="error" class="form-error" role="alert">{{ error }}</p>
