@@ -304,12 +304,14 @@ function counterpart(rel) {
 
             <!-- Read view -->
             <template v-else>
+              <span class="badge badge-dir" :title="rel.bidirectional ? 'Bidirectional' : 'Unidirectional'">
+                {{ rel.bidirectional ? '↔' : '→' }}
+              </span>
               <RouterLink :to="`/worlds/${worldId}/entities/${counterpart(rel).id}`">
                 {{ counterpart(rel).name }}
               </RouterLink>
               <span class="badge">{{ counterpart(rel).type }}</span>
               <span v-if="rel.strength" class="rel-strength">×{{ rel.strength }}</span>
-              <span v-if="rel.bidirectional" class="badge badge-bi">↔</span>
               <span class="rel-actions">
                 <button class="btn-icon" title="Edit" @click="openEdit(rel)">✏</button>
                 <button class="btn-icon btn-icon--danger" title="Delete"

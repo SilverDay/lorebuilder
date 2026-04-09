@@ -340,6 +340,13 @@ input[type="search"] {
   color: var(--color-accent);
 }
 
+.badge-dir {
+  font-size: .75rem;
+  padding: .1rem .3rem;
+  min-width: 1.2rem;
+  text-align: center;
+}
+
 /* ── World List ──────────────────────────────────────────────────────────── */
 
 .world-list {
