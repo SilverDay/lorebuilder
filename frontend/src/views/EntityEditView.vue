@@ -49,6 +49,10 @@ async function submit() {
 
 <template>
   <div class="page page-narrow">
+    <nav class="entity-nav" style="margin-bottom: .75rem">
+      <RouterLink :to="`/worlds/${wid}/entities`" class="btn btn-ghost btn-sm">← All entities</RouterLink>
+      <RouterLink :to="`/worlds/${wid}/entities/${eid}`" class="btn btn-ghost btn-sm">← Back to entity</RouterLink>
+    </nav>
     <h1>Edit entity</h1>
     <p v-if="error" class="form-error" role="alert">{{ error }}</p>
 

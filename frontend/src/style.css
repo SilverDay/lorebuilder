@@ -250,6 +250,12 @@ input[type="search"] {
   flex-wrap: wrap;
 }
 
+.entity-nav {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
 /* ── Layout: Auth ────────────────────────────────────────────────────────── */
 
 .auth-layout {

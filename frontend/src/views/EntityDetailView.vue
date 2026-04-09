@@ -204,7 +204,10 @@ watch(() => route.params.eid, () => {
 
     <template v-else-if="entity">
       <header class="page-header">
-        <span></span>
+        <nav class="entity-nav">
+          <RouterLink :to="`/worlds/${wid}/entities`" class="btn btn-ghost btn-sm">← All entities</RouterLink>
+          <RouterLink :to="`/worlds/${wid}/entities/new`" class="btn btn-primary btn-sm">+ New entity</RouterLink>
+        </nav>
       </header>
 
       <div class="entity-detail-grid">
