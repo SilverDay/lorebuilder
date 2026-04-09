@@ -58,10 +58,29 @@ export const useAiStore = defineStore('ai', () => {
     }
   }
 
+  /**
+   * Preview the assembled prompt without calling the AI.
+   */
+  async function previewPrompt(wid, mode, prompt, entityId = null) {
+    loading.value = true
+    error.value   = ''
+    try {
+      const body = { mode, user_prompt: prompt }
+      if (entityId) body.entity_id = entityId
+      const { data } = await api.post(`/api/v1/worlds/${wid}/ai/preview-prompt`, body)
+      return data
+    } catch (e) {
+      error.value = e.message || 'Preview failed.'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
   function clearResult() {
     lastResult.value = null
     error.value      = ''
   }
 
-  return { loading, lastResult, error, assist, consistencyCheck, clearResult }
+  return { loading, lastResult, error, assist, consistencyCheck, previewPrompt, clearResult }
 })

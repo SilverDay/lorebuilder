@@ -1543,6 +1543,66 @@ input[type="search"] {
   opacity: 0;
 }
 
+/* ── AI Prompt Preview ───────────────────────────────────────────────────── */
+
+.ai-prompt-preview {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  background: var(--bg-secondary, #1a1a2e);
+  overflow: hidden;
+}
+
+.ai-prompt-preview__header {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,0,0,.15);
+}
+
+.ai-prompt-preview__header h3 {
+  margin: 0;
+  font-size: .85rem;
+  flex: 1;
+}
+
+.ai-prompt-preview__budget {
+  font-size: .75rem;
+  color: var(--text-muted);
+}
+
+.ai-prompt-preview__section {
+  border-bottom: 1px solid var(--border);
+}
+
+.ai-prompt-preview__section:last-child {
+  border-bottom: none;
+}
+
+.ai-prompt-preview__section summary {
+  padding: .4rem .75rem;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-muted);
+}
+
+.ai-prompt-preview__text {
+  margin: 0;
+  padding: .5rem .75rem;
+  font-size: .75rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 20rem;
+  overflow-y: auto;
+  color: var(--text);
+  background: rgba(0,0,0,.1);
+}
+
 /* ── AI Response Card ────────────────────────────────────────────────────── */
 
 .ai-response-card {

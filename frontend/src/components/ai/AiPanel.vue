@@ -25,6 +25,10 @@ const open    = ref(false)
 const prompt  = ref('')
 const mode    = ref(props.entityId ? 'entity_assist' : 'world_overview')
 
+// Prompt preview state
+const promptPreview = ref(null)
+const showPreview   = ref(false)
+
 const MODES = [
   { value: 'entity_assist',   label: 'Entity Assist' },
   { value: 'arc_synthesiser', label: 'Arc Synthesiser' },
@@ -73,7 +77,25 @@ function clear() {
   prompt.value = ''
   editablePrompt.value = ''
   copied.value = false
+  promptPreview.value = null
+  showPreview.value = false
   ai.clearResult()
+}
+
+async function previewPrompt() {
+  const userPrompt = prompt.value.trim() || (isImagePrompt.value ? 'Generate a detailed image prompt for this entity.' : '')
+  if (!userPrompt) return
+  try {
+    promptPreview.value = await ai.previewPrompt(
+      props.worldId,
+      mode.value,
+      userPrompt,
+      mode.value === 'entity_assist' || mode.value === 'image_prompt' ? props.entityId : null
+    )
+    showPreview.value = true
+  } catch {
+    // error displayed via ai.error
+  }
 }
 
 async function copyPrompt() {
@@ -146,6 +168,14 @@ async function copyPrompt() {
             {{ ai.loading ? 'Thinking…' : isImagePrompt ? 'Generate Image Prompt' : 'Ask AI' }}
           </button>
           <button
+            class="btn btn-secondary btn-sm"
+            :disabled="!canSubmit"
+            @click="previewPrompt"
+            title="Show the system prompt and user prompt that will be sent to the AI"
+          >
+            Preview Prompt
+          </button>
+          <button
             v-if="prompt || ai.lastResult || editablePrompt"
             class="btn btn-ghost btn-sm"
             @click="clear"
@@ -153,6 +183,24 @@ async function copyPrompt() {
           >
             Clear
           </button>
+        </div>
+
+        <!-- Prompt Preview -->
+        <div v-if="showPreview && promptPreview" class="ai-prompt-preview">
+          <div class="ai-prompt-preview__header">
+            <h3>Prompt Preview</h3>
+            <span class="badge badge-ai">{{ promptPreview.provider }} · {{ promptPreview.model }}</span>
+            <span class="ai-prompt-preview__budget">~{{ promptPreview.budget_used?.toLocaleString() }} tokens</span>
+            <button class="btn btn-ghost btn-sm" @click="showPreview = false" aria-label="Close preview">✕</button>
+          </div>
+          <details class="ai-prompt-preview__section" open>
+            <summary>System Prompt</summary>
+            <pre class="ai-prompt-preview__text">{{ promptPreview.system_prompt }}</pre>
+          </details>
+          <details class="ai-prompt-preview__section" open>
+            <summary>User Prompt</summary>
+            <pre class="ai-prompt-preview__text">{{ promptPreview.user_prompt }}</pre>
+          </details>
         </div>
 
         <!-- Error -->

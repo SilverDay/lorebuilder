@@ -82,6 +82,71 @@ class AiController
         self::runAssist($wid, $userId, $entityId, $mode, $userPrompt);
     }
 
+    // ─── POST /api/v1/worlds/:wid/ai/preview-prompt ──────────────────────────
+
+    /**
+     * Preview the assembled system prompt and rendered user prompt without
+     * calling the AI provider. Useful for debugging context assembly.
+     */
+    public static function previewPrompt(array $params): void
+    {
+        $session = Auth::requireSession();
+        $userId  = (int) $session['id'];
+        $wid     = (int) $params['wid'];
+
+        Guard::requireWorldAccess($wid, $userId, minRole: 'author');
+
+        $data = Validator::parseJson([
+            'entity_id'   => 'int|nullable',
+            'mode'        => 'required|string|in:entity_assist,arc_synthesiser,world_overview,custom,image_prompt,consistency_check',
+            'user_prompt' => 'required|string|min:1|max:4000',
+        ]);
+
+        $entityId   = isset($data['entity_id']) ? (int) $data['entity_id'] : 0;
+        $mode       = $data['mode'];
+        $userPrompt = $data['user_prompt'];
+
+        try {
+            $context = AiEngine::buildContext($entityId, $wid, $mode);
+        } catch (AiEngineException $e) {
+            http_response_code(422);
+            echo json_encode(['error' => $e->getMessage(), 'code' => 'NOT_FOUND']);
+            return;
+        }
+
+        // Apply template rendering (same as runAssist)
+        $tpl = AiEngine::loadTemplate($mode, $wid);
+        if ($tpl !== null) {
+            $vars = [
+                'world'        => $context['world']  ?? [],
+                'entity'       => $context['entity'] ?? [],
+                'user_request' => $userPrompt,
+            ];
+            if (!empty($tpl['system_tpl'])) {
+                $context['system'] = AiEngine::renderTemplate($tpl['system_tpl'], $vars);
+            }
+            if (!empty($tpl['user_tpl'])) {
+                $userPrompt = AiEngine::renderTemplate($tpl['user_tpl'], $vars);
+            }
+        }
+
+        $worldRow   = DB::queryOne('SELECT ai_provider, ai_model FROM worlds WHERE id = :wid AND deleted_at IS NULL', ['wid' => $wid]);
+        $providerId = $worldRow['ai_provider'] ?? 'anthropic';
+        $providerClass = AiEngine::getProvider($providerId);
+        $model      = $worldRow['ai_model'] ?? $providerClass::defaultModel();
+
+        http_response_code(200);
+        echo json_encode([
+            'data' => [
+                'system_prompt'  => $context['system'],
+                'user_prompt'    => $userPrompt,
+                'provider'       => $providerId,
+                'model'          => $model,
+                'budget_used'    => $context['budget_used'] ?? 0,
+            ],
+        ]);
+    }
+
     // ─── POST /api/v1/worlds/:wid/ai/consistency-check ────────────────────────
 
     public static function consistencyCheck(array $params): void

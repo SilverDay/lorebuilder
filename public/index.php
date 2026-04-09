@@ -212,7 +212,8 @@ Router::put('/api/v1/worlds/:wid/story-arcs/:aid/entities',      [StoryArcContro
 // ── AI ────────────────────────────────────────────────────────────────────────
 
 Router::get('/api/v1/ai/providers',                   [AiController::class, 'providers'],       auth: true, csrf: false);
-Router::post('/api/v1/worlds/:wid/ai/assist',          [AiController::class, 'assist']);
+Router::post('/api/v1/worlds/:wid/ai/assist',            [AiController::class, 'assist']);
+Router::post('/api/v1/worlds/:wid/ai/preview-prompt',    [AiController::class, 'previewPrompt']);
 Router::post('/api/v1/worlds/:wid/ai/consistency-check', [AiController::class, 'consistencyCheck']);
 Router::get('/api/v1/worlds/:wid/ai/sessions',        [AiController::class, 'sessions']);
 Router::get('/api/v1/worlds/:wid/settings/ai/budget', [AiController::class, 'budget']);
