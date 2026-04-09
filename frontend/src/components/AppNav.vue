@@ -35,7 +35,6 @@ async function signOut() {
       <RouterLink v-if="wid && !isDashboard" :to="`/worlds/${wid}`" class="btn btn-ghost btn-sm">Dashboard</RouterLink>
       <RouterLink v-if="isAccount && worlds.currentWorldId" :to="`/worlds/${worlds.currentWorldId}`" class="btn btn-ghost btn-sm">Dashboard</RouterLink>
       <RouterLink v-if="isAccount && !worlds.currentWorldId" to="/worlds" class="btn btn-ghost btn-sm">Worlds</RouterLink>
-      <button v-if="wid" class="btn btn-ghost btn-sm" @click="emit('search')" aria-label="Search entities (Ctrl+K)">Search</button>
       <RouterLink v-if="!isAccount" to="/account/settings" class="btn btn-ghost btn-sm">Account</RouterLink>
       <button class="btn btn-ghost btn-sm" @click="signOut">Sign out</button>
       <button class="btn btn-ghost btn-sm app-nav__theme" @click="toggle" :aria-label="'Toggle theme'">{{ themeIcon }}</button>
@@ -50,5 +49,6 @@ async function signOut() {
     <RouterLink :to="`/worlds/${wid}/arcs`"         class="world-subnav__link">Story Arcs</RouterLink>
     <RouterLink :to="`/worlds/${wid}/notes`"        class="world-subnav__link">Notes</RouterLink>
     <RouterLink :to="`/worlds/${wid}/open-points`"  class="world-subnav__link">Open Points</RouterLink>
+    <button class="world-subnav__link world-subnav__search" @click="emit('search')" aria-label="Search entities (Ctrl+K)">Search</button>
   </nav>
 </template>
