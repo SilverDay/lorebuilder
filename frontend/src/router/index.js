@@ -178,6 +178,11 @@ const routes = [
         component: () => import('@/views/OpenPointsView.vue'),
       },
       {
+        path:      'tags',
+        name:      'Tags',
+        component: () => import('@/views/TagsView.vue'),
+      },
+      {
         path:      'tutorial',
         name:      'WorldTutorial',
         component: () => import('@/views/TutorialView.vue'),

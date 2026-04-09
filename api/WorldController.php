@@ -634,9 +634,21 @@ class WorldController
             ['wid' => $wid]
         );
 
+        // Tag summary (top tags by entity count)
+        $tagSummary = DB::query(
+            'SELECT t.id, t.name, t.color, COUNT(et.entity_id) AS entity_count
+               FROM tags t
+               LEFT JOIN entity_tags et ON et.tag_id = t.id
+              WHERE t.world_id = :wid
+              GROUP BY t.id
+              ORDER BY entity_count DESC, t.name ASC',
+            ['wid' => $wid]
+        );
+
         Router::json([
-            'entity_counts' => $entityCounts,
-            'arc_summary'   => $arcSummary,
+            'entity_counts'   => $entityCounts,
+            'arc_summary'     => $arcSummary,
+            'tag_summary'     => $tagSummary,
             'recent_activity' => $recent,
         ]);
     }

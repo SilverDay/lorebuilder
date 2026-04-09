@@ -35,6 +35,15 @@ const limit    = 30
 
 const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
 
+const worldTags = ref([])
+
+async function loadWorldTags() {
+  try {
+    const { data } = await api.get(`/api/v1/worlds/${wid}/tags`)
+    worldTags.value = data ?? []
+  } catch { /* tag filter will just be empty */ }
+}
+
 function syncQueryParams() {
   const query = {}
   if (filter.value.type)   query.type   = filter.value.type
@@ -74,6 +83,7 @@ async function load() {
 onMounted(() => {
   if (saved) syncQueryParams()
   load()
+  loadWorldTags()
 })
 watch(filter, () => { page.value = 1; syncQueryParams(); load() }, { deep: true })
 watch(page, () => { syncQueryParams(); load() })
@@ -99,6 +109,10 @@ watch(page, () => { syncQueryParams(); load() })
         <option value="draft">Draft</option>
         <option value="published">Published</option>
         <option value="archived">Archived</option>
+      </select>
+      <select v-model="filter.tag" aria-label="Filter by tag">
+        <option value="">All tags</option>
+        <option v-for="t in worldTags" :key="t.id" :value="String(t.id)">{{ t.name }}</option>
       </select>
     </div>
 

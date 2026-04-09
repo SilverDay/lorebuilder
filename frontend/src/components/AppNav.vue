@@ -49,6 +49,7 @@ async function signOut() {
     <RouterLink :to="`/worlds/${wid}/arcs`"         class="world-subnav__link">Story Arcs</RouterLink>
     <RouterLink :to="`/worlds/${wid}/notes`"        class="world-subnav__link">Notes</RouterLink>
     <RouterLink :to="`/worlds/${wid}/open-points`"  class="world-subnav__link">Open Points</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/tags`"           class="world-subnav__link">Tags</RouterLink>
     <button class="world-subnav__link world-subnav__search" @click="emit('search')" aria-label="Search entities (Ctrl+K)">Search</button>
   </nav>
 </template>

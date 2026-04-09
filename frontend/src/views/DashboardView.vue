@@ -35,6 +35,7 @@ const entityByType = computed(() => {
 
 const arcByStatus = computed(() => stats.value?.arc_summary ?? [])
 const recentActivity = computed(() => stats.value?.recent_activity ?? [])
+const tagSummary = computed(() => stats.value?.tag_summary ?? [])
 
 // Load world metadata if not already in store
 onMounted(async () => {
@@ -159,6 +160,21 @@ const ARC_STATUS_LABEL = {
           </div>
           <div v-if="!arcByStatus.length" class="empty-state">No arcs yet.</div>
         </div>
+      </section>
+
+      <!-- Tags -->
+      <section class="dashboard-section">
+        <h2>Tags</h2>
+        <div v-if="tagSummary.length" class="stat-cards">
+          <RouterLink v-for="tag in tagSummary" :key="tag.id" :to="`/worlds/${wid}/entities?tag=${tag.id}`" class="stat-card stat-card--link">
+            <div class="stat-value">{{ tag.entity_count }}</div>
+            <div class="stat-label">
+              <span class="tag-dot" :style="{ backgroundColor: tag.color }"></span>
+              {{ tag.name }}
+            </div>
+          </RouterLink>
+        </div>
+        <p v-else class="empty-state">No tags yet. <RouterLink :to="`/worlds/${wid}/tags`">Create tags</RouterLink></p>
       </section>
 
       <!-- Recent activity -->

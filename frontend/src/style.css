@@ -1123,6 +1123,124 @@ input[type="search"] {
   color: #ef4444;
 }
 
+/* ── Tags View ───────────────────────────────────────────────────────────── */
+
+.tag-form.card {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+}
+
+.tag-form h3 {
+  margin: 0 0 .75rem;
+}
+
+.tag-form__row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.tag-form__row label {
+  flex: 1;
+  min-width: 150px;
+}
+
+.tag-form__row--inline {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  width: 100%;
+}
+
+.tag-form__color-label {
+  max-width: 160px;
+}
+
+.tag-form__color-wrap {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.tag-color-input {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  cursor: pointer;
+  background: none;
+}
+
+.tag-color-hex {
+  font-family: monospace;
+  font-size: .8rem;
+  color: var(--color-text-muted);
+}
+
+.tag-form__preview {
+  margin-top: .75rem;
+  font-size: .85rem;
+  color: var(--color-text-muted);
+}
+
+.tag-badge {
+  display: inline-block;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.tag-list__item.card {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .6rem 1rem;
+}
+
+.tag-entity-count {
+  font-size: .85rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.tag-entity-count:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.tag-list__actions {
+  display: flex;
+  gap: .25rem;
+  flex-shrink: 0;
+}
+
+.tag-edit-name {
+  flex: 1;
+  min-width: 120px;
+  max-width: 220px;
+}
+
+.tag-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: .3rem;
+}
+
 /* ── Graph View ──────────────────────────────────────────────────────────── */
 
 .graph-page {
