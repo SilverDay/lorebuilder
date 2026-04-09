@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { api } from '@/api/client.js'
 
 const props = defineProps({
@@ -10,12 +10,51 @@ const props = defineProps({
 
 const emit = defineEmits(['refresh'])
 
-// ── Entity list for "add" form ────────────────────────────────────────────────
-const allEntities = ref([])
-onMounted(async () => {
-  const { data } = await api.get(`/api/v1/worlds/${props.worldId}/entities`, { per_page: 500 })
-  allEntities.value = (data ?? []).filter(e => e.id !== props.entityId)
+// ── Entity list for "add" form (lazy-loaded when form opens) ──────────────────
+const allEntities   = ref([])
+const entitiesReady = ref(false)
+
+async function loadEntities() {
+  if (entitiesReady.value) return
+  try {
+    const { data } = await api.get(`/api/v1/worlds/${props.worldId}/entities`, { per_page: 500 })
+    allEntities.value = (data ?? []).filter(e => e.id !== props.entityId)
+    entitiesReady.value = true
+  } catch {
+    allEntities.value = []
+  }
+}
+
+// ── Entity search / autocomplete ──────────────────────────────────────────────
+const entitySearch      = ref('')
+const showEntityResults = ref(false)
+const selectedEntity    = ref(null)
+
+const filteredEntities = computed(() => {
+  if (!entitySearch.value.trim()) return allEntities.value.slice(0, 20)
+  const q = entitySearch.value.toLowerCase()
+  return allEntities.value
+    .filter(e => e.name.toLowerCase().includes(q) || e.type.toLowerCase().includes(q))
+    .slice(0, 20)
 })
+
+function selectEntity(e) {
+  selectedEntity.value = e
+  entitySearch.value   = `${e.name} (${e.type})`
+  showEntityResults.value = false
+  addForm.value.to_entity_id = e.id
+}
+
+function clearEntity() {
+  selectedEntity.value = null
+  entitySearch.value   = ''
+  addForm.value.to_entity_id = ''
+}
+
+function onEntityBlur() {
+  // Delay to allow click on result item to fire first
+  setTimeout(() => { showEntityResults.value = false }, 200)
+}
 
 // ── Add form ──────────────────────────────────────────────────────────────────
 const showAdd   = ref(false)
@@ -26,7 +65,9 @@ const addForm   = ref({ to_entity_id: '', rel_type: '', is_bidirectional: false,
 function openAdd() {
   addForm.value = { to_entity_id: '', rel_type: '', is_bidirectional: false, strength: '', notes: '' }
   addError.value = ''
+  clearEntity()
   showAdd.value  = true
+  loadEntities()
 }
 
 async function saveAdd() {
@@ -131,12 +172,28 @@ function counterpart(rel) {
     <form v-if="showAdd" class="rel-edit-form" @submit.prevent="saveAdd">
       <label>
         Entity
-        <select v-model="addForm.to_entity_id" required>
-          <option value="" disabled>Select entity…</option>
-          <option v-for="e in allEntities" :key="e.id" :value="e.id">
-            {{ e.name }} ({{ e.type }})
-          </option>
-        </select>
+        <div class="entity-search-wrapper">
+          <input
+            v-model="entitySearch"
+            type="text"
+            autocomplete="off"
+            placeholder="Search entities…"
+            @focus="showEntityResults = true"
+            @blur="onEntityBlur"
+            @input="selectedEntity = null; addForm.to_entity_id = ''"
+          />
+          <button v-if="selectedEntity" type="button" class="entity-search-clear" @click="clearEntity" title="Clear">✕</button>
+          <ul v-if="showEntityResults && filteredEntities.length" class="entity-search-results">
+            <li v-for="e in filteredEntities" :key="e.id" @mousedown.prevent="selectEntity(e)"
+                :class="{ selected: selectedEntity?.id === e.id }">
+              <span class="entity-search-name">{{ e.name }}</span>
+              <span class="badge">{{ e.type }}</span>
+            </li>
+          </ul>
+          <p v-if="showEntityResults && entitySearch && !filteredEntities.length" class="entity-search-empty">
+            No matching entities
+          </p>
+        </div>
       </label>
       <label>
         Relationship type

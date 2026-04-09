@@ -993,6 +993,91 @@ input[type="search"] {
   resize: vertical;
 }
 
+/* ── Entity search autocomplete ─────────────────────────────────────────────── */
+.entity-search-wrapper {
+  position: relative;
+}
+
+.entity-search-wrapper input {
+  width: 100%;
+  padding-right: 2rem;
+}
+
+.entity-search-clear {
+  position: absolute;
+  right: .4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-size: .8rem;
+  padding: .1rem .25rem;
+  line-height: 1;
+}
+
+.entity-search-results {
+  position: absolute;
+  z-index: 50;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 12rem;
+  overflow-y: auto;
+  margin: .15rem 0 0;
+  padding: 0;
+  list-style: none;
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: .3rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3);
+}
+
+.entity-search-results li {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .5rem;
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--color-text);
+}
+
+.entity-search-results li:hover,
+.entity-search-results li.selected {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.entity-search-results li:hover .badge,
+.entity-search-results li.selected .badge {
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+}
+
+.entity-search-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entity-search-empty {
+  position: absolute;
+  z-index: 50;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: .15rem 0 0;
+  padding: .4rem .5rem;
+  font-size: .8rem;
+  color: var(--color-muted);
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: .3rem;
+}
+
 .rel-edit-inline {
   flex-direction: row !important;
   align-items: center;
