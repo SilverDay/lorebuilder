@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 class GeminiProvider implements AiProvider
 {
-    private const API_BASE       = 'https://generativelanguage.googleapis.com/v1beta/models/';
-    private const CONNECT_TIMEOUT = 10;
-    private const READ_TIMEOUT    = 60;
+    private const API_BASE        = 'https://generativelanguage.googleapis.com/v1beta/models/';
+    private const CONNECT_TIMEOUT  = 15;
+    private const READ_TIMEOUT     = 90;
+    private const MAX_RETRIES      = 3;
+    private const RETRY_STATUSES   = [429, 500, 502, 503, 504];
 
     public static function id(): string
     {
@@ -101,9 +103,37 @@ class GeminiProvider implements AiProvider
         ];
 
         $streamCtx = stream_context_create($opts);
-        $response  = @file_get_contents($endpoint, false, $streamCtx);
 
-        $statusCode = self::extractStatusCode($http_response_header ?? []);
+        $response   = false;
+        $statusCode = 0;
+        $lastError  = '';
+
+        for ($attempt = 1; $attempt <= self::MAX_RETRIES; $attempt++) {
+            $response   = @file_get_contents($endpoint, false, $streamCtx);
+            $statusCode = self::extractStatusCode($http_response_header ?? []);
+
+            if ($response === false) {
+                $lastError = 'Network error (no response body)';
+                error_log("[GeminiProvider] Attempt {$attempt}/" . self::MAX_RETRIES . " — network error");
+                if ($attempt < self::MAX_RETRIES) {
+                    usleep($attempt * 1_000_000); // 1s, 2s backoff
+                    continue;
+                }
+                throw new AiProviderException('Failed to reach Google Gemini API after ' . self::MAX_RETRIES . ' attempts. Check network connectivity.');
+            }
+
+            if (in_array($statusCode, self::RETRY_STATUSES, true)) {
+                $body      = json_decode($response, associative: true) ?? [];
+                $lastError = $body['error']['message'] ?? "HTTP {$statusCode}";
+                error_log("[GeminiProvider] Attempt {$attempt}/" . self::MAX_RETRIES . " — retryable HTTP {$statusCode}: {$lastError}");
+                if ($attempt < self::MAX_RETRIES) {
+                    usleep($attempt * 1_000_000);
+                    continue;
+                }
+            }
+
+            break; // success or non-retryable error
+        }
 
         if ($response === false) {
             error_log('[GeminiProvider] Network error calling Gemini API (no response body)');

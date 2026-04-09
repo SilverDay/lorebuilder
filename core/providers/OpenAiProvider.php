@@ -14,8 +14,10 @@ declare(strict_types=1);
 class OpenAiProvider implements AiProvider
 {
     private const API_ENDPOINT    = 'https://api.openai.com/v1/chat/completions';
-    private const CONNECT_TIMEOUT = 10;
-    private const READ_TIMEOUT    = 60;
+    private const CONNECT_TIMEOUT  = 15;
+    private const READ_TIMEOUT     = 90;
+    private const MAX_RETRIES      = 3;
+    private const RETRY_STATUSES   = [429, 500, 502, 503];
 
     public static function id(): string
     {
@@ -98,13 +100,36 @@ class OpenAiProvider implements AiProvider
         ];
 
         $streamCtx = stream_context_create($opts);
-        $response  = @file_get_contents(self::API_ENDPOINT, false, $streamCtx);
 
-        $statusCode = self::extractStatusCode($http_response_header ?? []);
+        $response   = false;
+        $statusCode = 0;
+        $lastError  = '';
 
-        if ($response === false) {
-            error_log('[OpenAiProvider] Network error calling OpenAI API (no response body)');
-            throw new AiProviderException('Failed to reach OpenAI API. Check network connectivity.');
+        for ($attempt = 1; $attempt <= self::MAX_RETRIES; $attempt++) {
+            $response   = @file_get_contents(self::API_ENDPOINT, false, $streamCtx);
+            $statusCode = self::extractStatusCode($http_response_header ?? []);
+
+            if ($response === false) {
+                $lastError = 'Network error (no response body)';
+                error_log("[OpenAiProvider] Attempt {$attempt}/" . self::MAX_RETRIES . " — network error");
+                if ($attempt < self::MAX_RETRIES) {
+                    usleep($attempt * 1_000_000);
+                    continue;
+                }
+                throw new AiProviderException('Failed to reach OpenAI API after ' . self::MAX_RETRIES . ' attempts. Check network connectivity.');
+            }
+
+            if (in_array($statusCode, self::RETRY_STATUSES, true)) {
+                $body      = json_decode($response, associative: true) ?? [];
+                $lastError = $body['error']['message'] ?? "HTTP {$statusCode}";
+                error_log("[OpenAiProvider] Attempt {$attempt}/" . self::MAX_RETRIES . " — retryable HTTP {$statusCode}: {$lastError}");
+                if ($attempt < self::MAX_RETRIES) {
+                    usleep($attempt * 1_000_000);
+                    continue;
+                }
+            }
+
+            break;
         }
 
         $body = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);

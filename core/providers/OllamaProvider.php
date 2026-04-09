@@ -24,6 +24,8 @@ class OllamaProvider implements AiProvider
     private const DEFAULT_ENDPOINT = 'http://localhost:11434';
     private const CONNECT_TIMEOUT  = 10;
     private const READ_TIMEOUT     = 120; // Local models can be slower
+    private const MAX_RETRIES      = 3;
+    private const RETRY_STATUSES   = [429, 500, 502, 503];
 
     public static function id(): string
     {
@@ -135,16 +137,35 @@ class OllamaProvider implements AiProvider
         ];
 
         $streamCtx = stream_context_create($opts);
-        $response  = @file_get_contents($url, false, $streamCtx);
 
-        $statusCode = self::extractStatusCode($http_response_header ?? []);
+        $response   = false;
+        $statusCode = 0;
 
-        if ($response === false) {
-            error_log('[OllamaProvider] Network error calling Ollama at ' . $endpoint);
-            throw new AiProviderException(
-                'Failed to reach Ollama at ' . htmlspecialchars($endpoint, ENT_QUOTES, 'UTF-8') .
-                '. Is Ollama running?'
-            );
+        for ($attempt = 1; $attempt <= self::MAX_RETRIES; $attempt++) {
+            $response   = @file_get_contents($url, false, $streamCtx);
+            $statusCode = self::extractStatusCode($http_response_header ?? []);
+
+            if ($response === false) {
+                error_log("[OllamaProvider] Attempt {$attempt}/" . self::MAX_RETRIES . " — network error reaching {$endpoint}");
+                if ($attempt < self::MAX_RETRIES) {
+                    usleep($attempt * 1_000_000);
+                    continue;
+                }
+                throw new AiProviderException(
+                    'Failed to reach Ollama at ' . htmlspecialchars($endpoint, ENT_QUOTES, 'UTF-8') .
+                    ' after ' . self::MAX_RETRIES . ' attempts. Is Ollama running?'
+                );
+            }
+
+            if (in_array($statusCode, self::RETRY_STATUSES, true)) {
+                error_log("[OllamaProvider] Attempt {$attempt}/" . self::MAX_RETRIES . " — retryable HTTP {$statusCode}");
+                if ($attempt < self::MAX_RETRIES) {
+                    usleep($attempt * 1_000_000);
+                    continue;
+                }
+            }
+
+            break;
         }
 
         $body = json_decode($response, associative: true, flags: JSON_THROW_ON_ERROR);
