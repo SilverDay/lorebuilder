@@ -41,4 +41,14 @@ async function signOut() {
       <button class="btn btn-ghost btn-sm app-nav__theme" @click="toggle" :aria-label="'Toggle theme'">{{ themeIcon }}</button>
     </div>
   </nav>
+
+  <!-- World sub-navigation -->
+  <nav v-if="auth.isAuthenticated && wid" class="world-subnav" aria-label="World sections">
+    <RouterLink :to="`/worlds/${wid}/entities`"    class="world-subnav__link">Entities</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/graph`"        class="world-subnav__link">Graph</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/timeline`"     class="world-subnav__link">Timeline</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/arcs`"         class="world-subnav__link">Story Arcs</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/notes`"        class="world-subnav__link">Notes</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/open-points`"  class="world-subnav__link">Open Points</RouterLink>
+  </nav>
 </template>
