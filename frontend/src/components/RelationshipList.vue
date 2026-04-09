@@ -193,6 +193,14 @@ function counterpart(rel) {
     ? { id: rel.to_entity_id,   name: rel.to_name,   type: rel.to_type }
     : { id: rel.from_entity_id, name: rel.from_name, type: rel.from_type }
 }
+
+function dirIndicator(rel) {
+  if (rel.bidirectional) return { symbol: '↔', title: 'Bidirectional' }
+  const isSource = rel.from_entity_id === props.entityId
+  return isSource
+    ? { symbol: '→', title: 'Outgoing' }
+    : { symbol: '←', title: 'Incoming' }
+}
 </script>
 
 <template>
@@ -304,8 +312,8 @@ function counterpart(rel) {
 
             <!-- Read view -->
             <template v-else>
-              <span class="badge badge-dir" :title="rel.bidirectional ? 'Bidirectional' : 'Unidirectional'">
-                {{ rel.bidirectional ? '↔' : '→' }}
+              <span class="badge badge-dir" :title="dirIndicator(rel).title">
+                {{ dirIndicator(rel).symbol }}
               </span>
               <RouterLink :to="`/worlds/${worldId}/entities/${counterpart(rel).id}`">
                 {{ counterpart(rel).name }}
