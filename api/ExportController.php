@@ -44,7 +44,7 @@ class ExportController
         // Fetch world metadata (never include ai_key_enc)
         $world = DB::queryOne(
             'SELECT id, slug, name, description, genre, tone, era_system,
-                    content_warnings, ai_model, created_at
+                    content_warnings, ai_provider, ai_model, ai_endpoint_url, created_at
                FROM worlds
               WHERE id = :wid AND deleted_at IS NULL',
             ['wid' => $wid]

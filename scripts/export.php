@@ -37,9 +37,12 @@ if (!in_array($format, ['json', 'markdown'], true)) {
 }
 
 // Resolve world by ID or slug
+$worldSql = 'SELECT id, slug, name, description, genre, tone, era_system,
+                    content_warnings, ai_provider, ai_model, ai_endpoint_url, created_at
+               FROM worlds WHERE deleted_at IS NULL';
 $world = is_numeric($worldRef)
-    ? DB::queryOne('SELECT * FROM worlds WHERE id = :v AND deleted_at IS NULL', ['v' => (int) $worldRef])
-    : DB::queryOne('SELECT * FROM worlds WHERE slug = :v AND deleted_at IS NULL', ['v' => $worldRef]);
+    ? DB::queryOne($worldSql . ' AND id = :v', ['v' => (int) $worldRef])
+    : DB::queryOne($worldSql . ' AND slug = :v', ['v' => $worldRef]);
 
 if (!$world) {
     fwrite(STDERR, "World '{$worldRef}' not found.\n");
@@ -105,8 +108,7 @@ unset($e);
 foreach ($arcs as &$arc) { $arc['entity_ids'] = $arcEntByArc[(int)$arc['id']] ?? []; }
 unset($arc);
 
-// Remove AI key from world export
-unset($world['ai_key_enc'], $world['ai_key_fingerprint']);
+// World query now uses explicit columns — no sensitive fields to strip
 
 if ($format === 'json') {
     $output = json_encode([
