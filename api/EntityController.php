@@ -187,6 +187,7 @@ class EntityController
 
         $data = Validator::parseJson([
             'name'          => 'nullable|string|max:255',
+            'type'          => 'nullable|in:' . implode(',', self::VALID_TYPES),
             'short_summary' => 'nullable|string|max:512',
             'status'        => 'nullable|in:draft,published,archived',
             'lore_body'     => 'nullable|string',
@@ -199,7 +200,7 @@ class EntityController
 
         $sets   = [];
         $params = ['id' => $id, 'wid' => $wid];
-        foreach (['name','short_summary','status','lore_body'] as $col) {
+        foreach (['name','type','short_summary','status','lore_body'] as $col) {
             if (array_key_exists($col, $data)) {
                 $sets[]       = "{$col} = :{$col}";
                 $params[$col] = $data[$col];
