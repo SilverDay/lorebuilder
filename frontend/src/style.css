@@ -1405,6 +1405,181 @@ input[type="search"] {
   padding: 1rem 0;
 }
 
+.kanban-card-active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, .2);
+}
+
+.kanban-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: .35rem;
+}
+
+.kanban-card-delete {
+  flex-shrink: 0;
+  padding: .1rem .3rem;
+  font-size: .75rem;
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.kanban-card:hover .kanban-card-delete {
+  opacity: 1;
+}
+
+.kanban-card-actions {
+  margin-top: .35rem;
+}
+
+/* ── Arc / Timeline Inline Form Panel ────────────────────────────────────── */
+
+.arc-form-panel,
+.tl-form-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.arc-form-panel h2,
+.tl-form-panel h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: .75rem;
+}
+
+.arc-form-panel h3,
+.tl-form-panel h3 {
+  font-size: .9rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+  color: var(--color-muted);
+}
+
+.arc-form,
+.tl-form {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  max-width: 480px;
+}
+
+.arc-form-row,
+.tl-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+}
+
+.arc-entities {
+  margin-top: .75rem;
+}
+
+.arc-entity-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.arc-entity-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .85rem;
+}
+
+.arc-entity-link {
+  color: var(--color-accent);
+}
+
+.arc-entity-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Timeline Event Management ───────────────────────────────────────────── */
+
+.tl-event-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin-top: .75rem;
+}
+
+.tl-event-item {
+  background: var(--color-surface2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: .6rem .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.tl-event-item:hover {
+  border-color: var(--color-accent);
+}
+
+.tl-event-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tl-event-label {
+  font-size: .875rem;
+  font-weight: 500;
+}
+
+.tl-event-desc {
+  font-size: .775rem;
+  color: var(--color-muted);
+  margin-top: .15rem;
+}
+
+.tl-event-meta {
+  display: flex;
+  gap: .35rem;
+  margin-top: .25rem;
+}
+
+.tl-event-actions {
+  display: flex;
+  gap: .25rem;
+  flex-shrink: 0;
+}
+
+.tl-header-bar {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tl-header-bar select {
+  max-width: 280px;
+}
+
+.tl-meta {
+  font-size: .8rem;
+  color: var(--color-muted);
+  display: flex;
+  gap: 1rem;
+  margin-bottom: .75rem;
+}
+
+.empty-state-sm {
+  font-size: .85rem;
+  color: var(--color-muted);
+  padding: .5rem 0;
+}
+
 /* ── Dashboard ───────────────────────────────────────────────────────────── */
 
 .dashboard-section {

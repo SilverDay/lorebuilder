@@ -33,7 +33,7 @@ const filter   = ref({
 const page     = ref(Number(route.query.page) || saved?.page || 1)
 const limit    = 30
 
-const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race']
+const TYPES = ['Character','Location','Event','Faction','Artefact','Creature','Concept','Race']
 
 const worldTags = ref([])
 
