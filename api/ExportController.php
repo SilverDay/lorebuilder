@@ -328,6 +328,10 @@ class ExportController
                 if (!$fromId || !$toId) continue;
                 $relType = mb_substr(trim((string) ($rel['rel_type'] ?? 'related')), 0, 64);
                 if ($relType === '') $relType = 'related';
+                $strength = $rel['strength'] ?? null;
+                if ($strength !== null) {
+                    $strength = max(0, min(255, (int) $strength));
+                }
                 DB::execute(
                     'INSERT INTO entity_relationships
                         (world_id, from_entity_id, to_entity_id, rel_type, strength, notes, is_bidirectional, created_by)
@@ -337,7 +341,7 @@ class ExportController
                         'from'  => $fromId,
                         'to'    => $toId,
                         'rtype' => $relType,
-                        'str'   => $rel['strength'] ?? null,
+                        'str'   => $strength,
                         'notes' => mb_substr((string) ($rel['notes'] ?? ''), 0, 1000),
                         'bi'    => (int) (bool) ($rel['bidirectional'] ?? false),
                         'uid'   => $userId,

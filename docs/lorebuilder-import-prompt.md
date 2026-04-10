@@ -93,7 +93,7 @@ Free text — use natural language that fits the world (e.g. `"ally of"`, `"rule
       "from_entity_id": 1,
       "to_entity_id":   2,
       "rel_type":       "<free text, max 64>",
-      "strength":       null,
+      "strength":       "<integer 0-10 or null; 0 = weakest/hostile, 10 = strongest/closest>",
       "notes":          "<optional context, max 1000>",
       "bidirectional":  false
     }
