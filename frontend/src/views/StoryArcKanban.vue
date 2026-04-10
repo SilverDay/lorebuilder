@@ -190,6 +190,81 @@ async function loadArcDetail(arcId) {
     arcDetailLoad.value = false
   }
 }
+
+// ── Entity Search & Add ──────────────────────────────────────────────────────
+
+const entitySearch    = ref('')
+const entityResults   = ref([])
+const entitySearching = ref(false)
+const addRole         = ref('')
+let searchTimeout     = null
+
+function onEntitySearch() {
+  clearTimeout(searchTimeout)
+  const q = entitySearch.value.trim()
+  if (q.length < 2) { entityResults.value = []; return }
+  searchTimeout = setTimeout(async () => {
+    entitySearching.value = true
+    try {
+      const { data } = await api.get(`/api/v1/worlds/${wid}/entities?q=${encodeURIComponent(q)}&limit=10`)
+      // Filter out entities already in the arc
+      const existing = new Set((arcDetail.value?.entities ?? []).map(e => e.entity_id))
+      entityResults.value = (data ?? []).filter(e => !existing.has(e.id))
+    } catch { entityResults.value = [] }
+    finally { entitySearching.value = false }
+  }, 250)
+}
+
+async function addEntityToArc(entity) {
+  if (!arcDetail.value || !editingArc.value) return
+  const current = (arcDetail.value.entities ?? []).map(e => ({
+    entity_id:  e.entity_id,
+    role:       e.role ?? null,
+    notes:      e.notes ?? null,
+    sort_order: e.sort_order ?? 0,
+  }))
+  current.push({
+    entity_id:  entity.id,
+    role:       addRole.value.trim() || null,
+    notes:      null,
+    sort_order: current.length,
+  })
+  error.value = ''
+  try {
+    await api.put(`/api/v1/worlds/${wid}/story-arcs/${editingArc.value.id}/entities`, {
+      entities: current,
+    })
+    entitySearch.value  = ''
+    entityResults.value = []
+    addRole.value       = ''
+    await loadArcDetail(editingArc.value.id)
+    await loadArcs()
+  } catch (e) {
+    error.value = e.message || 'Failed to add entity.'
+  }
+}
+
+async function removeEntityFromArc(entityId) {
+  if (!arcDetail.value || !editingArc.value) return
+  const current = (arcDetail.value.entities ?? [])
+    .filter(e => e.entity_id !== entityId)
+    .map((e, i) => ({
+      entity_id:  e.entity_id,
+      role:       e.role ?? null,
+      notes:      e.notes ?? null,
+      sort_order: i,
+    }))
+  error.value = ''
+  try {
+    await api.put(`/api/v1/worlds/${wid}/story-arcs/${editingArc.value.id}/entities`, {
+      entities: current,
+    })
+    await loadArcDetail(editingArc.value.id)
+    await loadArcs()
+  } catch (e) {
+    error.value = e.message || 'Failed to remove entity.'
+  }
+}
 </script>
 
 <template>
@@ -236,51 +311,88 @@ async function loadArcDetail(arcId) {
       </form>
     </div>
 
-    <!-- Edit Panel (overlay below header) -->
+    <!-- Edit Panel (two-column: form left, entities right) -->
     <div v-if="editingArc" class="arc-form-panel">
       <h2>Edit: {{ editingArc.name }}</h2>
-      <form @submit.prevent="submitEdit" class="arc-form">
-        <label>
-          Name
-          <input v-model="editForm.name" type="text" required maxlength="255" />
-        </label>
-        <label>
-          Logline
-          <textarea v-model="editForm.logline" rows="3" maxlength="512"></textarea>
-        </label>
-        <label>
-          Theme
-          <input v-model="editForm.theme" type="text" maxlength="255" />
-        </label>
-        <label>
-          Status
-          <select v-model="editForm.status">
-            <option v-for="col in COLUMNS" :key="col.key" :value="col.key">{{ col.label }}</option>
-          </select>
-        </label>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" :disabled="saving">
-            {{ saving ? 'Saving…' : 'Save Changes' }}
-          </button>
-          <button type="button" class="btn btn-ghost" @click="cancelEdit">Cancel</button>
-        </div>
-      </form>
+      <div class="arc-edit-grid">
+        <form @submit.prevent="submitEdit" class="arc-form">
+          <label>
+            Name
+            <input v-model="editForm.name" type="text" required maxlength="255" />
+          </label>
+          <label>
+            Logline
+            <textarea v-model="editForm.logline" rows="3" maxlength="512"></textarea>
+          </label>
+          <label>
+            Theme
+            <input v-model="editForm.theme" type="text" maxlength="255" />
+          </label>
+          <label>
+            Status
+            <select v-model="editForm.status">
+              <option v-for="col in COLUMNS" :key="col.key" :value="col.key">{{ col.label }}</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" :disabled="saving">
+              {{ saving ? 'Saving…' : 'Save Changes' }}
+            </button>
+            <button type="button" class="btn btn-ghost" @click="cancelEdit">Cancel</button>
+          </div>
+        </form>
 
-      <!-- Entity roster -->
-      <div class="arc-entities" v-if="arcDetail">
-        <h3>Entities in this arc</h3>
-        <ul v-if="arcDetail.entities?.length" class="arc-entity-list">
-          <li v-for="ent in arcDetail.entities" :key="ent.entity_id" class="arc-entity-item">
-            <RouterLink :to="`/worlds/${wid}/entities/${ent.entity_id}`" class="arc-entity-link">
-              {{ ent.entity_name }}
-            </RouterLink>
-            <span class="badge">{{ ent.entity_type }}</span>
-            <span v-if="ent.role" class="badge badge-role">{{ ent.role }}</span>
-          </li>
-        </ul>
-        <p v-else class="empty-state-sm">No entities assigned to this arc.</p>
+        <!-- Entity roster (right column) -->
+        <div class="arc-entities-col">
+          <div v-if="arcDetail" class="arc-entities">
+            <h3>Entities in this arc</h3>
+            <ul v-if="arcDetail.entities?.length" class="arc-entity-list">
+              <li v-for="ent in arcDetail.entities" :key="ent.entity_id" class="arc-entity-item">
+                <RouterLink :to="`/worlds/${wid}/entities/${ent.entity_id}`" class="arc-entity-link">
+                  {{ ent.entity_name }}
+                </RouterLink>
+                <span class="badge">{{ ent.entity_type }}</span>
+                <span v-if="ent.role" class="badge badge-role">{{ ent.role }}</span>
+                <button
+                  class="btn btn-ghost btn-sm arc-entity-remove"
+                  title="Remove from arc"
+                  @click="removeEntityFromArc(ent.entity_id)"
+                >✕</button>
+              </li>
+            </ul>
+            <p v-else class="empty-state-sm">No entities assigned yet.</p>
+
+            <!-- Add entity -->
+            <div class="arc-add-entity">
+              <h3>Add entity</h3>
+              <div class="arc-add-entity-row">
+                <input
+                  v-model="entitySearch"
+                  type="text"
+                  placeholder="Search entities…"
+                  @input="onEntitySearch"
+                />
+                <input
+                  v-model="addRole"
+                  type="text"
+                  placeholder="Role (optional)"
+                  maxlength="128"
+                  style="max-width: 140px;"
+                />
+              </div>
+              <ul v-if="entityResults.length" class="arc-search-results">
+                <li v-for="ent in entityResults" :key="ent.id" class="arc-search-item" @click="addEntityToArc(ent)">
+                  <span>{{ ent.name }}</span>
+                  <span class="badge">{{ ent.type }}</span>
+                </li>
+              </ul>
+              <p v-else-if="entitySearching" class="empty-state-sm">Searching…</p>
+              <p v-else-if="entitySearch.length >= 2 && !entityResults.length" class="empty-state-sm">No matching entities.</p>
+            </div>
+          </div>
+          <p v-else-if="arcDetailLoad" class="loading">Loading details…</p>
+        </div>
       </div>
-      <p v-else-if="arcDetailLoad" class="loading">Loading details…</p>
     </div>
 
     <p v-if="loading" class="loading">Loading…</p>
