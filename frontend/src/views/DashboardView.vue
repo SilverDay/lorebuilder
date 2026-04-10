@@ -154,10 +154,10 @@ const ARC_STATUS_LABEL = {
       <section class="dashboard-section">
         <h2>Story Arc Status</h2>
         <div class="stat-cards">
-          <div v-for="row in arcByStatus" :key="row.status" class="stat-card">
+          <RouterLink v-for="row in arcByStatus" :key="row.status" :to="`/worlds/${wid}/arcs`" class="stat-card stat-card--link">
             <div class="stat-value">{{ row.count }}</div>
             <div class="stat-label">{{ ARC_STATUS_LABEL[row.status] ?? row.status }}</div>
-          </div>
+          </RouterLink>
           <div v-if="!arcByStatus.length" class="empty-state">No arcs yet.</div>
         </div>
       </section>
