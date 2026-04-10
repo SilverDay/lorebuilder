@@ -214,8 +214,8 @@ async function loadArcDetail(arcId) {
           <input v-model="createForm.name" type="text" required maxlength="255" placeholder="Arc name" />
         </label>
         <label>
-          Logline <small>(one-line summary)</small>
-          <input v-model="createForm.logline" type="text" maxlength="512" placeholder="A brief summary…" />
+          Logline <small>(short summary)</small>
+          <textarea v-model="createForm.logline" rows="3" maxlength="512" placeholder="A brief summary…"></textarea>
         </label>
         <label>
           Theme
@@ -246,7 +246,7 @@ async function loadArcDetail(arcId) {
         </label>
         <label>
           Logline
-          <input v-model="editForm.logline" type="text" maxlength="512" />
+          <textarea v-model="editForm.logline" rows="3" maxlength="512"></textarea>
         </label>
         <label>
           Theme
