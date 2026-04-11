@@ -3868,6 +3868,17 @@ kbd {
   color: #fff;
 }
 
+.story-editor__toolbar-btn--active {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.story-editor__toolbar-btn--active:hover {
+  background: var(--color-primary-hover, var(--color-primary));
+  border-color: var(--color-primary-hover, var(--color-primary));
+}
+
 .story-editor__toolbar-btn:disabled {
   opacity: 0.4;
   cursor: default;

@@ -9,12 +9,13 @@
  * calls useEditor (which requires inject from MilkdownProvider parent).
  * Toolbar uses editor.action(callCommand(...)) to toggle marks/blocks.
  */
-import { defineComponent, h, watch } from 'vue'
-import { Editor, rootCtx, defaultValueCtx } from '@milkdown/core'
+import { defineComponent, h, ref, watch, onMounted, onUnmounted } from 'vue'
+import { Editor, rootCtx, defaultValueCtx, editorViewCtx } from '@milkdown/core'
 import { commonmark,
   toggleStrongCommand, toggleEmphasisCommand, toggleInlineCodeCommand,
   wrapInBlockquoteCommand, wrapInBulletListCommand, wrapInOrderedListCommand,
   wrapInHeadingCommand, insertHrCommand, createCodeBlockCommand,
+  turnIntoTextCommand,
 } from '@milkdown/preset-commonmark'
 import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { history } from '@milkdown/plugin-history'
@@ -26,20 +27,78 @@ import '@milkdown/theme-nord/style.css'
 
 /**
  * Toolbar buttons definition.
+ * `active` key: function (view) => boolean, used to highlight active buttons.
  */
 const toolbarButtons = [
-  { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand, group: 'inline' },
-  { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline' },
-  { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand, group: 'inline' },
-  { label: 'H1', title: 'Heading 1', command: wrapInHeadingCommand, payload: 1, group: 'block' },
-  { label: 'H2', title: 'Heading 2', command: wrapInHeadingCommand, payload: 2, group: 'block' },
-  { label: 'H3', title: 'Heading 3', command: wrapInHeadingCommand, payload: 3, group: 'block' },
-  { label: '❝', title: 'Blockquote', command: wrapInBlockquoteCommand, group: 'block' },
-  { label: '•', title: 'Bullet List', command: wrapInBulletListCommand, group: 'list' },
-  { label: '1.', title: 'Ordered List', command: wrapInOrderedListCommand, group: 'list' },
+  { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand, group: 'inline',
+    active: (v) => isMarkActive(v, 'strong') },
+  { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline',
+    active: (v) => isMarkActive(v, 'emphasis') },
+  { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand, group: 'inline',
+    active: (v) => isMarkActive(v, 'inlineCode') },
+  { label: '¶', title: 'Normal Text', command: turnIntoTextCommand, group: 'block',
+    active: (v) => isNodeActive(v, 'paragraph') },
+  { label: 'H1', title: 'Heading 1', command: wrapInHeadingCommand, payload: 1, group: 'block',
+    active: (v) => isHeadingActive(v, 1) },
+  { label: 'H2', title: 'Heading 2', command: wrapInHeadingCommand, payload: 2, group: 'block',
+    active: (v) => isHeadingActive(v, 2) },
+  { label: 'H3', title: 'Heading 3', command: wrapInHeadingCommand, payload: 3, group: 'block',
+    active: (v) => isHeadingActive(v, 3) },
+  { label: '❝', title: 'Blockquote', command: wrapInBlockquoteCommand, group: 'block',
+    active: (v) => isNodeActive(v, 'blockquote') },
+  { label: '•', title: 'Bullet List', command: wrapInBulletListCommand, group: 'list',
+    active: (v) => isNodeActive(v, 'bullet_list') },
+  { label: '1.', title: 'Ordered List', command: wrapInOrderedListCommand, group: 'list',
+    active: (v) => isNodeActive(v, 'ordered_list') },
   { label: '—', title: 'Horizontal Rule', command: insertHrCommand, group: 'insert' },
-  { label: '```', title: 'Code Block', command: createCodeBlockCommand, group: 'insert' },
+  { label: '```', title: 'Code Block', command: createCodeBlockCommand, group: 'insert',
+    active: (v) => isNodeActive(v, 'code_block') },
 ]
+
+function isMarkActive(view, markName) {
+  if (!view) return false
+  const { state } = view
+  const markType = state.schema.marks[markName]
+  if (!markType) return false
+  const { from, $from, to, empty } = state.selection
+  if (empty) return !!markType.isInSet(state.storedMarks || $from.marks())
+  let found = false
+  state.doc.nodesBetween(from, to, (node) => {
+    if (found) return false
+    found = markType.isInSet(node.marks) != null
+  })
+  return found
+}
+
+function isNodeActive(view, nodeName) {
+  if (!view) return false
+  const { state } = view
+  const nodeType = state.schema.nodes[nodeName]
+  if (!nodeType) return false
+  const { $from, $to } = state.selection
+  for (let d = $from.depth; d >= 0; d--) {
+    if ($from.node(d).type === nodeType) return true
+  }
+  if ($to.depth !== $from.depth) {
+    for (let d = $to.depth; d >= 0; d--) {
+      if ($to.node(d).type === nodeType) return true
+    }
+  }
+  return false
+}
+
+function isHeadingActive(view, level) {
+  if (!view) return false
+  const { state } = view
+  const nodeType = state.schema.nodes.heading
+  if (!nodeType) return false
+  const { $from } = state.selection
+  for (let d = $from.depth; d >= 0; d--) {
+    const node = $from.node(d)
+    if (node.type === nodeType && node.attrs.level === level) return true
+  }
+  return false
+}
 
 /**
  * Inner component — must be a child of MilkdownProvider so inject() works.
@@ -52,6 +111,7 @@ const MilkdownEditorInner = defineComponent({
   emits: ['update:content'],
   setup(props, { emit }) {
     let lastEmittedContent = props.content || ''
+    const activeStates = ref([])
 
     useEditor((root) => {
       return Editor.make()
@@ -74,10 +134,57 @@ const MilkdownEditorInner = defineComponent({
 
     const [loading, getEditor] = useInstance()
 
+    function updateActiveStates() {
+      const editor = getEditor()
+      if (!editor) return
+      try {
+        const view = editor.action((ctx) => ctx.get(editorViewCtx))
+        activeStates.value = toolbarButtons.map((btn) =>
+          btn.active ? btn.active(view) : false
+        )
+      } catch { /* editor not ready yet */ }
+    }
+
+    let rafId = null
+    function onSelectionOrDoc() {
+      if (rafId) cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(updateActiveStates)
+    }
+
+    // Listen for ProseMirror transactions to update toolbar state
+    let transactionCleanup = null
+    const checkEditorReady = setInterval(() => {
+      const editor = getEditor()
+      if (!editor) return
+      clearInterval(checkEditorReady)
+      try {
+        const view = editor.action((ctx) => ctx.get(editorViewCtx))
+        const origDispatch = view.dispatch.bind(view)
+        view.dispatch = (tr) => {
+          origDispatch(tr)
+          if (tr.selectionSet || tr.docChanged) onSelectionOrDoc()
+        }
+        transactionCleanup = () => { view.dispatch = origDispatch }
+        updateActiveStates()
+      } catch { /* wait for next tick */ }
+    }, 200)
+
+    onMounted(() => {
+      document.addEventListener('selectionchange', onSelectionOrDoc)
+    })
+
+    onUnmounted(() => {
+      clearInterval(checkEditorReady)
+      if (rafId) cancelAnimationFrame(rafId)
+      document.removeEventListener('selectionchange', onSelectionOrDoc)
+      if (transactionCleanup) transactionCleanup()
+    })
+
     function execCommand(cmd, payload) {
       const editor = getEditor()
       if (!editor || !cmd.key) return
       editor.action(callCommand(cmd.key, payload))
+      onSelectionOrDoc()
     }
 
     // Watch for external content changes (e.g., story reload)
@@ -103,7 +210,10 @@ const MilkdownEditorInner = defineComponent({
             ...sep,
             h('button', {
               type: 'button',
-              class: 'story-editor__toolbar-btn',
+              class: [
+                'story-editor__toolbar-btn',
+                activeStates.value[i] ? 'story-editor__toolbar-btn--active' : '',
+              ],
               title: btn.title,
               disabled: loading.value,
               onMousedown: (e) => {
