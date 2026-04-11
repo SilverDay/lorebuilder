@@ -7,17 +7,39 @@
  *
  * Structure: outer component renders MilkdownProvider, inner component
  * calls useEditor (which requires inject from MilkdownProvider parent).
+ * Toolbar uses editor.action(callCommand(...)) to toggle marks/blocks.
  */
 import { defineComponent, h, watch } from 'vue'
 import { Editor, rootCtx, defaultValueCtx } from '@milkdown/core'
-import { commonmark } from '@milkdown/preset-commonmark'
+import { commonmark,
+  toggleStrongCommand, toggleEmphasisCommand, toggleInlineCodeCommand,
+  wrapInBlockquoteCommand, wrapInBulletListCommand, wrapInOrderedListCommand,
+  wrapInHeadingCommand, insertHrCommand, createCodeBlockCommand,
+} from '@milkdown/preset-commonmark'
 import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { history } from '@milkdown/plugin-history'
 import { nord } from '@milkdown/theme-nord'
 import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/vue'
-import { replaceAll } from '@milkdown/utils'
+import { replaceAll, callCommand } from '@milkdown/utils'
 
 import '@milkdown/theme-nord/style.css'
+
+/**
+ * Toolbar buttons definition.
+ */
+const toolbarButtons = [
+  { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand.key, group: 'inline' },
+  { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand.key, group: 'inline' },
+  { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand.key, group: 'inline' },
+  { label: 'H1', title: 'Heading 1', command: wrapInHeadingCommand.key, payload: 1, group: 'block' },
+  { label: 'H2', title: 'Heading 2', command: wrapInHeadingCommand.key, payload: 2, group: 'block' },
+  { label: 'H3', title: 'Heading 3', command: wrapInHeadingCommand.key, payload: 3, group: 'block' },
+  { label: '❝', title: 'Blockquote', command: wrapInBlockquoteCommand.key, group: 'block' },
+  { label: '•', title: 'Bullet List', command: wrapInBulletListCommand.key, group: 'list' },
+  { label: '1.', title: 'Ordered List', command: wrapInOrderedListCommand.key, group: 'list' },
+  { label: '—', title: 'Horizontal Rule', command: insertHrCommand.key, group: 'insert' },
+  { label: '```', title: 'Code Block', command: createCodeBlockCommand.key, group: 'insert' },
+]
 
 /**
  * Inner component — must be a child of MilkdownProvider so inject() works.
@@ -52,6 +74,12 @@ const MilkdownEditorInner = defineComponent({
 
     const [loading, getEditor] = useInstance()
 
+    function execCommand(cmd, payload) {
+      const editor = getEditor()
+      if (!editor) return
+      editor.action(callCommand(cmd, payload))
+    }
+
     // Watch for external content changes (e.g., story reload)
     watch(() => props.content, (newVal) => {
       if (loading.value) return
@@ -63,6 +91,29 @@ const MilkdownEditorInner = defineComponent({
     })
 
     return () => h('div', { class: 'story-editor' }, [
+      // Toolbar
+      h('div', { class: 'story-editor__toolbar' },
+        toolbarButtons.map((btn, i) => {
+          const prev = toolbarButtons[i - 1]
+          const sep = prev && prev.group !== btn.group
+            ? [h('span', { class: 'story-editor__toolbar-sep' })]
+            : []
+          return [
+            ...sep,
+            h('button', {
+              type: 'button',
+              class: 'story-editor__toolbar-btn',
+              title: btn.title,
+              disabled: loading.value,
+              onMousedown: (e) => {
+                e.preventDefault() // keep editor focus
+                execCommand(btn.command, btn.payload)
+              },
+            }, btn.label),
+          ]
+        }).flat(),
+      ),
+      // Editor
       loading.value ? h('div', { class: 'story-editor__loading' }, 'Loading editor…') : null,
       h(Milkdown),
     ])

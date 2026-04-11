@@ -3834,6 +3834,52 @@ kbd {
   flex-direction: column;
 }
 
+.story-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  align-items: center;
+}
+
+.story-editor__toolbar-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-text);
+  line-height: 1;
+  min-width: 28px;
+  text-align: center;
+}
+
+.story-editor__toolbar-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border);
+}
+
+.story-editor__toolbar-btn:active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.story-editor__toolbar-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.story-editor__toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+  margin: 0 4px;
+}
+
 .story-editor .milkdown {
   flex: 1;
   overflow-y: auto;
