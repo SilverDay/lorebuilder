@@ -37,7 +37,7 @@ async function submit() {
     const { data } = await api.post(`/api/v1/worlds/${props.worldId}/stories/${props.storyId}/ai/assist`, {
       mode: mode.value,
       user_prompt: prompt.value.trim(),
-      cursor_position: cursorPos.value,
+      cursor_pos: cursorPos.value,
     })
     result.value = data
   } catch (e) {

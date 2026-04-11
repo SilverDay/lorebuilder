@@ -1,0 +1,957 @@
+{
+  "lorebuilder_version": "1",
+  "exported_at": "2026-04-10T00:00:00Z",
+  "world": {
+    "name": "Wizard's Castle: Shadows of Zot",
+    "slug": "wizards-castle-shadows-of-zot",
+    "description": "A dark fantasy sword & sorcery world set on the ancient continent of Arboria, once united under the Kingdom of N'Dic and now fractured by centuries of war. The gods sang reality into existence — their Song sustains the world, while the Silence (entropy, unmaking) encroaches wherever conflict creates disharmony. Deep beneath the ruins of N'Dic lies Zot's vast subterranean castle, filled with monsters, treasures, and the legendary Orb of Power. No adventurer has ever emerged victorious.",
+    "genre": "Dark Fantasy / Sword & Sorcery",
+    "tone": "Gritty, Atmospheric, Morally Ambiguous",
+    "era_system": "Age of Fracturing",
+    "content_warnings": "Violence, death, themes of despair and obsession"
+  },
+  "tags": [
+    {
+      "name": "faction-leader",
+      "color": "#7F77DD"
+    },
+    {
+      "name": "faction",
+      "color": "#378ADD"
+    },
+    {
+      "name": "roaming-npc",
+      "color": "#1D9E75"
+    },
+    {
+      "name": "floor-restricted",
+      "color": "#D85A30"
+    },
+    {
+      "name": "halfling",
+      "color": "#BA7517"
+    },
+    {
+      "name": "human",
+      "color": "#888780"
+    },
+    {
+      "name": "elf",
+      "color": "#5DCAA5"
+    },
+    {
+      "name": "half-orc",
+      "color": "#D85A30"
+    },
+    {
+      "name": "outside-world",
+      "color": "#AFA9EC"
+    },
+    {
+      "name": "unresolved",
+      "color": "#F0997B"
+    },
+    {
+      "name": "cosmology",
+      "color": "#CECBF6"
+    }
+  ],
+  "entities": [
+    {
+      "id": 1,
+      "type": "Faction",
+      "name": "The Remnant",
+      "status": "published",
+      "short_summary": "Survivors of a previous expedition, trapped in the castle and desperate to escape at any cost.",
+      "lore_body": "Not villains — cornered survivors. They steal, mislead, and fight when they must, but hold to a rough code. They don't lie outright. They don't abandon their own. Years underground have made them pragmatic to the edge of moral collapse.\n\nPlayers who aid the Remnant (food, clearing monsters, information) earn map data, rumours, trinkets, and potions. At high trust, Anthor fights alongside them. Players who hinder or oppose the Remnant will be misdirected, stolen from, and ultimately attacked.",
+      "tags": [
+        "faction"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Agenda",
+          "attr_value": "Escape the castle alive",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Alliance type",
+          "attr_value": "Conditional — aid-based",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Mutual exclusion",
+          "attr_value": "Cannot fully ally with the Gilded Mask simultaneously",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Benefit if allied",
+          "attr_value": "Map data, rumours, trinkets, potions, combat support, Anthor's lore at high trust",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Retaliation if opposed",
+          "attr_value": "Misdirection, theft, attack at extreme standing loss",
+          "data_type": "string",
+          "sort_order": 4
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "Character",
+      "name": "Anthor",
+      "status": "published",
+      "short_summary": "Half-orc paladin, leader of the Remnant — the oldest survivor, holding his people together on faith alone.",
+      "lore_body": "Anthor has been in the dungeon so long he no longer tracks time. He still remembers the sun — yellow in the morning, different from torchlight. That memory is his anchor.\n\nHis faith is scaffolding, not comfort. He prays not for peace but to have something to hold onto. Stopping would mean admitting there is nothing left. He holds it together for the others; alone, the cracks show. His last uncrossed line: he will not lie directly. He misleads, omits, misdirects — but never lies outright.\n\nHis leadership is held together by the others' need for it. He roams multiple floors — players may encounter him several times across a run. First encounters are curt and watchful. By the third or fourth meeting, at high trust, the real lore comes out. His account of the castle is firsthand, fragmented, and haunted — not scholarly, not theological. He experienced it.\n\nSanity status: more or less intact. Rather less.",
+      "tags": [
+        "faction-leader",
+        "roaming-npc",
+        "half-orc"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Race",
+          "attr_value": "Half-orc",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Class",
+          "attr_value": "Paladin",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Faction",
+          "attr_value": "The Remnant",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Roaming",
+          "attr_value": "Yes — multiple floors, no floor restriction",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Defining trait",
+          "attr_value": "Will not lie directly — his last uncrossed line",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Sanity",
+          "attr_value": "Intact by necessity; privately fractured",
+          "data_type": "string",
+          "sort_order": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "Faction",
+      "name": "The Gilded Mask",
+      "status": "published",
+      "short_summary": "An exclusively Halfling merchant network operating illegally within the castle, treating everyone as a customer or a source of income.",
+      "lore_body": "The dungeon is their marketplace. Everyone is a potential customer or source of income — no exceptions, no sentiment. They are not cruel, just transactional all the way down.\n\nAll vendors the player encounters are Mask operatives. This is not immediately apparent — players meet Halfling vendors across multiple floors before the pattern clicks. The network reveals itself through pattern recognition, a misplaced delivery, or a line of dialogue. Never through exposition.\n\nDelivery quests run between vendors: carry a package from one to another for reward or discount. These are trust tests — reliable carriers are promoted from customer to asset. At deep trust, some packages are revealed to carry information rather than goods.\n\nThe Mask maintains a connection to the outside world via Driftholme, the nature of which is deliberately vague. Rumour holds that for the right price, they can lead someone out. Whether those who paid were led out or made to disappear is everyone's guess. Ermelin's standard answer: 'Everyone who paid reached exactly where they deserved to go.'",
+      "tags": [
+        "faction"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Agenda",
+          "attr_value": "Profit — the dungeon is a marketplace",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Composition",
+          "attr_value": "Exclusively Halfling",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Alliance type",
+          "attr_value": "Commercial — trust and spending based",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Benefit if allied",
+          "attr_value": "Better prices scaling with trust, black market items, information, rumoured exit",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Retaliation if opposed",
+          "attr_value": "Prices worsen, service refused, Ferado dispatched, hunted at extreme loss",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Outside connection",
+          "attr_value": "Driftholme — nature deliberately vague",
+          "data_type": "string",
+          "sort_order": 5
+        },
+        {
+          "attr_key": "Slow reveal mechanic",
+          "attr_value": "All vendors are Halflings and connected — players discover this through pattern recognition, not exposition",
+          "data_type": "string",
+          "sort_order": 6
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "Character",
+      "name": "Ermelin",
+      "status": "published",
+      "short_summary": "Halfling leader of the Gilded Mask — genuinely cheerful, commercially ruthless, and fond of adventurers the way a naturalist is fond of specimens.",
+      "lore_body": "Sets direction for the Mask. Genuinely cheerful — not sinister-cheerful, just actually enjoys this. The dungeon is her marketplace and she finds it endlessly interesting. She likes you right up until you become unprofitable.\n\nThe Remnant exploitation history is a closed ledger to her. She doesn't feel guilt — it was market conditions. She met demand. The price being steep was the buyer's problem.\n\nShe is Horeatus's lifeline to the outside world and knows it. She never weaponises it — bad for long-term commerce — but the dynamic gives her quiet leverage she doesn't need to use. Horeatus pays without haggling, which she finds the one genuinely endearing thing about him.\n\nRoams freely — no floor restriction.",
+      "tags": [
+        "faction-leader",
+        "roaming-npc",
+        "halfling"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Race",
+          "attr_value": "Halfling",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Role",
+          "attr_value": "Leader, strategic direction",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Faction",
+          "attr_value": "The Gilded Mask",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Roaming",
+          "attr_value": "Yes — no floor restriction",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Defining trait",
+          "attr_value": "Genuinely cheerful and transactional all the way down — no hidden conscience",
+          "data_type": "string",
+          "sort_order": 4
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "Character",
+      "name": "Ferado",
+      "status": "published",
+      "short_summary": "Halfling lieutenant of the Gilded Mask — runs the network's operations, manages disputes, and fixes problems Ermelin doesn't deal with directly.",
+      "lore_body": "Less charm than Ermelin, more ledger. Where Ermelin makes you feel like a valued customer, Ferado makes you feel like a line item. Both assessments are accurate.\n\nHe manages the vendor operatives, coordinates deliveries, and handles players who have caused trouble. A player who has seriously wronged the Mask won't find a vendor waiting — they'll find Ferado.\n\nFerado likely knows the current Iron Court password. Whether he sells it is another matter — that kind of information has consequences if traced back to him.\n\nRoams freely — no floor restriction.",
+      "tags": [
+        "roaming-npc",
+        "halfling"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Race",
+          "attr_value": "Halfling",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Role",
+          "attr_value": "Lieutenant — operations, discipline, problem resolution",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Faction",
+          "attr_value": "The Gilded Mask",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Roaming",
+          "attr_value": "Yes — no floor restriction",
+          "data_type": "string",
+          "sort_order": 3
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "Faction",
+      "name": "The Order of the Sealed Flame",
+      "status": "published",
+      "short_summary": "A depleted company of clerics on a mission to re-consecrate and cleanse the castle — not fanatics, but tight-minded, and ground down by years of attrition.",
+      "lore_body": "They are not wrong about the dungeon being dangerous, and their methods are not cruel. But years of attrition have calcified their conviction into something close to brittleness. They have not bent. They have just gotten smaller and harder.\n\nHoreatus came in with a company. Now he leads a handful of priests and clerics roaming the halls. He cannot bring himself to doubt the mission — doubt would mean all those deaths were for nothing. So he doubles down.\n\nPlayers earn standing through good deeds: killing monsters (especially undead), aiding the wounded (hungry child, dying knight), and leaving shrines intact. Rewards include free healing, blessings, and undead patrol intelligence.\n\nEvil deeds — dealing openly with the Mask, taking Iron Court safe passage, looting shrines, leaving the wounded to die — are treated as heresy. The Order curses offenders and attacks at extreme standing loss.\n\nThe Order has an institutional backer: the Temple in Calundrath. Reports travel out via the Gilded Mask. Whether those reports accurately reflect the Order's depleted state is another matter.",
+      "tags": [
+        "faction"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Agenda",
+          "attr_value": "Re-consecrate and cleanse the castle of evil",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Alliance type",
+          "attr_value": "Moral — good deeds based",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Benefit if allied",
+          "attr_value": "Free healing at shrines, blessings, undead intel",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Retaliation if opposed",
+          "attr_value": "Curse, then attack as heretic at extreme loss",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "External backer",
+          "attr_value": "Temple in Calundrath — reports sent via the Gilded Mask",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Heresy triggers",
+          "attr_value": "Dealing openly with Mask, Iron Court safe passage, looting shrines, abandoning wounded",
+          "data_type": "string",
+          "sort_order": 5
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "Character",
+      "name": "High Inquisitor Horeatus",
+      "status": "published",
+      "short_summary": "Human cleric and leader of the Order of the Sealed Flame — devout, rigid, and quietly compromised by a hundred small pragmatic decisions.",
+      "lore_body": "Came in with a company. Now leads the remnants of a depleted order. Cannot bring himself to doubt the mission — doubt would mean all those deaths were for nothing. His certainty has calcified into something that reads almost like brittleness under pressure.\n\nHe disapproves entirely of the Gilded Mask and resupplies through them weekly. Ermelin is his only link to the Temple in Calundrath. He hates the dependency; she never mentions it. He pays without haggling — the one thing she finds endearing about him.\n\nPlayers who find an outgoing report intended for Calundrath may glimpse how Horeatus frames the mission to his superiors — and whether the picture he paints matches what they see.\n\nRoams freely — no floor restriction.",
+      "tags": [
+        "faction-leader",
+        "roaming-npc",
+        "human"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Race",
+          "attr_value": "Human",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Class",
+          "attr_value": "Cleric",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Faction",
+          "attr_value": "Order of the Sealed Flame",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Roaming",
+          "attr_value": "Yes — no floor restriction",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Key compromise",
+          "attr_value": "Resupplies via the Gilded Mask; sends Temple reports through them",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Defining tension",
+          "attr_value": "Cannot doubt the mission without invalidating every death under his command",
+          "data_type": "string",
+          "sort_order": 5
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Faction",
+      "name": "The Iron Court",
+      "status": "published",
+      "short_summary": "An organised faction of humanoid monsters who view the dungeon as their kingdom — power to the strongest, survival of the fittest.",
+      "lore_body": "The Court absorbs whoever is strong enough, regardless of race or class — making them unpredictable and hard to read. Why they first entered the dungeon nobody agrees on: a band of thieves escaping the law, a unit of soldiers hiding from an enemy, possibly both. The Court doesn't correct the record. Origin stories are for the weak.\n\nSafe passage is granted by password — ephemeral, deniable, no visible mark on the player. The password must be earned through the Court hierarchy before it is given. Proxies evaluate first; Stratos never deals directly with newcomers. Passwords rotate — an expired password gets you killed, not waved through.\n\nThe password exchange is quiet and quick, unrecognisable to bystanders who don't know what to look for. Horeatus would recognise a patrol standing down even without witnessing the exchange directly.",
+      "tags": [
+        "faction"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Agenda",
+          "attr_value": "Dominance — the dungeon is their kingdom and power base",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Composition",
+          "attr_value": "Any race, any class — absorbs whoever is strong enough",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Alliance type",
+          "attr_value": "Strength-based — prove power, earn tolerance",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Benefit if allied",
+          "attr_value": "Safe passage through Court territory via rotating password; audience with Stratos at deep trust",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Retaliation if opposed",
+          "attr_value": "Passage revoked, hunted through territory",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Safe passage mechanic",
+          "attr_value": "Rotating spoken password — ephemeral, deniable, no physical token",
+          "data_type": "string",
+          "sort_order": 5
+        },
+        {
+          "attr_key": "Origin",
+          "attr_value": "Ambiguous — possibly thieves fleeing law, soldiers hiding from enemy, or both. The Court does not correct the record.",
+          "data_type": "string",
+          "sort_order": 6
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "Character",
+      "name": "Stratos",
+      "status": "published",
+      "short_summary": "Elven arcanist and leader of the Iron Court — rarely seen, widely feared, rumoured to have become a lich.",
+      "lore_body": "The only faction leader restricted to the deeper floors. Encountering him is an event, not a chance meeting. Players who finally reach him have constructed a picture of something monstrous from years of whispers. What they find may be worse — or stranger.\n\nThe lich rumour is unconfirmed and undenied. If true, it carries a specific irony: elves are the people most attuned to the Song, and lichdom is the most profound violence an elf can commit against their own nature. He traded the Song for permanence. Whether he understands what he lost — or considers it worthwhile — is the most interesting question about him.\n\nHe never deals with newcomers directly. Proxies evaluate. Players are auditioned by the Court hierarchy before any possibility of audience. His rarity makes every Court encounter feel like being assessed for an examination whose criteria are unknown.",
+      "tags": [
+        "faction-leader",
+        "floor-restricted",
+        "elf"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Race",
+          "attr_value": "Elf",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Class",
+          "attr_value": "Arcanist",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Faction",
+          "attr_value": "The Iron Court",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Floor restriction",
+          "attr_value": "Lower floors only — the only faction leader with a floor restriction",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Lich status",
+          "attr_value": "Rumoured — unconfirmed, undenied",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Cosmological significance",
+          "attr_value": "If lich, traded the Song for permanence — deepest possible betrayal of elven nature",
+          "data_type": "string",
+          "sort_order": 5
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Faction",
+      "name": "The Archivist",
+      "status": "published",
+      "short_summary": "A faction of one — a solitary human scholar of undeterminable age, cataloguing the castle's lore in pursuit of the truth about Zot and the Orb.",
+      "lore_body": "Every other faction wants territory, survival, profit, or salvation. He wants to know. His real name is long forgotten — probably even by him. Names are for people with lives outside their work.\n\nHe entered the dungeon to find the truth about Zot and the Orb of Power. He is still here. The answer is always just a little further in. He has not accepted that some truths the castle has eaten entirely. Truth about Zot is not a fixed destination — it is layered, contradictory, and partially destroyed. He does not accept this yet.\n\nHis currency is knowledge. Players bring him lore fragments and books; he rewards with knowledge in return — enemy weak points, trap construction details, safe identification of cursed items, and at deep trust, his notes on Stratos.\n\nHe does not fight or curse players who wrong him. He simply closes certain knowledge permanently. In a dungeon where knowledge saves lives, this is a slow death sentence delivered quietly. He does not forget.\n\nHis notes on the Song and the Silence are extraordinarily detailed and subtly wrong in ways that matter. He knows them as phenomena, not cosmology. He has documented the Silence's effects on creatures, stone, and behaviour — possibly under a different name than the one the world uses. He has observed the Song through its effects on others, never quite hearing it himself. He has the pieces. He has not assembled them.",
+      "tags": [
+        "faction"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Agenda",
+          "attr_value": "Find the truth about Zot and the Orb of Power",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Alliance type",
+          "attr_value": "Knowledge exchange — bring lore, receive lore",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Benefit if allied",
+          "attr_value": "Enemy weak points, trap knowledge, cursed item identification, lore rewards, Stratos notes at deep trust",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Retaliation if opposed",
+          "attr_value": "Silent — certain knowledge becomes permanently unavailable. He does not forget.",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Outside contact",
+          "attr_value": "Aware connections exist; nobody outside knows more than he does, so no reason to use them",
+          "data_type": "string",
+          "sort_order": 4
+        },
+        {
+          "attr_key": "Key design note",
+          "attr_value": "Most valuable and most misleading lore source simultaneously — meticulous observation, incomplete understanding. Must be preserved consistently across all lore fragments he provides.",
+          "data_type": "markdown",
+          "sort_order": 5
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "Character",
+      "name": "The Archivist",
+      "status": "published",
+      "short_summary": "The sole member of his faction — a human scholar of undeterminable age whose real name has been forgotten, even by himself.",
+      "lore_body": "Has been in the dungeon long enough that something about his age stopped making sense. Whether the castle has done something to him, or obsession simply preserved him, he has not fully documented yet — he is too close to see it.\n\nRoams freely. First to recognise patterns others miss. The last person to notice if something is wrong with himself.\n\nThe Archivist's account of the castle is the most comprehensive record anyone has — and the most subtly unreliable. He knows the Song and Silence as phenomena. He has the cosmological pieces but has never stepped back far enough to assemble them. Doing so would require stopping the work.",
+      "tags": [
+        "faction-leader",
+        "roaming-npc",
+        "human"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Race",
+          "attr_value": "Human",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Real name",
+          "attr_value": "Unknown — forgotten, probably even by him",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Age",
+          "attr_value": "Undeterminable",
+          "data_type": "string",
+          "sort_order": 2
+        },
+        {
+          "attr_key": "Faction",
+          "attr_value": "The Archivist (sole member)",
+          "data_type": "string",
+          "sort_order": 3
+        },
+        {
+          "attr_key": "Roaming",
+          "attr_value": "Yes — no floor restriction",
+          "data_type": "string",
+          "sort_order": 4
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "Location",
+      "name": "Driftholme",
+      "status": "draft",
+      "short_summary": "Outside settlement connected to the Gilded Mask's supply and information network.",
+      "lore_body": "The Gilded Mask's outside connection runs through Driftholme. The nature of this connection is deliberately vague. It is the channel through which the Mask sources supplies, moves information, and rumouredly escorts paying clients out of the dungeon.",
+      "tags": [
+        "outside-world"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Role",
+          "attr_value": "Commercial hub — Gilded Mask's outside connection",
+          "data_type": "string",
+          "sort_order": 0
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "Location",
+      "name": "Calundrath",
+      "status": "draft",
+      "short_summary": "City outside the dungeon, home to the Temple that backs the Order of the Sealed Flame's mission.",
+      "lore_body": "The Temple in Calundrath is the Order of the Sealed Flame's institutional backer. Reports from High Inquisitor Horeatus travel out via the Gilded Mask. Whether those reports accurately reflect the Order's depleted state is an open question. Players who find an outgoing report may glimpse the gap between what Horeatus writes and what they have witnessed.",
+      "tags": [
+        "outside-world"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Role",
+          "attr_value": "Religious institution — funds and receives reports from the Order",
+          "data_type": "string",
+          "sort_order": 0
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "Concept",
+      "name": "Iron Court password",
+      "status": "published",
+      "short_summary": "A rotating spoken password that grants safe passage through Iron Court territory — ephemeral, deniable, and invisible to observers.",
+      "lore_body": "Safe passage through Iron Court territory is granted by a spoken password. There is no physical token, no mark on the player, no visible evidence. The exchange is quiet and quick — indistinguishable to bystanders who don't know what to look for.\n\nThe password rotates. An expired password is not a polite refusal — it is a death sentence. Trust with the Court is maintenance, not a one-time purchase.\n\nFerado of the Gilded Mask likely knows the current password. Whether he sells it depends on the price and the risk of it being traced back to him.\n\nHoreatus would recognise a Court patrol standing down even without witnessing the exchange — he has watched the Court operate for years.",
+      "tags": [
+        "faction"
+      ],
+      "attributes": [
+        {
+          "attr_key": "Type",
+          "attr_value": "Spoken — no physical form",
+          "data_type": "string",
+          "sort_order": 0
+        },
+        {
+          "attr_key": "Rotation",
+          "attr_value": "Periodic — exact frequency unknown",
+          "data_type": "string",
+          "sort_order": 1
+        },
+        {
+          "attr_key": "Deniability",
+          "attr_value": "Complete — no evidence if confronted by Order or Remnant",
+          "data_type": "string",
+          "sort_order": 2
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "from_entity_id": 2,
+      "to_entity_id": 1,
+      "rel_type": "leads",
+      "bidirectional": false,
+      "notes": "Anthor is the oldest survivor and the de facto leader, holding the group together on faith."
+    },
+    {
+      "from_entity_id": 4,
+      "to_entity_id": 3,
+      "rel_type": "leads",
+      "bidirectional": false,
+      "notes": "Ermelin sets strategic direction for the Mask."
+    },
+    {
+      "from_entity_id": 5,
+      "to_entity_id": 3,
+      "rel_type": "lieutenant of",
+      "bidirectional": false,
+      "notes": "Ferado runs operations, manages disputes, handles problems."
+    },
+    {
+      "from_entity_id": 7,
+      "to_entity_id": 6,
+      "rel_type": "leads",
+      "bidirectional": false,
+      "notes": "Horeatus is High Inquisitor — the last remaining senior figure of the Order."
+    },
+    {
+      "from_entity_id": 9,
+      "to_entity_id": 8,
+      "rel_type": "leads",
+      "bidirectional": false,
+      "notes": "Stratos is feared leader of the Iron Court, restricted to lower floors."
+    },
+    {
+      "from_entity_id": 11,
+      "to_entity_id": 10,
+      "rel_type": "is",
+      "bidirectional": false,
+      "notes": "The Archivist is both the faction and its sole member."
+    },
+    {
+      "from_entity_id": 1,
+      "to_entity_id": 3,
+      "rel_type": "hostile toward",
+      "bidirectional": true,
+      "strength": 2,
+      "notes": "Mutual alliance impossible. The Mask exploited Remnant survivors in desperate times. Remnant-allied players look like collaborators to the Mask."
+    },
+    {
+      "from_entity_id": 1,
+      "to_entity_id": 6,
+      "rel_type": "distrusts",
+      "bidirectional": true,
+      "strength": 4,
+      "notes": "The Order heals them but refused to move when an escape window opened. That wound has never closed. Not enemies — deep unspoken bitterness."
+    },
+    {
+      "from_entity_id": 1,
+      "to_entity_id": 8,
+      "rel_type": "hostile toward",
+      "bidirectional": true,
+      "strength": 2,
+      "notes": "The Court has hunted Remnant survivors for territory and sport. Iron Court safe passage reads as betrayal to Anthor's people."
+    },
+    {
+      "from_entity_id": 1,
+      "to_entity_id": 10,
+      "rel_type": "wary of",
+      "bidirectional": true,
+      "strength": 4,
+      "notes": "Accurate information once at a price that felt callous. Neither trusts the other fully. Both will deal when necessary."
+    },
+    {
+      "from_entity_id": 3,
+      "to_entity_id": 6,
+      "rel_type": "complicated relationship with",
+      "bidirectional": true,
+      "strength": 5,
+      "notes": "Horeatus disapproves entirely and resupplies through them weekly. The Mask routes his Temple reports to Calundrath. Ermelin never mentions the dependency."
+    },
+    {
+      "from_entity_id": 3,
+      "to_entity_id": 8,
+      "rel_type": "trades with",
+      "bidirectional": true,
+      "strength": 6,
+      "notes": "Everyone pays. The Mask sells supplies and information to the Court. The password may be among their more sensitive inventory."
+    },
+    {
+      "from_entity_id": 3,
+      "to_entity_id": 10,
+      "rel_type": "tense dealings with",
+      "bidirectional": true,
+      "strength": 4,
+      "notes": "The Mask monetises knowledge the Archivist considers sacred. He resents it. Ermelin charges him a scholar's discount out of something resembling respect."
+    },
+    {
+      "from_entity_id": 6,
+      "to_entity_id": 8,
+      "rel_type": "sworn enemy of",
+      "bidirectional": true,
+      "strength": 2,
+      "notes": "The Court represents exactly what the Order came to eradicate. No dealings, no exceptions."
+    },
+    {
+      "from_entity_id": 6,
+      "to_entity_id": 10,
+      "rel_type": "wary of",
+      "bidirectional": true,
+      "strength": 4,
+      "notes": "The Order wants certain lore sealed. The Archivist wants it documented. Occasional cautious trades — undead intel for access to inscriptions."
+    },
+    {
+      "from_entity_id": 8,
+      "to_entity_id": 10,
+      "rel_type": "tolerates",
+      "bidirectional": false,
+      "strength": 5,
+      "notes": "The Court leaves him alone — unthreatening and occasionally useful. He studies them carefully from a distance."
+    },
+    {
+      "from_entity_id": 6,
+      "to_entity_id": 13,
+      "rel_type": "reports to",
+      "bidirectional": false,
+      "notes": "The Temple in Calundrath funds the Order's mission and receives Horeatus's reports via the Gilded Mask."
+    },
+    {
+      "from_entity_id": 3,
+      "to_entity_id": 12,
+      "rel_type": "connected to",
+      "bidirectional": false,
+      "notes": "Driftholme is the Mask's outside connection — supply lines and rumoured exit route."
+    }
+  ],
+  "arcs": [
+    {
+      "id": 1,
+      "name": "The weight of the Remnant",
+      "logline": "A player earns the trust of desperate survivors and must choose how far that loyalty extends when it conflicts with other alliances.",
+      "theme": "Survival corrodes the codes we build our identity around.",
+      "status": "seed",
+      "sort_order": 0,
+      "entity_ids": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 2,
+      "name": "The Mask behind the Mask",
+      "logline": "A player slowly realises that every Halfling vendor they have dealt with is part of the same network — and that they have already been assessed.",
+      "theme": "Everything has a price; the question is whether you set it or someone else does.",
+      "status": "seed",
+      "sort_order": 1,
+      "entity_ids": [
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": 3,
+      "name": "The Inquisitor's compromise",
+      "logline": "A player uncovers one of Horeatus's outgoing reports and learns how a righteous man accounts for a hundred small failures.",
+      "theme": "Certainty is not the same as faith — and one can survive the other's collapse.",
+      "status": "seed",
+      "sort_order": 2,
+      "entity_ids": [
+        6,
+        7,
+        3,
+        13
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Audience with Stratos",
+      "logline": "A player works up through Iron Court hierarchy to earn audience with Stratos — and must decide what they are willing to become to get there.",
+      "theme": "Power without origin is power without limit — and without limit.",
+      "status": "seed",
+      "sort_order": 3,
+      "entity_ids": [
+        8,
+        9,
+        14
+      ]
+    },
+    {
+      "id": 5,
+      "name": "The incomplete record",
+      "logline": "A player uses the Archivist's knowledge to navigate the dungeon — and gradually notices that his most confident conclusions are subtly wrong.",
+      "theme": "Obsession is not the same as understanding.",
+      "status": "seed",
+      "sort_order": 4,
+      "entity_ids": [
+        10,
+        11
+      ]
+    }
+  ],
+  "open_points": [
+    {
+      "entity_id": 9,
+      "title": "Is Stratos actually a lich?",
+      "description": "Currently deliberate rumour — unconfirmed and undenied. The cosmological significance (elf trading the Song for permanence) is established. The factual status needs to be resolved before writing deep-floor content.",
+      "status": "open",
+      "priority": "high"
+    },
+    {
+      "entity_id": 3,
+      "title": "How does the Gilded Mask's outside connection to Driftholme actually work?",
+      "description": "Deliberately vague. Needs resolution before writing deep Mask questline content. Each faction has a different theory — the truth should contradict all of them slightly.",
+      "status": "open",
+      "priority": "medium"
+    },
+    {
+      "entity_id": 3,
+      "title": "Have people who paid for exit actually escaped, or disappeared?",
+      "description": "Ermelin's answer ('Everyone who paid reached exactly where they deserved to go') is intentionally ambiguous. Whether this is true, false, or meaningfully both needs to be resolved for the deep Mask questline.",
+      "status": "open",
+      "priority": "medium"
+    },
+    {
+      "entity_id": 7,
+      "title": "Do Horeatus's reports to Calundrath accurately reflect the Order's depleted state?",
+      "description": "Left open deliberately. A player finding an outgoing report is a key lore moment — the content of that report needs to be written.",
+      "status": "open",
+      "priority": "medium"
+    },
+    {
+      "entity_id": 6,
+      "title": "Is Calundrath sending reinforcements that never arrive?",
+      "description": "Implied possibility. If the Temple knows the Order is depleted and stopped sending help, that's a different story than if Horeatus has been hiding the scale of losses.",
+      "status": "open",
+      "priority": "low"
+    },
+    {
+      "entity_id": 11,
+      "title": "What has the dungeon done to the Archivist's age?",
+      "description": "His age is undeterminable and something stopped making sense about it. Whether this is passive (obsession preserved him) or active (the castle did something to him) needs to be resolved. He is too close to notice either way.",
+      "status": "open",
+      "priority": "medium"
+    },
+    {
+      "entity_id": 11,
+      "title": "What name does the Archivist use for the Silence?",
+      "description": "He has documented the Silence's effects under possibly a different name than the cosmological one. His terminology should be established and used consistently in any lore fragments he provides.",
+      "status": "open",
+      "priority": "medium"
+    },
+    {
+      "entity_id": 8,
+      "title": "Does the Iron Court have a named lieutenant or second?",
+      "description": "Currently Stratos leads with unnamed proxies below him. A named second-in-command would give the Court a roaming face and a contact point below Stratos. Not yet designed.",
+      "status": "open",
+      "priority": "low"
+    },
+    {
+      "entity_id": 1,
+      "title": "What was the Remnant's original expedition?",
+      "description": "Who were they, where did they come from, and why did they enter the dungeon? Anthor's backstory before the dungeon is unwritten. May be better left as fragments rather than a clean origin.",
+      "status": "open",
+      "priority": "low"
+    }
+  ],
+  "notes": [
+    {
+      "entity_id": 1,
+      "content": "**Alliance exclusivity:** A player cannot fully ally with both the Remnant and the Gilded Mask simultaneously. This is the only hard mutual-exclusion in the faction system. All other conflicts create friction and standing penalties but not hard locks.",
+      "is_canonical": true,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 10,
+      "content": "**Design invariant:** The Archivist must always be simultaneously the most valuable and the most subtly misleading lore source in the dungeon. His observations are meticulous; his conclusions are incomplete. This gap must be preserved consistently across every lore fragment, reward, and dialogue he provides. Players who trust him entirely will be precisely informed and subtly misled.",
+      "is_canonical": true,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 3,
+      "content": "**Slow reveal invariant:** The all-Halfling composition of the Gilded Mask must never be front-loaded. Vendors across multiple floors are introduced as independent traders. The connection surfaces through pattern recognition — the Halfling detail, a delivery quest linking two vendors, a line of dialogue. Different players will click at different moments. This is a core feature, not incidental.",
+      "is_canonical": true,
+      "ai_generated": false
+    },
+    {
+      "entity_id": 8,
+      "content": "**Password mechanic:** The Iron Court password is the only faction benefit with a built-in expiry and failure state. An expired password is lethal, not merely ineffective. This distinguishes Court alliance from all other faction relationships — it requires active maintenance and creates ongoing risk.",
+      "is_canonical": true,
+      "ai_generated": false
+    }
+  ]
+}

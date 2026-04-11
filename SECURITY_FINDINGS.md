@@ -213,3 +213,55 @@ Fix: Replaced with plain credentials: 'same-origin' fetch (no CSRF header needed
 Status: RESOLVED
 Resolved-by: Claude Code
 Resolved-date: 2026-04-06
+
+---
+
+[FINDING-012]
+Date: 2025-07-25
+Severity: MEDIUM
+File: api/ExportController.php:279,486
+Line: 279, 486
+Type: Data Loss — Import story-note link mapping broken
+Description: $oldToNewNote was declared outside the DB::transaction() closure but not passed
+  into it via use(). Additionally, after inserting notes via DB::execute(), the returned new
+  note ID was discarded and no old→new mapping was ever built. As a result, story-note links
+  were silently dropped during world import. An attacker could not exploit this, but users
+  importing world backups would silently lose story-note associations.
+Fix: Added &$oldToNewNote to the closure's use() clause. Captured the return value of
+  DB::execute() for note INSERTs and stored old→new mapping: $oldToNewNote[(int)$note['id']] = $newNoteId.
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2025-07-25
+
+---
+
+[FINDING-013]
+Date: 2025-07-25
+Severity: LOW
+File: frontend/src/views/StoryListView.vue, frontend/src/views/StoryBoardView.vue
+Type: Input Validation Mismatch — Frontend status enum vs backend ENUM
+Description: Frontend STATUSES arrays used 'final' and 'abandoned' as status keys, but the
+  backend database ENUM and Validator only accept 'draft', 'in_progress', 'review', 'complete',
+  'archived'. Attempting to create/update a story with statuses 'final' or 'abandoned' would
+  result in a 400 validation error. No security impact, but a functional bug.
+Fix: Changed frontend status keys to match backend: 'final'→'complete' (label: "Complete"),
+  'abandoned'→'archived' (label: "Archived").
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2025-07-25
+
+---
+
+[FINDING-014]
+Date: 2025-07-25
+Severity: LOW
+File: frontend/src/components/story/StoryAiPanel.vue:40
+Type: Input Validation Mismatch — cursor_position vs cursor_pos field name
+Description: Frontend sent 'cursor_position' in the AI assist request body, but backend
+  StoryController::aiAssist() validates the field as 'cursor_pos'. The cursor value was always
+  null on the backend, causing the context window extraction to fall back to using the full
+  content instead of cursor-aware context. No security impact, but degraded AI context quality.
+Fix: Changed frontend field name from 'cursor_position' to 'cursor_pos' to match backend.
+Status: RESOLVED
+Resolved-by: Claude Code
+Resolved-date: 2025-07-25

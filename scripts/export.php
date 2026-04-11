@@ -94,18 +94,26 @@ $notes = DB::query(
 
 // Index
 $attrByEnt  = [];
-foreach ($attributes as $a) { $attrByEnt[(int)$a['entity_id']][] = $a; }
+foreach ($attributes as $a) {
+    $attrByEnt[(int)$a['entity_id']][] = $a;
+}
 $tagByEnt   = [];
-foreach ($entityTags as $et) { $tagByEnt[(int)$et['entity_id']][] = $et['tag_name']; }
+foreach ($entityTags as $et) {
+    $tagByEnt[(int)$et['entity_id']][] = $et['tag_name'];
+}
 $arcEntByArc = [];
-foreach ($arcEntities as $ae) { $arcEntByArc[(int)$ae['arc_id']][] = (int)$ae['entity_id']; }
+foreach ($arcEntities as $ae) {
+    $arcEntByArc[(int)$ae['arc_id']][] = (int)$ae['entity_id'];
+}
 
 foreach ($entities as &$e) {
     $e['attributes'] = $attrByEnt[(int)$e['id']] ?? [];
     $e['tags']       = $tagByEnt[(int)$e['id']]  ?? [];
 }
 unset($e);
-foreach ($arcs as &$arc) { $arc['entity_ids'] = $arcEntByArc[(int)$arc['id']] ?? []; }
+foreach ($arcs as &$arc) {
+    $arc['entity_ids'] = $arcEntByArc[(int)$arc['id']] ?? [];
+}
 unset($arc);
 
 // World query now uses explicit columns — no sensitive fields to strip
@@ -134,7 +142,9 @@ if ($format === 'json') {
         if ($r['bidirectional']) $relByEnt[(int)$r['to_entity_id']][] = $r;
     }
     $noteByEnt = [];
-    foreach ($notes as $n) { $noteByEnt[(int)($n['entity_id'] ?? 0)][] = $n; }
+    foreach ($notes as $n) {
+        $noteByEnt[(int)($n['entity_id'] ?? 0)][] = $n;
+    }
 
     foreach ($entities as $e) {
         $eid  = (int) $e['id'];

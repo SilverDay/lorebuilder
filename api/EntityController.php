@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — Entity Controller
  *
@@ -24,11 +25,17 @@ declare(strict_types=1);
 class EntityController
 {
     private const VALID_TYPES = [
-        'Character','Location','Event','Faction',
-        'Artefact','Creature','Concept','Race',
+        'Character',
+        'Location',
+        'Event',
+        'Faction',
+        'Artefact',
+        'Creature',
+        'Concept',
+        'Race',
     ];
 
-    private const VALID_ATTR_TYPES = ['string','integer','boolean','date','markdown'];
+    private const VALID_ATTR_TYPES = ['string', 'integer', 'boolean', 'date', 'markdown'];
 
     // ─── GET /api/v1/worlds/:wid/entities ────────────────────────────────────
 
@@ -45,7 +52,7 @@ class EntityController
             'status'  => 'nullable|in:draft,published,archived',
             'tag'     => 'nullable|int',
             'page'    => 'nullable|int|min:1',
-            'per_page'=> 'nullable|int|min:1|max:500',
+            'per_page' => 'nullable|int|min:1|max:500',
         ]);
 
         $page    = (int) ($q['page']     ?? 1);
@@ -200,7 +207,7 @@ class EntityController
 
         $sets   = [];
         $params = ['id' => $id, 'wid' => $wid];
-        foreach (['name','type','short_summary','status','lore_body'] as $col) {
+        foreach (['name', 'type', 'short_summary', 'status', 'lore_body'] as $col) {
             if (array_key_exists($col, $data)) {
                 $sets[]       = "{$col} = :{$col}";
                 $params[$col] = $data[$col];
@@ -492,8 +499,9 @@ class EntityController
             return;
         }
 
-        $sets = []; $params = ['id' => $tid, 'wid' => $wid];
-        foreach (['name','color'] as $col) {
+        $sets = [];
+        $params = ['id' => $tid, 'wid' => $wid];
+        foreach (['name', 'color'] as $col) {
             if (array_key_exists($col, $data)) {
                 $sets[]       = "{$col} = :{$col}";
                 $params[$col] = $data[$col];
@@ -545,8 +553,11 @@ class EntityController
             'tag'  => 'nullable|int',
         ]);
 
-        $where  = ['e.world_id = :wid', 'e.deleted_at IS NULL',
-                   'MATCH(e.name, e.short_summary, e.lore_body) AGAINST (:q IN BOOLEAN MODE)'];
+        $where  = [
+            'e.world_id = :wid',
+            'e.deleted_at IS NULL',
+            'MATCH(e.name, e.short_summary, e.lore_body) AGAINST (:q IN BOOLEAN MODE)'
+        ];
         $params = ['wid' => $wid, 'q' => $q['q'] . '*'];
 
         if (!empty($q['type'])) {
@@ -750,8 +761,12 @@ class EntityController
     }
 
     private static function audit(
-        int $wid, int $userId, string $action,
-        ?string $targetType = null, ?int $targetId = null, ?array $diff = null
+        int $wid,
+        int $userId,
+        string $action,
+        ?string $targetType = null,
+        ?int $targetId = null,
+        ?array $diff = null
     ): void {
         DB::execute(
             'INSERT INTO audit_log (world_id, user_id, action, target_type, target_id, ip_address, user_agent, diff_json)

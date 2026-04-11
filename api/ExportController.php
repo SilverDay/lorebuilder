@@ -276,7 +276,7 @@ class ExportController
         // Track note old→new IDs for story_notes import
         $oldToNewNote = [];
 
-        DB::transaction(function () use ($wid, $userId, $data, $conflictMode, &$stats): void {
+        DB::transaction(function () use ($wid, $userId, $data, $conflictMode, &$stats, &$oldToNewNote): void {
             // ── Tags ──────────────────────────────────────────────────────────
             $tagNameToId = [];
             foreach ((array) ($data['tags'] ?? []) as $tag) {
@@ -482,7 +482,7 @@ class ExportController
                 $content = trim((string) ($note['content'] ?? ''));
                 if ($content === '') continue;
                 $entId = $oldToNewEntity[(int) ($note['entity_id'] ?? 0)] ?? null;
-                DB::execute(
+                $newNoteId = DB::execute(
                     'INSERT INTO lore_notes (world_id, entity_id, created_by, content, is_canonical, ai_generated)
                      VALUES (:wid, :eid, :uid, :content, :canon, :ai)',
                     [
@@ -494,6 +494,9 @@ class ExportController
                         'ai'      => (int) (bool) ($note['ai_generated'] ?? false),
                     ]
                 );
+                if (isset($note['id'])) {
+                    $oldToNewNote[(int) $note['id']] = $newNoteId;
+                }
                 $stats['notes']++;
             }
 

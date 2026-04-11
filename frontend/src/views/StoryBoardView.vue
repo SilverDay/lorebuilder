@@ -37,8 +37,8 @@ const STATUSES = [
   { key: 'draft',       label: 'Draft' },
   { key: 'in_progress', label: 'In Progress' },
   { key: 'review',      label: 'Review' },
-  { key: 'final',       label: 'Final' },
-  { key: 'abandoned',   label: 'Abandoned' },
+  { key: 'complete',    label: 'Complete' },
+  { key: 'archived',    label: 'Archived' },
 ]
 
 const story = computed(() => store.currentStory)
