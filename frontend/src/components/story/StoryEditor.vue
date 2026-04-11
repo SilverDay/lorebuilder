@@ -28,17 +28,17 @@ import '@milkdown/theme-nord/style.css'
  * Toolbar buttons definition.
  */
 const toolbarButtons = [
-  { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand.key, group: 'inline' },
-  { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand.key, group: 'inline' },
-  { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand.key, group: 'inline' },
-  { label: 'H1', title: 'Heading 1', command: wrapInHeadingCommand.key, payload: 1, group: 'block' },
-  { label: 'H2', title: 'Heading 2', command: wrapInHeadingCommand.key, payload: 2, group: 'block' },
-  { label: 'H3', title: 'Heading 3', command: wrapInHeadingCommand.key, payload: 3, group: 'block' },
-  { label: '❝', title: 'Blockquote', command: wrapInBlockquoteCommand.key, group: 'block' },
-  { label: '•', title: 'Bullet List', command: wrapInBulletListCommand.key, group: 'list' },
-  { label: '1.', title: 'Ordered List', command: wrapInOrderedListCommand.key, group: 'list' },
-  { label: '—', title: 'Horizontal Rule', command: insertHrCommand.key, group: 'insert' },
-  { label: '```', title: 'Code Block', command: createCodeBlockCommand.key, group: 'insert' },
+  { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand, group: 'inline' },
+  { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline' },
+  { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand, group: 'inline' },
+  { label: 'H1', title: 'Heading 1', command: wrapInHeadingCommand, payload: 1, group: 'block' },
+  { label: 'H2', title: 'Heading 2', command: wrapInHeadingCommand, payload: 2, group: 'block' },
+  { label: 'H3', title: 'Heading 3', command: wrapInHeadingCommand, payload: 3, group: 'block' },
+  { label: '❝', title: 'Blockquote', command: wrapInBlockquoteCommand, group: 'block' },
+  { label: '•', title: 'Bullet List', command: wrapInBulletListCommand, group: 'list' },
+  { label: '1.', title: 'Ordered List', command: wrapInOrderedListCommand, group: 'list' },
+  { label: '—', title: 'Horizontal Rule', command: insertHrCommand, group: 'insert' },
+  { label: '```', title: 'Code Block', command: createCodeBlockCommand, group: 'insert' },
 ]
 
 /**
