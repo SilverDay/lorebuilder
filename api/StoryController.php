@@ -106,7 +106,7 @@ class StoryController
             $params
         );
 
-        Router::json($stories, [
+        Router::json($stories, 200, [
             'total'    => $total,
             'page'     => $page,
             'per_page' => $perPage,
