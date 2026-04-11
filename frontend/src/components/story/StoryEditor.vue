@@ -54,16 +54,21 @@ const toolbarButtons = [
   { label: '↩', title: 'Undo (Ctrl+Z)', command: undoCommand, group: 'history' },
   { label: '↪', title: 'Redo (Ctrl+Y)', command: redoCommand, group: 'history' },
   { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand, group: 'inline',
+    markName: 'strong',
     active: (v) => isMarkActive(v, 'strong') },
   { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline',
+    markName: 'emphasis',
     active: (v) => isMarkActive(v, 'emphasis') },
   { label: 'U', title: 'Underline (Ctrl+U)', command: toggleUnderlineCommand, group: 'inline',
+    markName: 'underline',
     style: 'text-decoration: underline',
     active: (v) => isMarkActive(v, 'underline') },
   { label: 'S', title: 'Strikethrough', command: toggleStrikethroughCommand, group: 'inline',
+    markName: 'strikethrough',
     style: 'text-decoration: line-through',
     active: (v) => isMarkActive(v, 'strikethrough') },
   { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand, group: 'inline',
+    markName: 'inlineCode',
     active: (v) => isMarkActive(v, 'inlineCode') },
   { label: '🔗', title: 'Link', command: toggleLinkCommand, payload: { href: '' }, group: 'inline',
     active: (v) => isMarkActive(v, 'link') },
@@ -219,9 +224,23 @@ const MilkdownEditorInner = defineComponent({
       if (transactionCleanup) transactionCleanup()
     })
 
-    function execCommand(cmd, payload, toggleNode, toggleToText) {
+    function execCommand(cmd, payload, toggleNode, toggleToText, markName) {
       const editor = getEditor()
       if (!editor) return
+
+      // Inline mark toggle: use ProseMirror toggleMark directly
+      if (markName) {
+        try {
+          const view = editor.action((ctx) => ctx.get(editorViewCtx))
+          const markType = view.state.schema.marks[markName]
+          if (markType) {
+            toggleMark(markType)(view.state, view.dispatch, view)
+            onSelectionOrDoc()
+            return
+          }
+        } catch (e) { console.warn('[toolbar] toggleMark failed:', e) }
+      }
+
       // Toggle wrapper nodes: lift out of blockquote/list
       if (toggleNode) {
         try {
@@ -281,7 +300,7 @@ const MilkdownEditorInner = defineComponent({
               disabled: loading.value,
               onMousedown: (e) => {
                 e.preventDefault() // keep editor focus
-                execCommand(btn.command, btn.payload, btn.toggle, btn.toggleToText)
+                execCommand(btn.command, btn.payload, btn.toggle, btn.toggleToText, btn.markName)
               },
             }, btn.label),
           ]
