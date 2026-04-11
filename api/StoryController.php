@@ -319,6 +319,11 @@ class StoryController
             }
         }
 
+        // Coalesce content null → empty string (DB column is NOT NULL)
+        if (array_key_exists('content', $data) && $data['content'] === null) {
+            $data['content'] = '';
+        }
+
         $sets   = [];
         $params = ['id' => $sid, 'wid' => $wid];
 

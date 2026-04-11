@@ -122,10 +122,10 @@ export const useStoryStore = defineStore('story', () => {
    */
   async function autoSave(wid, sid) {
     if (!dirty.value || saving.value || !currentStory.value) return
+    const content = currentStory.value.content
+    if (content == null) return
     try {
-      await updateStory(wid, sid, {
-        content: currentStory.value.content,
-      })
+      await updateStory(wid, sid, { content })
     } catch {
       // Error already captured in updateStory
     }
