@@ -51,7 +51,7 @@ const MilkdownEditorInner = defineComponent({
   },
   emits: ['update:content'],
   setup(props, { emit }) {
-    let isExternalUpdate = false
+    let lastEmittedContent = props.content || ''
 
     useEditor((root) => {
       return Editor.make()
@@ -61,8 +61,8 @@ const MilkdownEditorInner = defineComponent({
           ctx.set(defaultValueCtx, props.content || '')
           ctx.get(listenerCtx)
             .markdownUpdated((_ctx, markdown, prevMarkdown) => {
-              if (isExternalUpdate) return
               if (markdown !== prevMarkdown) {
+                lastEmittedContent = markdown
                 emit('update:content', markdown)
               }
             })
@@ -81,13 +81,14 @@ const MilkdownEditorInner = defineComponent({
     }
 
     // Watch for external content changes (e.g., story reload)
+    // Skip if the new value matches what we last emitted (avoids echo loop)
     watch(() => props.content, (newVal) => {
       if (loading.value) return
+      if (newVal === lastEmittedContent) return
       const editor = getEditor()
       if (!editor) return
-      isExternalUpdate = true
+      lastEmittedContent = newVal || ''
       editor.action(replaceAll(newVal || ''))
-      isExternalUpdate = false
     })
 
     return () => h('div', { class: 'story-editor' }, [
