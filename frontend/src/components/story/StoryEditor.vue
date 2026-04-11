@@ -64,7 +64,8 @@ const toolbarButtons = [
     toggle: 'ordered_list',
     active: (v) => isNodeActive(v, 'ordered_list') },
   { label: '—', title: 'Horizontal Rule', command: insertHrCommand, group: 'insert' },
-  { label: '```', title: 'Code Block', command: createCodeBlockCommand, group: 'insert',
+  { label: '```', title: 'Code Block (toggle)', command: createCodeBlockCommand, group: 'insert',
+    toggleToText: 'code_block',
     active: (v) => isNodeActive(v, 'code_block') },
 ]
 
@@ -194,15 +195,26 @@ const MilkdownEditorInner = defineComponent({
       if (transactionCleanup) transactionCleanup()
     })
 
-    function execCommand(cmd, payload, toggleNode) {
+    function execCommand(cmd, payload, toggleNode, toggleToText) {
       const editor = getEditor()
       if (!editor) return
-      // Toggle: if already in the wrapping node, lift out instead of wrapping deeper
+      // Toggle wrapper nodes: lift out of blockquote/list
       if (toggleNode) {
         try {
           const view = editor.action((ctx) => ctx.get(editorViewCtx))
           if (isNodeActive(view, toggleNode)) {
             lift(view.state, view.dispatch)
+            onSelectionOrDoc()
+            return
+          }
+        } catch { /* fall through to normal command */ }
+      }
+      // Toggle leaf block nodes: convert back to paragraph
+      if (toggleToText && turnIntoTextCommand.key) {
+        try {
+          const view = editor.action((ctx) => ctx.get(editorViewCtx))
+          if (isNodeActive(view, toggleToText)) {
+            editor.action(callCommand(turnIntoTextCommand.key))
             onSelectionOrDoc()
             return
           }
@@ -245,7 +257,7 @@ const MilkdownEditorInner = defineComponent({
               disabled: loading.value,
               onMousedown: (e) => {
                 e.preventDefault() // keep editor focus
-                execCommand(btn.command, btn.payload, btn.toggle)
+                execCommand(btn.command, btn.payload, btn.toggle, btn.toggleToText)
               },
             }, btn.label),
           ]
