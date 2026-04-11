@@ -15,27 +15,37 @@ import { commonmark,
   toggleStrongCommand, toggleEmphasisCommand, toggleInlineCodeCommand,
   wrapInBlockquoteCommand, wrapInBulletListCommand, wrapInOrderedListCommand,
   wrapInHeadingCommand, insertHrCommand, createCodeBlockCommand,
-  turnIntoTextCommand,
+  turnIntoTextCommand, toggleLinkCommand,
 } from '@milkdown/preset-commonmark'
+import { gfm, toggleStrikethroughCommand } from '@milkdown/preset-gfm'
 import { listener, listenerCtx } from '@milkdown/plugin-listener'
-import { history } from '@milkdown/plugin-history'
+import { history, undoCommand, redoCommand } from '@milkdown/plugin-history'
 import { nord } from '@milkdown/theme-nord'
 import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/vue'
 import { replaceAll, callCommand } from '@milkdown/utils'
+import { lift } from 'prosemirror-commands'
 
 import '@milkdown/theme-nord/style.css'
 
 /**
  * Toolbar buttons definition.
- * `active` key: function (view) => boolean, used to highlight active buttons.
+ * `active`: function (view) => boolean — highlights button when active.
+ * `toggle`: 'blockquote' | 'bullet_list' | 'ordered_list' — uses lift when already active.
  */
 const toolbarButtons = [
+  { label: '↩', title: 'Undo (Ctrl+Z)', command: undoCommand, group: 'history' },
+  { label: '↪', title: 'Redo (Ctrl+Y)', command: redoCommand, group: 'history' },
   { label: 'B', title: 'Bold (Ctrl+B)', command: toggleStrongCommand, group: 'inline',
     active: (v) => isMarkActive(v, 'strong') },
   { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline',
     active: (v) => isMarkActive(v, 'emphasis') },
+  { label: 'S', title: 'Strikethrough', command: toggleStrikethroughCommand, group: 'inline',
+    style: 'text-decoration: line-through',
+    active: (v) => isMarkActive(v, 'strikethrough') },
   { label: '<>', title: 'Inline Code', command: toggleInlineCodeCommand, group: 'inline',
     active: (v) => isMarkActive(v, 'inlineCode') },
+  { label: '🔗', title: 'Link', command: toggleLinkCommand, payload: { href: '' }, group: 'inline',
+    active: (v) => isMarkActive(v, 'link') },
   { label: '¶', title: 'Normal Text', command: turnIntoTextCommand, group: 'block',
     active: (v) => isNodeActive(v, 'paragraph') },
   { label: 'H1', title: 'Heading 1', command: wrapInHeadingCommand, payload: 1, group: 'block',
@@ -44,11 +54,14 @@ const toolbarButtons = [
     active: (v) => isHeadingActive(v, 2) },
   { label: 'H3', title: 'Heading 3', command: wrapInHeadingCommand, payload: 3, group: 'block',
     active: (v) => isHeadingActive(v, 3) },
-  { label: '❝', title: 'Blockquote', command: wrapInBlockquoteCommand, group: 'block',
+  { label: '❝', title: 'Blockquote (toggle)', command: wrapInBlockquoteCommand, group: 'wrap',
+    toggle: 'blockquote',
     active: (v) => isNodeActive(v, 'blockquote') },
-  { label: '•', title: 'Bullet List', command: wrapInBulletListCommand, group: 'list',
+  { label: '•', title: 'Bullet List (toggle)', command: wrapInBulletListCommand, group: 'list',
+    toggle: 'bullet_list',
     active: (v) => isNodeActive(v, 'bullet_list') },
-  { label: '1.', title: 'Ordered List', command: wrapInOrderedListCommand, group: 'list',
+  { label: '1.', title: 'Ordered List (toggle)', command: wrapInOrderedListCommand, group: 'list',
+    toggle: 'ordered_list',
     active: (v) => isNodeActive(v, 'ordered_list') },
   { label: '—', title: 'Horizontal Rule', command: insertHrCommand, group: 'insert' },
   { label: '```', title: 'Code Block', command: createCodeBlockCommand, group: 'insert',
@@ -128,6 +141,7 @@ const MilkdownEditorInner = defineComponent({
             })
         })
         .use(commonmark)
+        .use(gfm)
         .use(listener)
         .use(history)
     })
@@ -180,9 +194,21 @@ const MilkdownEditorInner = defineComponent({
       if (transactionCleanup) transactionCleanup()
     })
 
-    function execCommand(cmd, payload) {
+    function execCommand(cmd, payload, toggleNode) {
       const editor = getEditor()
-      if (!editor || !cmd.key) return
+      if (!editor) return
+      // Toggle: if already in the wrapping node, lift out instead of wrapping deeper
+      if (toggleNode) {
+        try {
+          const view = editor.action((ctx) => ctx.get(editorViewCtx))
+          if (isNodeActive(view, toggleNode)) {
+            lift(view.state, view.dispatch)
+            onSelectionOrDoc()
+            return
+          }
+        } catch { /* fall through to normal command */ }
+      }
+      if (!cmd.key) return
       editor.action(callCommand(cmd.key, payload))
       onSelectionOrDoc()
     }
@@ -215,10 +241,11 @@ const MilkdownEditorInner = defineComponent({
                 activeStates.value[i] ? 'story-editor__toolbar-btn--active' : '',
               ],
               title: btn.title,
+              style: btn.style || null,
               disabled: loading.value,
               onMousedown: (e) => {
                 e.preventDefault() // keep editor focus
-                execCommand(btn.command, btn.payload)
+                execCommand(btn.command, btn.payload, btn.toggle)
               },
             }, btn.label),
           ]
