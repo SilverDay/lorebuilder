@@ -22,10 +22,28 @@ import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { history, undoCommand, redoCommand } from '@milkdown/plugin-history'
 import { nord } from '@milkdown/theme-nord'
 import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/vue'
-import { replaceAll, callCommand } from '@milkdown/utils'
-import { lift } from 'prosemirror-commands'
+import { replaceAll, callCommand, $markSchema, $command, $prose } from '@milkdown/utils'
+import { lift, toggleMark } from 'prosemirror-commands'
+import { keymap } from 'prosemirror-keymap'
 
 import '@milkdown/theme-nord/style.css'
+
+/* ── Underline custom mark (Ctrl+U, renders as <u>) ─────────────────── */
+const underlineSchema = $markSchema('underline', () => ({
+  parseDOM: [
+    { tag: 'u' },
+    { style: 'text-decoration', getAttrs: (v) => v === 'underline' ? {} : false },
+  ],
+  toDOM: () => ['u', 0],
+}))
+
+const toggleUnderlineCommand = $command('toggleUnderline', (ctx) => () =>
+  toggleMark(ctx.get(underlineSchema.type))
+)
+
+const underlineKeymap = $prose((ctx) =>
+  keymap({ 'Mod-u': toggleMark(ctx.get(underlineSchema.type)) })
+)
 
 /**
  * Toolbar buttons definition.
@@ -39,6 +57,9 @@ const toolbarButtons = [
     active: (v) => isMarkActive(v, 'strong') },
   { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline',
     active: (v) => isMarkActive(v, 'emphasis') },
+  { label: 'U', title: 'Underline (Ctrl+U)', command: toggleUnderlineCommand, group: 'inline',
+    style: 'text-decoration: underline',
+    active: (v) => isMarkActive(v, 'underline') },
   { label: 'S', title: 'Strikethrough', command: toggleStrikethroughCommand, group: 'inline',
     style: 'text-decoration: line-through',
     active: (v) => isMarkActive(v, 'strikethrough') },
@@ -143,6 +164,9 @@ const MilkdownEditorInner = defineComponent({
         })
         .use(commonmark)
         .use(gfm)
+        .use(underlineSchema)
+        .use(toggleUnderlineCommand)
+        .use(underlineKeymap)
         .use(listener)
         .use(history)
     })
