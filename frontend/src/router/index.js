@@ -133,6 +133,16 @@ const routes = [
         component: () => import('@/views/StoryArcKanban.vue'),
       },
       {
+        path:      'stories',
+        name:      'StoryList',
+        component: () => import('@/views/StoryListView.vue'),
+      },
+      {
+        path:      'stories/:sid',
+        name:      'StoryBoard',
+        component: () => import('@/views/StoryBoardView.vue'),
+      },
+      {
         path:      'audit-log',
         name:      'AuditLog',
         component: () => import('@/views/AuditLogView.vue'),

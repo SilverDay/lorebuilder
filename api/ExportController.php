@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LoreBuilder — Export / Import Controller
  *
@@ -163,6 +164,44 @@ class ExportController
         }
         unset($arc);
 
+        // Fetch stories + story_entities + story_notes
+        $stories = DB::query(
+            'SELECT id, title, slug, content, synopsis, status, word_count, sort_order, arc_id, created_at
+               FROM stories
+              WHERE world_id = :wid AND deleted_at IS NULL
+              ORDER BY sort_order, title',
+            ['wid' => $wid]
+        );
+
+        $storyEntities = DB::query(
+            'SELECT story_id, entity_id, role, sort_order FROM story_entities WHERE world_id = :wid',
+            ['wid' => $wid]
+        );
+        $seByStory = [];
+        foreach ($storyEntities as $se) {
+            $seByStory[(int) $se['story_id']][] = [
+                'entity_id'  => (int) $se['entity_id'],
+                'role'       => $se['role'],
+                'sort_order' => (int) $se['sort_order'],
+            ];
+        }
+
+        $storyNotes = DB::query(
+            'SELECT story_id, note_id FROM story_notes WHERE world_id = :wid',
+            ['wid' => $wid]
+        );
+        $snByStory = [];
+        foreach ($storyNotes as $sn) {
+            $snByStory[(int) $sn['story_id']][] = (int) $sn['note_id'];
+        }
+
+        foreach ($stories as &$st) {
+            $stId = (int) $st['id'];
+            $st['entity_links'] = $seByStory[$stId] ?? [];
+            $st['note_ids']     = $snByStory[$stId] ?? [];
+        }
+        unset($st);
+
         if ($format === 'markdown') {
             self::sendMarkdown($world, $entities, $relationships, $notes);
             return;
@@ -180,6 +219,7 @@ class ExportController
             'events'              => $events,
             'arcs'                => $arcs,
             'notes'               => $notes,
+            'stories'             => $stories,
         ];
 
         $filename = preg_replace('/[^a-z0-9_-]/', '-', strtolower($world['slug']));
@@ -223,9 +263,18 @@ class ExportController
         $query        = Validator::parseQuery(['conflict' => 'string|in:skip,overwrite']);
         $conflictMode = $query['conflict'] ?? 'skip';
 
-        $stats = ['entities' => 0, 'relationships' => 0, 'notes' => 0,
-                  'timelines' => 0, 'events' => 0, 'arcs' => 0, 'tags' => 0,
-                  'open_points' => 0];
+        $stats = [
+            'entities' => 0,
+            'relationships' => 0,
+            'notes' => 0,
+            'timelines' => 0,
+            'events' => 0,
+            'arcs' => 0,
+            'tags' => 0,
+            'open_points' => 0
+        ];
+        // Track note old→new IDs for story_notes import
+        $oldToNewNote = [];
 
         DB::transaction(function () use ($wid, $userId, $data, $conflictMode, &$stats): void {
             // ── Tags ──────────────────────────────────────────────────────────
@@ -253,8 +302,8 @@ class ExportController
             }
 
             // ── Entities ──────────────────────────────────────────────────────
-            $validTypes   = ['Character','Location','Event','Faction','Artefact','Creature','Concept','StoryArc','Timeline','Race'];
-            $validStatuses = ['draft','published','archived'];
+            $validTypes   = ['Character', 'Location', 'Event', 'Faction', 'Artefact', 'Creature', 'Concept', 'StoryArc', 'Timeline', 'Race'];
+            $validStatuses = ['draft', 'published', 'archived'];
             $oldToNewEntity = [];
 
             foreach ((array) ($data['entities'] ?? []) as $ent) {
@@ -304,7 +353,7 @@ class ExportController
                             'wid'   => $wid,
                             'key'   => $key,
                             'val'   => mb_substr((string) ($attr['attr_value'] ?? ''), 0, 4000),
-                            'dtype' => in_array($attr['data_type'] ?? '', ['string','integer','boolean','date','markdown'], true) ? $attr['data_type'] : 'string',
+                            'dtype' => in_array($attr['data_type'] ?? '', ['string', 'integer', 'boolean', 'date', 'markdown'], true) ? $attr['data_type'] : 'string',
                             'sort'  => (int) ($attr['sort_order'] ?? $i),
                         ]
                     );
@@ -363,7 +412,7 @@ class ExportController
                         'uid'   => $userId,
                         'name'  => $name,
                         'desc'  => $tl['description'] ?? null,
-                        'scale' => in_array($tl['scale_mode'] ?? '', ['numeric','date','era'], true)
+                        'scale' => in_array($tl['scale_mode'] ?? '', ['numeric', 'date', 'era'], true)
                             ? $tl['scale_mode'] : 'numeric',
                     ]
                 );
@@ -396,7 +445,7 @@ class ExportController
             }
 
             // ── Story Arcs ────────────────────────────────────────────────────
-            $validArcStatuses = ['seed','rising_action','climax','resolution','complete','abandoned'];
+            $validArcStatuses = ['seed', 'rising_action', 'climax', 'resolution', 'complete', 'abandoned'];
             $oldToNewArc = [];
             foreach ((array) ($data['arcs'] ?? []) as $idx => $arc) {
                 $name = mb_substr(trim((string) ($arc['name'] ?? '')), 0, 255);
@@ -449,8 +498,8 @@ class ExportController
             }
 
             // ── Open Points ───────────────────────────────────────────────────
-            $validOpStatuses   = ['open','in_progress','resolved','wont_fix'];
-            $validOpPriorities = ['low','medium','high','critical'];
+            $validOpStatuses   = ['open', 'in_progress', 'resolved', 'wont_fix'];
+            $validOpPriorities = ['low', 'medium', 'high', 'critical'];
             foreach ((array) ($data['open_points'] ?? []) as $op) {
                 $title = mb_substr(trim((string) ($op['title'] ?? '')), 0, 512);
                 if ($title === '') continue;
@@ -469,6 +518,77 @@ class ExportController
                     ]
                 );
                 $stats['open_points']++;
+            }
+
+            // ── Stories ───────────────────────────────────────────────────────────
+            $validStoryStatuses = ['draft', 'in_progress', 'review', 'complete', 'archived'];
+            foreach ((array) ($data['stories'] ?? []) as $idx => $story) {
+                $title = mb_substr(trim((string) ($story['title'] ?? '')), 0, 255);
+                if ($title === '') continue;
+                $slug = mb_substr(preg_replace('/[^a-z0-9-]/', '-', mb_strtolower($title)), 0, 300);
+                $slug = preg_replace('/-+/', '-', trim($slug, '-'));
+                if ($slug === '') $slug = 'untitled';
+
+                // Ensure slug uniqueness
+                $slugBase = $slug;
+                $si = 1;
+                while (DB::queryOne(
+                    'SELECT id FROM stories WHERE world_id = :wid AND slug = :slug AND deleted_at IS NULL',
+                    ['wid' => $wid, 'slug' => $slug]
+                ) !== null) {
+                    $slug = $slugBase . '-' . $si++;
+                }
+
+                $arcId = $oldToNewArc[(int) ($story['arc_id'] ?? 0)] ?? null;
+                $content = (string) ($story['content'] ?? '');
+                $wordCount = str_word_count(strip_tags($content));
+
+                $newStoryId = DB::execute(
+                    'INSERT INTO stories (world_id, created_by, arc_id, title, slug, content, synopsis, status, word_count, sort_order)
+                     VALUES (:wid, :uid, :arc, :title, :slug, :content, :synopsis, :status, :wc, :sort)',
+                    [
+                        'wid'      => $wid,
+                        'uid'      => $userId,
+                        'arc'      => $arcId,
+                        'title'    => $title,
+                        'slug'     => $slug,
+                        'content'  => $content,
+                        'synopsis' => mb_substr((string) ($story['synopsis'] ?? ''), 0, 2000),
+                        'status'   => in_array($story['status'] ?? '', $validStoryStatuses, true)
+                            ? $story['status'] : 'draft',
+                        'wc'       => $wordCount,
+                        'sort'     => (int) ($story['sort_order'] ?? $idx),
+                    ]
+                );
+                $stats['stories'] = ($stats['stories'] ?? 0) + 1;
+
+                // Story entity links
+                foreach ((array) ($story['entity_links'] ?? []) as $el) {
+                    $newEid = $oldToNewEntity[(int) ($el['entity_id'] ?? 0)] ?? null;
+                    if (!$newEid) continue;
+                    DB::execute(
+                        'INSERT IGNORE INTO story_entities (story_id, entity_id, world_id, role, sort_order)
+                         VALUES (:sid, :eid, :wid, :role, :sort)',
+                        [
+                            'sid'  => $newStoryId,
+                            'eid'  => $newEid,
+                            'wid'  => $wid,
+                            'role' => mb_substr((string) ($el['role'] ?? ''), 0, 128) ?: null,
+                            'sort' => (int) ($el['sort_order'] ?? 0),
+                        ]
+                    );
+                }
+
+                // Story note links
+                foreach ((array) ($story['note_ids'] ?? []) as $oldNoteId) {
+                    $newNoteId = $oldToNewNote[(int) $oldNoteId] ?? null;
+                    if (!$newNoteId) continue;
+                    DB::execute(
+                        'INSERT IGNORE INTO story_notes (story_id, note_id, world_id)
+                         VALUES (:sid, :nid, :wid)',
+                        ['sid' => $newStoryId, 'nid' => $newNoteId, 'wid' => $wid]
+                    );
+                }
             }
         });
 

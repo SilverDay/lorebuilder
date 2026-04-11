@@ -59,6 +59,7 @@ require __DIR__ . '/../api/ExportController.php';
 require __DIR__ . '/../api/ReferenceController.php';
 require __DIR__ . '/../api/OpenPointsController.php';
 require __DIR__ . '/../api/UserController.php';
+require __DIR__ . '/../api/StoryController.php';
 
 // ─── 4. Security Headers ──────────────────────────────────────────────────────
 
@@ -209,6 +210,29 @@ Router::get('/api/v1/worlds/:wid/story-arcs/:aid',               [StoryArcContro
 Router::patch('/api/v1/worlds/:wid/story-arcs/:aid',               [StoryArcController::class, 'update']);
 Router::delete('/api/v1/worlds/:wid/story-arcs/:aid',               [StoryArcController::class, 'destroy']);
 Router::put('/api/v1/worlds/:wid/story-arcs/:aid/entities',      [StoryArcController::class, 'replaceEntities']);
+
+// ── Stories ──────────────────────────────────────────────────────────────────
+
+Router::get('/api/v1/worlds/:wid/stories',                            [StoryController::class, 'index']);
+Router::post('/api/v1/worlds/:wid/stories',                            [StoryController::class, 'create']);
+Router::get('/api/v1/worlds/:wid/stories/:sid',                       [StoryController::class, 'show']);
+Router::patch('/api/v1/worlds/:wid/stories/:sid',                       [StoryController::class, 'update']);
+Router::delete('/api/v1/worlds/:wid/stories/:sid',                       [StoryController::class, 'destroy']);
+
+// Story entity links
+Router::get('/api/v1/worlds/:wid/stories/:sid/entities',              [StoryController::class, 'listEntities']);
+Router::put('/api/v1/worlds/:wid/stories/:sid/entities',              [StoryController::class, 'replaceEntities']);
+Router::post('/api/v1/worlds/:wid/stories/:sid/entities',              [StoryController::class, 'addEntity']);
+Router::delete('/api/v1/worlds/:wid/stories/:sid/entities/:eid',        [StoryController::class, 'removeEntity']);
+
+// Story note links
+Router::get('/api/v1/worlds/:wid/stories/:sid/notes',                 [StoryController::class, 'listNotes']);
+Router::post('/api/v1/worlds/:wid/stories/:sid/notes',                 [StoryController::class, 'addNote']);
+Router::delete('/api/v1/worlds/:wid/stories/:sid/notes/:nid',           [StoryController::class, 'removeNote']);
+
+// Story AI
+Router::post('/api/v1/worlds/:wid/stories/:sid/ai/assist',            [StoryController::class, 'aiAssist']);
+Router::post('/api/v1/worlds/:wid/stories/:sid/ai/scan-entities',     [StoryController::class, 'scanEntities']);
 
 // ── AI ────────────────────────────────────────────────────────────────────────
 

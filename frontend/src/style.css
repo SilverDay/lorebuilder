@@ -3720,3 +3720,490 @@ kbd {
   background: var(--color-surface2);
   border-color: var(--color-muted);
 }
+
+/* ── Story Board ─────────────────────────────────────────────────────────────── */
+
+.story-board {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 7rem);
+  overflow: hidden;
+}
+
+.story-board__header {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.story-board__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.story-board__title {
+  font-size: 1.25rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.story-board__title:hover {
+  color: var(--color-accent);
+}
+
+.story-board__meta-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.story-board__meta-title-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.story-board__meta-synopsis {
+  flex: 2;
+  min-width: 200px;
+}
+
+.story-board__error {
+  margin: 0 1.5rem;
+  flex-shrink: 0;
+}
+
+.story-board__panes {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.story-board__editor-pane {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  border-right: 1px solid var(--color-border);
+}
+
+.story-board__context-pane {
+  width: 340px;
+  min-width: 260px;
+  max-width: 420px;
+  overflow-y: auto;
+  background: var(--color-surface);
+}
+
+.story-board__footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.story-board__word-count {
+  color: var(--color-muted);
+}
+
+.story-board__unsaved {
+  color: var(--color-warning, #e6a817);
+  font-weight: 500;
+}
+
+.story-board__saving {
+  color: var(--color-accent);
+}
+
+.story-board__saved {
+  color: var(--color-muted);
+}
+
+/* ── Story Editor (Milkdown) ──────────────────────────────────────────────── */
+
+.story-editor {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.story-editor .milkdown {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.story-editor .milkdown .editor {
+  min-height: 100%;
+  padding: 1.5rem 2rem;
+  outline: none;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.story-editor .milkdown .editor p {
+  margin: 0 0 0.75rem;
+}
+
+.story-editor .milkdown .editor h1,
+.story-editor .milkdown .editor h2,
+.story-editor .milkdown .editor h3,
+.story-editor .milkdown .editor h4 {
+  margin: 1.5rem 0 0.75rem;
+}
+
+.story-editor .milkdown .editor blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  color: var(--color-muted);
+  margin: 1rem 0;
+}
+
+.story-editor .milkdown .editor code {
+  background: var(--color-surface2);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.story-editor .milkdown .editor pre {
+  background: var(--color-surface2);
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.story-editor .milkdown .editor hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+}
+
+.story-editor__loading {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+/* ── Story Context Panel ──────────────────────────────────────────────────── */
+
+.story-context {
+  display: flex;
+  flex-direction: column;
+}
+
+.story-context__section {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.story-context__heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.story-context__heading:hover {
+  background: var(--color-surface2);
+}
+
+.story-context__chevron {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.story-context__body {
+  padding: 0.5rem 1rem 1rem;
+}
+
+/* ── Story Entity List ────────────────────────────────────────────────────── */
+
+.story-entities__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.story-entities__item {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.story-entities__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.story-entities__link:hover {
+  text-decoration: underline;
+}
+
+.story-entities__add {
+  margin-bottom: 0.75rem;
+}
+
+.story-entities__search-row {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.story-entities__search-row input {
+  font-size: 0.85rem;
+  padding: 0.375rem 0.5rem;
+}
+
+.story-entities__scan {
+  margin-top: 0.5rem;
+}
+
+.story-entities__scan-results {
+  margin-top: 0.5rem;
+}
+
+.story-entities__scan-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  margin: 0.5rem 0 0.25rem;
+}
+
+/* ── Story Notes List ─────────────────────────────────────────────────────── */
+
+.story-notes__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.story-notes__item {
+  padding: 0.375rem 0;
+  border-bottom: 1px solid var(--color-surface2);
+  font-size: 0.85rem;
+}
+
+.story-notes__header {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 0.125rem;
+}
+
+.story-notes__excerpt {
+  color: var(--color-muted);
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.story-notes__add {
+  margin-top: 0.5rem;
+}
+
+.story-notes__add input {
+  font-size: 0.85rem;
+  padding: 0.375rem 0.5rem;
+  width: 100%;
+}
+
+/* ── Story Arc Reference ──────────────────────────────────────────────────── */
+
+.story-arc-ref__info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.story-arc-ref__name {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.story-arc-ref__name:hover {
+  text-decoration: underline;
+}
+
+.story-arc-ref__logline {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  margin: 0.375rem 0 0;
+}
+
+/* ── Story AI Panel ───────────────────────────────────────────────────────── */
+
+.story-ai__label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  margin-bottom: 0.5rem;
+}
+
+.story-ai__label select,
+.story-ai__label textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.story-ai__hint {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.story-ai__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.story-ai__result {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: var(--color-surface2);
+  border-radius: 6px;
+}
+
+.story-ai__result-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.story-ai__tokens {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.story-ai__result-text {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ── Story Table (list view) ──────────────────────────────────────────────── */
+
+.story-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.story-table thead th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.story-table__sortable {
+  cursor: pointer;
+}
+
+.story-table__sortable:hover {
+  color: var(--color-accent);
+}
+
+.story-table__row {
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.story-table__row:hover {
+  background: var(--color-surface2);
+}
+
+.story-table__row td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.story-table__title {
+  font-weight: 500;
+}
+
+.story-table__num {
+  text-align: right;
+}
+
+.story-table__date {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.story-table__actions {
+  text-align: right;
+}
+
+/* Status badges for stories */
+.badge-status-draft       { background: var(--color-surface2); color: var(--color-muted); }
+.badge-status-in_progress { background: #1a3a5c; color: #6cb4ee; }
+.badge-status-review      { background: #3d2e0f; color: #e6a817; }
+.badge-status-final       { background: #0f3d1a; color: #4caf50; }
+.badge-status-abandoned   { background: #3d0f0f; color: #e57373; }
+
+/* ── Responsive: Story Board ──────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .story-board__panes {
+    flex-direction: column;
+  }
+  .story-board__context-pane {
+    width: 100%;
+    max-width: none;
+    max-height: 300px;
+    border-top: 1px solid var(--color-border);
+  }
+  .story-board__editor-pane {
+    border-right: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .story-board__meta-form {
+    flex-direction: column;
+  }
+  .story-board__footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .story-table thead {
+    display: none;
+  }
+  .story-table__row {
+    display: block;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+  .story-table__row td {
+    display: block;
+    border: none;
+    padding: 0.125rem 0;
+  }
+}

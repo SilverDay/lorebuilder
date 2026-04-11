@@ -47,6 +47,7 @@ async function signOut() {
     <RouterLink :to="`/worlds/${wid}/graph`"        class="world-subnav__link">Graph</RouterLink>
     <RouterLink :to="`/worlds/${wid}/timeline`"     class="world-subnav__link">Timeline</RouterLink>
     <RouterLink :to="`/worlds/${wid}/arcs`"         class="world-subnav__link">Story Arcs</RouterLink>
+    <RouterLink :to="`/worlds/${wid}/stories`"      class="world-subnav__link">Stories</RouterLink>
     <RouterLink :to="`/worlds/${wid}/notes`"        class="world-subnav__link">Notes</RouterLink>
     <RouterLink :to="`/worlds/${wid}/open-points`"  class="world-subnav__link">Open Points</RouterLink>
     <RouterLink :to="`/worlds/${wid}/tags`"           class="world-subnav__link">Tags</RouterLink>
