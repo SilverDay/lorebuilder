@@ -76,8 +76,8 @@ const MilkdownEditorInner = defineComponent({
 
     function execCommand(cmd, payload) {
       const editor = getEditor()
-      if (!editor) return
-      editor.action(callCommand(cmd, payload))
+      if (!editor || !cmd.key) return
+      editor.action(callCommand(cmd.key, payload))
     }
 
     // Watch for external content changes (e.g., story reload)
