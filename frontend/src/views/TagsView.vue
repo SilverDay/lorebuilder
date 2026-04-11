@@ -155,7 +155,7 @@ onMounted(load)
     <p v-if="loading" class="loading">Loading…</p>
     <p v-else-if="error" class="form-error" role="alert">{{ error }}</p>
 
-    <div v-else-if="tags.length" class="tag-list">
+    <div v-else-if="tags.length" class="tag-list tag-list--manage">
       <div v-for="tag in tags" :key="tag.id" class="tag-list__item card">
         <!-- Edit mode -->
         <form v-if="editingId === tag.id" class="tag-form__row tag-form__row--inline" @submit.prevent="saveEdit">

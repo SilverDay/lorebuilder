@@ -1195,13 +1195,13 @@ input[type="search"] {
   line-height: 1.4;
 }
 
-.tag-list {
+.tag-list--manage {
   display: flex;
   flex-direction: column;
   gap: .5rem;
 }
 
-.tag-list__item.card {
+.tag-list--manage .tag-list__item.card {
   display: flex;
   align-items: center;
   gap: .75rem;
