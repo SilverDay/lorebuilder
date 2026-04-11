@@ -44,7 +44,7 @@ async function loadStories() {
       page: page.value,
       per_page: perPage,
       sort: sort.value,
-      order: order.value,
+      dir: order.value,
     }
     if (filterStatus.value) params.status = filterStatus.value
     if (filterArc.value)    params.arc_id = filterArc.value
