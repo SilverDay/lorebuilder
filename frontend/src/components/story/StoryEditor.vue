@@ -9,7 +9,7 @@
  * calls useEditor (which requires inject from MilkdownProvider parent).
  */
 import { defineComponent, h, watch } from 'vue'
-import { Editor, defaultValueCtx } from '@milkdown/core'
+import { Editor, rootCtx, defaultValueCtx } from '@milkdown/core'
 import { commonmark } from '@milkdown/preset-commonmark'
 import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { history } from '@milkdown/plugin-history'
@@ -35,6 +35,7 @@ const MilkdownEditorInner = defineComponent({
       return Editor.make()
         .config(nord)
         .config((ctx) => {
+          ctx.set(rootCtx, root)
           ctx.set(defaultValueCtx, props.content || '')
           ctx.get(listenerCtx)
             .markdownUpdated((_ctx, markdown, prevMarkdown) => {
