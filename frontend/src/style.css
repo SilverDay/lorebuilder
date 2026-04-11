@@ -3859,24 +3859,24 @@ kbd {
 }
 
 .story-editor__toolbar-btn:hover {
-  background: var(--color-bg-hover);
+  background: var(--color-surface2);
   border-color: var(--color-border);
 }
 
 .story-editor__toolbar-btn:active {
-  background: var(--color-primary);
+  background: var(--color-accent);
   color: #fff;
 }
 
 .story-editor__toolbar-btn--active {
-  background: var(--color-primary);
+  background: var(--color-accent);
   color: #fff;
-  border-color: var(--color-primary);
+  border-color: var(--color-accent);
 }
 
 .story-editor__toolbar-btn--active:hover {
-  background: var(--color-primary-hover, var(--color-primary));
-  border-color: var(--color-primary-hover, var(--color-primary));
+  background: var(--color-accent-h);
+  border-color: var(--color-accent-h);
 }
 
 .story-editor__toolbar-btn:disabled {

@@ -10,7 +10,7 @@
  * Toolbar uses editor.action(callCommand(...)) to toggle marks/blocks.
  */
 import { defineComponent, h, ref, watch, onMounted, onUnmounted } from 'vue'
-import { Editor, rootCtx, defaultValueCtx, editorViewCtx, SchemaReady, marksCtx, schemaCtx } from '@milkdown/core'
+import { Editor, rootCtx, defaultValueCtx, editorViewCtx } from '@milkdown/core'
 import { commonmark,
   toggleStrongCommand, toggleEmphasisCommand, toggleInlineCodeCommand,
   wrapInBlockquoteCommand, wrapInBulletListCommand, wrapInOrderedListCommand,
@@ -22,19 +22,10 @@ import { listener, listenerCtx } from '@milkdown/plugin-listener'
 import { history, undoCommand, redoCommand } from '@milkdown/plugin-history'
 import { nord } from '@milkdown/theme-nord'
 import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/vue'
-import { replaceAll, callCommand, $prose } from '@milkdown/utils'
+import { replaceAll, callCommand } from '@milkdown/utils'
 import { lift, toggleMark } from 'prosemirror-commands'
-import { keymap } from 'prosemirror-keymap'
 
 import '@milkdown/theme-nord/style.css'
-
-/* ── Underline: add mark to schema + Ctrl+U keymap via ProseMirror ── */
-const underlineKeymap = $prose((ctx) => {
-  const schema = ctx.get(schemaCtx)
-  const markType = schema.marks.underline
-  if (!markType) return keymap({})
-  return keymap({ 'Mod-u': toggleMark(markType) })
-})
 
 /**
  * Toolbar buttons definition.
@@ -50,11 +41,7 @@ const toolbarButtons = [
   { label: 'I', title: 'Italic (Ctrl+I)', command: toggleEmphasisCommand, group: 'inline',
     markName: 'emphasis',
     active: (v) => isMarkActive(v, 'emphasis') },
-  { label: 'U', title: 'Underline (Ctrl+U)', command: null, group: 'inline',
-    markName: 'underline',
-    style: 'text-decoration: underline',
-    active: (v) => isMarkActive(v, 'underline') },
-  { label: 'S', title: 'Strikethrough', command: toggleStrikethroughCommand, group: 'inline',
+  { label: 'S', title: 'Strikethrough (~~text~~)', command: toggleStrikethroughCommand, group: 'inline',
     markName: 'strikethrough',
     style: 'text-decoration: line-through',
     active: (v) => isMarkActive(v, 'strikethrough') },
@@ -150,17 +137,6 @@ const MilkdownEditorInner = defineComponent({
         .config((ctx) => {
           ctx.set(rootCtx, root)
           ctx.set(defaultValueCtx, props.content || '')
-          // Inject underline mark into schema before it's built
-          ctx.update(marksCtx, (marks) => [
-            ...marks,
-            ['underline', {
-              parseDOM: [
-                { tag: 'u' },
-                { style: 'text-decoration', getAttrs: (v) => v === 'underline' ? {} : false },
-              ],
-              toDOM: () => ['u', 0],
-            }],
-          ])
           ctx.get(listenerCtx)
             .markdownUpdated((_ctx, markdown, prevMarkdown) => {
               if (markdown !== prevMarkdown) {
@@ -171,7 +147,6 @@ const MilkdownEditorInner = defineComponent({
         })
         .use(commonmark)
         .use(gfm)
-        .use(underlineKeymap)
         .use(listener)
         .use(history)
     })
@@ -238,7 +213,7 @@ const MilkdownEditorInner = defineComponent({
             onSelectionOrDoc()
             return
           }
-        } catch (e) { console.warn('[toolbar] toggleMark failed:', e) }
+        } catch { /* mark not in schema */ }
       }
 
       // Toggle wrapper nodes: lift out of blockquote/list
